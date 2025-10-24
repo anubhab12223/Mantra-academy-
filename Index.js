@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Mantra Academy — UPSC & Competitive Exams</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --card: #fff;
+      --muted:#6c7a8a;
+      --accent1: #2575fc;
+      --accent2: #6a11cb;
+      --radius:12px;
+      --shadow: 0 8px 30px rgba(18,25,40,0.06);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:"Poppins",system-ui,Segoe UI,Roboto,Arial;
+      background:radial-gradient(900px 360px at 8% 5%, rgba(37,117,252,0.04), transparent), var(--bg);
+      color:#122033; -webkit-font-smoothing:antialiased;
+    }
+
+    /* Header */
+    header.site-header{
+      position:sticky; top:0; z-index:60;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:12px 18px; background:linear-gradient(90deg,#fff,#fbfdff);
+      box-shadow: 0 4px 12px rgba(20,30,50,0.04);
+    }
+    .left, .center, .right { display:flex; align-items:center; gap:12px; }
+
+    .hamburger{
+      width:44px;height:44px;border-radius:10px;background:var(--card);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow);
+    }
+    .logo{ display:flex; gap:12px; align-items:center; text-decoration:none; color:inherit}
+    .logo-mark{ width:48px;height:48px;border-radius:10px;background:linear-gradient(120deg,var(--accent2),var(--accent1));display:grid;place-items:center;color:white;font-weight:800;font-size:18px; box-shadow:0 8px 24px rgba(37,117,252,0.12)}
+    .logo-text{ font-weight:700; font-size:16px}
+    .logo-sub{ font-size:12px; color:var(--muted) }
+
+    .search {
+      display:flex; align-items:center; gap:8px; background:linear-gradient(90deg,#ffffff, #f8fbff); padding:8px 12px; border-radius:10px; box-shadow:var(--shadow);
+      max-width:520px; width:100%;
+    }
+    .search input{ border:0; outline:none; background:transparent; font-size:14px; width:100%}
+    .btn{ padding:10px 14px; border-radius:10px; color:white; text-decoration:none; font-weight:700; background: linear-gradient(90deg,var(--accent2),var(--accent1)); box-shadow:0 8px 24px rgba(37,117,252,0.12) }
+
+    /* Layout */
+    .wrap{ max-width:1200px; margin:22px auto; padding:0 18px; display:grid; grid-template-columns: 1fr; gap:18px; }
+
+    /* Cards */
+    .cards{ display:grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+    .card{ background:var(--card); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow); display:flex; justify-content:space-between; gap:12px; align-items:center; }
+    .card .left{display:flex; gap:12px; align-items:center}
+    .card .icon{ width:64px;height:64px;border-radius:12px; display:grid; place-items:center; color:white; font-size:22px }
+    .card h3{ margin:0; font-size:16px }
+    .card p{ margin:6px 0 0; color:var(--muted); font-size:13px }
+    .chips{ margin-top:10px; display:flex; gap:8px; flex-wrap:wrap }
+    .chip{ background:rgba(16,24,40,0.04); padding:6px 10px; border-radius:999px; font-size:13px; color:#23354a }
+
+    /* Section Title */
+    .section-title{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:linear-gradient(90deg, rgba(106,17,203,0.06), rgba(37,117,252,0.03)); border-radius:12px; box-shadow:0 6px 18px rgba(10,20,40,0.03); font-weight:700 }
+
+    /* Accordion / subjects */
+    .accordion{ background:var(--card); border-radius:12px; box-shadow:var(--shadow); padding:12px; }
+    details{ margin-bottom:10px; border-radius:10px; overflow:hidden; background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,250,252,0.96)); border:1px solid rgba(18,25,40,0.03) }
+    summary{ list-style:none; cursor:pointer; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:12px; font-weight:700; }
+    summary::-webkit-details-marker{ display:none; }
+    .subject-info{ display:flex; gap:12px; align-items:center }
+    .subject-badge{ width:46px; height:46px; border-radius:10px; display:grid; place-items:center; color:white; font-weight:800 }
+    .subject-list{ padding:12px 18px 18px 18px }
+    .subject-list ul{ list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px; }
+    .subject-list li a{ display:block; padding:10px 12px; background:rgba(16,24,40,0.02); border-radius:10px; text-decoration:none; color:#0b4a78; font-weight:600; border:1px solid rgba(11,74,120,0.04) }
+    .subject-list li a:hover{ transform:translateY(-3px); box-shadow:0 10px 28px rgba(11,74,120,0.05) }
+
+    /* Mock area */
+    .mock-area{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:8px; }
+    .mock-btn{ padding:10px 14px; border-radius:10px; font-weight:700; text-decoration:none; color:white; display:inline-flex; gap:8px; align-items:center; }
+    .more-dropdown{ position:relative; }
+    .more-list{ display:none; position:absolute; right:0; top:48px; background:white; min-width:220px; border-radius:10px; box-shadow:0 12px 30px rgba(12,20,40,0.12); padding:8px; z-index:60; }
+    .more-list a{ display:block; padding:10px 12px; text-decoration:none; color:#223344; border-radius:8px; font-weight:600 }
+    .more-list a:hover{ background:rgba(11,74,120,0.04) }
+
+    /* Footer banner */
+    footer.banner{ margin-top:18px; background:linear-gradient(90deg,var(--accent2),var(--accent1)); color:white; padding:20px; border-radius:14px; display:flex; align-items:center; gap:18px; box-shadow:0 12px 48px rgba(37,117,252,0.12) }
+    .banner-left{ display:flex; gap:14px; align-items:center }
+    .join-btn{ margin-left:auto; background:white; color:#123243; padding:12px 18px; border-radius:10px; font-weight:800; text-decoration:none; box-shadow:0 10px 30px rgba(0,0,0,0.12) }
+
+    /* Left Nav Drawer */
+    .drawer{ position:fixed; left:0; top:0; bottom:0; width:320px; transform:translateX(-100%); background:linear-gradient(180deg,#fff,#fbfdff); box-shadow: 18px 0 40px rgba(10,20,40,0.12); z-index:120; padding:20px; transition:transform .28s ease; overflow:auto }
+    .drawer.open{ transform:translateX(0) }
+    .drawer .nav-item{ display:flex; gap:12px; align-items:center; padding:10px 8px; border-radius:10px; text-decoration:none; color:#17314b; font-weight:700; margin-bottom:8px }
+    .drawer .small{ font-size:13px; color:var(--muted); margin-top:8px }
+
+    /* Responsive */
+    @media (max-width:900px){
+      .wrap{ padding:0 12px }
+      .drawer{ width:86%; }
+    }
+    @media (max-width:520px){
+      .logo-text{ display:none }
+      .logo-sub{ display:none }
+      .search{ display:none }
+      .cards{ grid-template-columns:1fr }
+      footer.banner{ flex-direction:column; align-items:flex-start }
+      .join-btn{ width:100% }
+    }
+
+    /* small util */
+    .muted{ color:var(--muted); font-weight:600 }
+  </style>
+</head>
+<body>
+
+  <!-- LEFT NAV DRAWER -->
+  <nav id="drawer" class="drawer" aria-hidden="true" aria-label="Main navigation">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px">
+      <div class="logo-mark" style="width:56px;height:56px; border-radius:10px; background:linear-gradient(120deg,#6a11cb,#2575fc); color:white; display:grid;place-items:center; font-weight:800">MA</div>
+      <div>
+        <div style="font-weight:800">Mantra Academy</div>
+        <div class="small">UPSC • State PCS • Govt Exams</div>
+      </div>
+    </div>
+
+    <hr style="border:none;height:1px;background:rgba(0,0,0,0.04); margin:10px 0 16px">
+
+    <a class="nav-item" href="index.html"><i class="fa-solid fa-house" style="color:#2575fc;width:26px"></i> Home</a>
+    <a class="nav-item" href="upsc.html"><i class="fa-solid fa-landmark" style="color:#0d6efd;width:26px"></i> UPSC</a>
+    <a class="nav-item" href="govt-jobs.html"><i class="fa-solid fa-briefcase" style="color:#ff7043;width:26px"></i> Govt Jobs</a>
+    <a class="nav-item" href="defence.html"><i class="fa-solid fa-shield-halved" style="color:#00bfa6;width:26px"></i> Defence</a>
+    <a class="nav-item" href="mock_tests.html"><i class="fa-solid fa-brain" style="color:#fb8c00;width:26px"></i> Mock Tests</a>
+
+    <div class="small">Subjects</div>
+    <a class="nav-item" href="#polity"><i class="fa-solid fa-gavel" style="color:#2575fc;width:26px"></i> Polity</a>
+    <a class="nav-item" href="#economics"><i class="fa-solid fa-coins" style="color:#ff8f00;width:26px"></i> Economics</a>
+    <a class="nav-item" href="#science"><i class="fa-solid fa-microchip" style="color:#00bfa6;width:26px"></i> Science & Tech</a>
+    <a class="nav-item" href="#environment"><i class="fa-solid fa-leaf" style="color:#16a085;width:26px"></i> Environment</a>
+    <a class="nav-item" href="#geography"><i class="fa-solid fa-globe" style="color:#0d6efd;width:26px"></i> Geography</a>
+
+    <hr style="border:none;height:1px;background:rgba(0,0,0,0.04); margin:16px 0">
+    <div style="display:flex; gap:8px">
+      <a class="btn" href="login.html" style="padding:10px 12px">Login</a>
+      <a class="btn" href="join.html" style="background:linear-gradient(90deg,#ff8f00,#ff6f00)">Join</a>
+    </div>
+
+    <p class="small" style="margin-top:18px">Quick links to popular state PSCs & resources</p>
+    <div style="display:flex; gap:8px; flex-wrap:wrap">
+      <a href="state_ops.html" class="chip" style="background:#eef6ff">OPSC</a>
+      <a href="state_bps.html" class="chip" style="background:#fff4e6">BPSC</a>
+      <a href="state_mpps.html" class="chip" style="background:#f0fff4">MPPSC</a>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <header class="site-header" role="banner">
+    <div class="left">
+      <div class="hamburger" id="hamburger" aria-label="Open menu"><i class="fa-solid fa-bars" style="color:#123"></i></div>
+      <a class="logo" href="index.html" aria-label="Home">
+        <div class="logo-mark">MA</div>
+        <div>
+          <div class="logo-text">Mantra Academy</div>
+          <div class="logo-sub">UPSC • State PCS • Govt Exams</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="center">
+      <div class="search" role="search" aria-label="Search chapters">
+        <i class="fa-solid fa-magnifying-glass" style="color:var(--muted)"></i>
+        <input id="searchInput" type="search" placeholder="Search subjects, chapters or keywords — e.g., 'Constitution', 'Climate'">
+        <button id="clearSearch" title="Clear" style="background:transparent;border:0;cursor:pointer;color:var(--muted)"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </div>
+
+    <div class="right">
+      <a href="login.html" class="btn"><i class="fa-solid fa-right-to-bracket"></i>&nbsp;Login / Register</a>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="wrap" role="main">
+
+    <!-- Category cards -->
+    <section aria-labelledby="categories-heading">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px">
+        <h2 id="categories-heading" style="margin:0; font-size:20px">Explore Exam Categories</h2>
+        <a href="categories.html" style="color:var(--accent1); font-weight:700; text-decoration:none">View All Categories (19) →</a>
+      </div>
+
+      <div class="cards" aria-hidden="false">
+        <div class="card" role="article" aria-label="UPSC">
+          <div class="left">
+            <div class="icon" style="background:linear-gradient(120deg,#0066ff,#00c6ff)"><i class="fa-solid fa-landmark"></i></div>
+            <div>
+              <h3>UPSC Civil Services</h3>
+              <p>Complete Prelims → Mains → Interview support</p>
+              <div class="chips"><span class="chip">Prelims</span><span class="chip">Mains</span><span class="chip">Interview</span></div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <a class="explore" href="upsc.html" style="text-decoration:none; color:var(--accent1); font-weight:800">Explore →</a>
+            <div style="color:var(--muted); font-size:12px">Study plans & tests</div>
+          </div>
+        </div>
+
+        <div class="card" role="article" aria-label="Govt Jobs">
+          <div class="left">
+            <div class="icon" style="background:linear-gradient(120deg,#ff8a00,#ff4d4d)"><i class="fa-solid fa-briefcase"></i></div>
+            <div>
+              <h3>Govt Job Exams</h3>
+              <p>SSC, Banking, Teaching, Judiciary</p>
+              <div class="chips"><span class="chip">SSC</span><span class="chip">Banking</span><span class="chip">Teaching</span></div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <a class="explore" href="govt-jobs.html" style="text-decoration:none; color:var(--accent1); font-weight:800">Explore →</a>
+            <div style="color:var(--muted); font-size:12px">Focused practice</div>
+          </div>
+        </div>
+
+        <div class="card" role="article" aria-label="Defence">
+          <div class="left">
+            <div class="icon" style="background:linear-gradient(120deg,#00bfa6,#00e676)"><i class="fa-solid fa-shield-halved"></i></div>
+            <div>
+              <h3>Defence Exams</h3>
+              <p>NDA • CDS • AFCAT • Agniveer</p>
+              <div class="chips"><span class="chip">NDA</span><span class="chip">CDS</span><span class="chip">AFCAT</span></div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <a class="explore" href="defence.html" style="text-decoration:none; color:var(--accent1); font-weight:800">Explore →</a>
+            <div style="color:var(--muted); font-size:12px">Syllabus & tests</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapters / Subjects -->
+    <section aria-labelledby="chapters-heading">
+      <div class="section-title" id="chapters-heading">
+        <span>📚 Subjects & Chapter Links</span>
+        <small class="muted">Click a subject to expand • Use search to find chapters fast</small>
+      </div>
+
+      <div class="accordion" id="subjectsAccordion">
+
+        <!-- Polity -->
+        <details id="polity" open>
+          <summary>
+            <div class="subject-info">
+              <div class="subject-badge" style="background:linear-gradient(120deg,#2575fc,#6a11cb)"><i class="fa-solid fa-gavel"></i></div>
+              <div>
+                <div style="font-weight:800">Polity & Governance</div>
+                <div style="font-size:13px; color:var(--muted)">Constitution, Institutions, Rights & Governance</div>
+              </div>
+            </div>
+            <div class="muted"><i class="fa-solid fa-chevron-down"></i></div>
+          </summary>
+
+          <div class="subject-list">
+            <ul>
+              <li><a href="mock3.html">1. Constitution — Nature & Evolution</a></li>
+              <li><a href="polity_preamble.html">2. Preamble & Basic Structure</a></li>
+              <li><a href="polity_fundamental-rights.html">3. Fundamental Rights & Duties</a></li>
+              <li><a href="polity_dpsp.html">4. Directive Principles of State Policy</a></li>
+              <li><a href="polity_parliament.html">5. Parliament & Legislative Process</a></li>
+              <li><a href="polity_executive.html">6. Executive — President, PM & Council of Ministers</a></li>
+              <li><a href="polity_judiciary.html">7. Judiciary & Judicial Review</a></li>
+              <li><a href="polity_constbodies.html">8. Constitutional & Statutory Bodies</a></li>
+              <li><a href="polity_localgov.html">9. Local Governments & Panchayati Raj</a></li>
+              <li><a href="polity_electoral.html">10. Elections & Electoral Reforms</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Economics -->
+        <details id="economics">
+          <summary>
+            <div class="subject-info">
+              <div class="subject-badge" style="background:linear-gradient(120deg,#ff8f00,#ff6f00)"><i class="fa-solid fa-coins"></i></div>
+              <div>
+                <div style="font-weight:800">Economics</div>
+                <div style="font-size:13px; color:var(--muted)">Micro, Macro, Public Finance & Indian Economy</div>
+              </div>
+            </div>
+            <div class="muted"><i class="fa-solid fa-chevron-down"></i></div>
+          </summary>
+
+          <div class="subject-list">
+            <ul>
+              <li><a href="eco_basics.html">1. Basic Economic Concepts</a></li>
+              <li><a href="eco_nationalincome.html">2. National Income Accounting</a></li>
+              <li><a href="eco_money_banking.html">3. Money, Banking & Financial Sector</a></li>
+              <li><a href="eco_fiscal.html">4. Fiscal Policy, Budget & Taxes</a></li>
+              <li><a href="eco_monetary.html">5. Monetary Policy & Inflation</a></li>
+              <li><a href="eco_growth.html">6. Growth, Development & Reforms</a></li>
+              <li><a href="eco_agri.html">7. Agriculture & Rural Development</a></li>
+              <li><a href="eco_external.html">8. External Sector & Trade Policy</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Science & Technology -->
+        <details id="science">
+          <summary>
+            <div class="subject-info">
+              <div class="subject-badge" style="background:linear-gradient(120deg,#00bfa6,#00e676)"><i class="fa-solid fa-microchip"></i></div>
+              <div>
+                <div style="font-weight:800">Science & Technology</div>
+                <div style="font-size:13px; color:var(--muted)">Space, IT, Biotech, Emerging Tech</div>
+              </div>
+            </div>
+            <div class="muted"><i class="fa-solid fa-chevron-down"></i></div>
+          </summary>
+
+          <div class="subject-list">
+            <ul>
+              <li><a href="st_basic.html">1. Fundamentals of Modern Science</a></li>
+              <li><a href="st_space.html">2. Space Technology & ISRO</a></li>
+              <li><a href="st_it.html">3. Information Technology & Cybersecurity</a></li>
+              <li><a href="st_ai.html">4. AI, ML & Data Science</a></li>
+              <li><a href="st_biotech.html">5. Biotechnology & Health Innovations</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Environment -->
+        <details id="environment">
+          <summary>
+            <div class="subject-info">
+              <div class="subject-badge" style="background:linear-gradient(120deg,#2ecc71,#16a085)"><i class="fa-solid fa-leaf"></i></div>
+              <div>
+                <div style="font-weight:800">Environment & Ecology</div>
+                <div style="font-size:13px; color:var(--muted)">Biodiversity, Climate, Pollution & Laws</div>
+              </div>
+            </div>
+            <div class="muted"><i class="fa-solid fa-chevron-down"></i></div>
+          </summary>
+
+          <div class="subject-list">
+            <ul>
+              <li><a href="function of ecology.html">1. Ecosystems & Ecology</a></li>
+              <li><a href="env_biodiversity.html">2. Biodiversity & Conservation</a></li>
+              <li><a href="env_climate.html">3. Climate Change & Agreements</a></li>
+              <li><a href="env_pollution.html">4. Pollution, Waste & Mitigation</a></li>
+              <li><a href="env_laws.html">5. Environmental Laws & Policies</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Geography -->
+        <details id="geography">
+          <summary>
+            <div class="subject-info">
+              <div class="subject-badge" style="background:linear-gradient(120deg,#00aaff,#0066ff)"><i class="fa-solid fa-globe"></i></div>
+              <div>
+                <div style="font-weight:800">Geography</div>
+           </div>
+            </div>
+            <div class="muted"><i class="fa-solid fa-chevron-down"></i></div>
+          </summary>
+
+          <div class="subject-list">
+            <ul>
+              <li><a href="geo_physical.html">1. Physical Geography & Geomorphology</a></li>
+              <li><a href="geo_climatology.html">2. Climate & Atmosphere</a></li>
+              <li><a href="geo_humangeo.html">3. Human Geography</a></li>
+              <li><a href="geo_india.html">4. Indian & Regional Geography</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- History -->
+        <details id="history">
+          <summary>
+            <div class="subject-info">
+              <div class="subject-badge" style="background:linear-gradient(120deg,#ff6b6b,#ffbb33)"><i class="fa-solid fa-landmark"></i></div>
+              <div>
+                <div style="font-weight:800">History</div>
+                <div style="font-size:13px;color:var(--muted)">Ancient • Medieval • Modern • Art & Culture</div>
+              </div>
+            </div>
+            <div class="muted"><i class="fa-solid fa-chevron-down"></i></div>
+          </summary>
+
+          <div class="subject-list">
+            <ul>
+              <li><a href="hist_ancient.html">1. Ancient India — Society & Culture</a></li>
+              <li><a href="hist_medieval.html">2. Medieval India — Polity & Society</a></li>
+              <li><a href="hist_modern.html">3. Modern India — Freedom Movement</a></li>
+              <li><a href="hist_art.html">4. Art, Architecture & Culture</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- International Relations -->
+        <details id="ir">
+          <summary>
+            <div class="subject-info">
+              <div class="subject-badge" style="background:linear-gradient(120deg,#9b59b6,#6a11cb)"><i class="fa-solid fa-handshake"></i></div>
+              <div>
+                <div style="font-weight:800">International Relations</div>
+                <div style="font-size:13px;color:var(--muted)">Foreign Policy & Global Governance</div>
+              </div>
+            </div>
+            <div class="muted"><i class="fa-solid fa-chevron-down"></i></div>
+          </summary>
+
+          <div class="subject-list">
+            <ul>
+              <li><a href="ir_foreignpolicy.html">1. India’s Foreign Policy</a></li>
+              <li><a href="ir_bilateral.html">2. Bilateral Relations</a></li>
+              <li><a href="ir_global.html">3. UN, WTO, IMF & Global Organisations</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Social Justice -->
+        <details id="social">
+          <summary>
+            <div class="subject-info">
+              <div class="subject-badge" style="background:linear-gradient(120deg,#2ecc71,#16a085)"><i class="fa-solid fa-users"></i></div>
+              <div>
+                <div style="font-weight:800">Social Studies & Justice</div>
+                <div style="font-size:13px;color:var(--muted)">Welfare, Rights & Inclusion</div>
+              </div>
+            </div>
+            <div class="muted"><i class="fa-solid fa-chevron-down"></i></div>
+          </summary>
+
+          <div class="subject-list">
+            <ul>
+              <li><a href="society_sociology.html">1. Sociology — Social Structures</a></li>
+              <li><a href="society_welfare.html">2. Welfare Schemes & Governance</a></li>
+              <li><a href="society_inclusion.html">3. Gender, Inclusion & Rights</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Internal Security -->
+        <details id="security">
+          <summary>
+            <div class="subject-info">
+              <div class="subject-badge" style="background:linear-gradient(120deg,#34495e,#2c3e50)"><i class="fa-solid fa-shield"></i></div>
+              <div>
+                <div style="font-weight:800">Internal Security</div>
+                <div style="font-size:13px;color:var(--muted)">Terrorism, Cyber, Border & Disaster Management</div>
+              </div>
+            </div>
+            <div class="muted"><i class="fa-solid fa-chevron-down"></i></div>
+          </summary>
+
+          <div class="subject-list">
+            <ul>
+              <li><a href="is_terrorism.html">1. Terrorism & Counter-terrorism</a></li>
+              <li><a href="is_cyber.html">2. Cyber Security & Laws</a></li>
+              <li><a href="is_border.html">3. Border & Coastal Security</a></li>
+              <li><a href="is_disaster.html">4. Disaster Management</a></li>
+            </ul>
+          </div>
+        </details>
+
+        <!-- Current Affairs -->
+        <details id="current">
+          <summary>
+            <div class="subject-info">
+              <div class="subject-badge" style="background:linear-gradient(120deg,#ff5e62,#ff9966)"><i class="fa-solid fa-newspaper"></i></div>
+              <div>
+                <div style="font-weight:800">Current Affairs</div>
+                <div style="font-size:13px;color:var(--muted)">Daily, Monthly & Yearly Compilations</div>
+              </div>
+            </div>
+            <div class="muted"><i class="fa-solid fa-chevron-down"></i></div>
+          </summary>
+
+          <div class="subject-list">
+            <ul>
+              <li><a href="ca_daily.html">1. Daily Current Affairs</a></li>
+              <li><a href="ca_monthly.html">2. Monthly Compilation</a></li>
+              <li><a href="ca_yearly.html">3. Yearly Dossier</a></li>
+            </ul>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- Mock Tests -->
+    <section aria-labelledby="mock-heading" style="margin-top:8px">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px">
+        <h2 id="mock-heading" style="margin:0; font-size:18px">🧠 Mock Tests & Practice</h2>
+        <small class="muted">Timed mocks, sectional & full-length</small>
+      </div>
+
+      <div class="mock-area">
+        <a class="mock-btn" href="mock_upsc.html" style="background:linear-gradient(90deg,#0066ff,#00c6ff)"><i class="fa-solid fa-check-circle"></i>&nbsp;UPSC Mock</a>
+        <a class="mock-btn" href="mock_state.html" style="background:linear-gradient(90deg,#7b1fa2,#d81b60)"><i class="fa-solid fa-graduation-cap"></i>&nbsp;State PCS</a>
+        <a class="mock-btn" href="mock_banking.html" style="background:linear-gradient(90deg,#0d9488,#0891b2)"><i class="fa-solid fa-university"></i>&nbsp;Banking</a>
+        <a class="mock-btn" href="mock_defence.html" style="background:linear-gradient(90deg,#ff6f00,#ff3d00)"><i class="fa-solid fa-shield-halved"></i>&nbsp;Defence</a>
+
+        <div class="more-dropdown">
+          <button id="moreBtn" class="mock-btn" style="background:linear-gradient(90deg,#374151,#1f2937)"><i class="fa-solid fa-ellipsis"></i>&nbsp;More</button>
+          <div class="more-list" id="moreList" aria-hidden="true">
+            <a href="state_ops.html">OPSC — Odisha PSC</a>
+            <a href="state_bps.html">BPSC — Bihar PSC</a>
+            <a href="state_mpps.html">MPPSC — Madhya Pradesh PSC</a>
+            <a href="state_upscs.html">UPPSC — Uttar Pradesh PSC</a>
+            <a href="state_tnpsc.html">TNPSC — Tamil Nadu PSC</a>
+            <a href="state_others.html">Other State PSCs</a>
+          </div>
+        </div>
+      </div>
+    </section>
+ <!-- Footer Banner -->
+    <footer class="banner" role="contentinfo" aria-label="Join Mantra Academy">
+      <div class="banner-left">
+        <div class="logo-mark" style="width:64px;height:64px; font-weight:900">MA</div>
+        <div>
+          <h3 style="margin:0; font-size:20px">Join Mantra Academy — Free Access</h3>
+          <p style="margin:6px 0 0; font-weight:600">Live classes • Curated notes • Daily current affairs • Unlimited mocks</p>
+        </div>
+      </div>
+      <a class="join-btn" href="join.html">Join Now — It's Free</a>
+    </footer>
+  </main>
+
+  <!-- Minimal JS -->
+  <script>
+    // Drawer toggle
+    const drawer = document.getElementById('drawer');
+    const hamburger = document.getElementById('hamburger');
+    hamburger?.addEventListener('click', ()=> {
+      const open = drawer.classList.toggle('open');
+      drawer.setAttribute('aria-hidden', (!open).toString());
+    });
+
+    // Close drawer on click outside (mobile)
+    document.addEventListener('click', (e)=>{
+      if(!drawer.contains(e.target) && !hamburger.contains(e.target)){
+        drawer.classList.remove('open');
+        drawer.setAttribute('aria-hidden','true');
+      }
+    });
+
+    // "More" dropdown logic
+    const moreBtn = document.getElementById('moreBtn');
+    const moreList = document.getElementById('moreList');
+    moreBtn?.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const shown = moreList.style.display === 'block';
+      document.querySelectorAll('.more-list').forEach(el=>el.style.display='none');
+      moreList.style.display = shown ? 'none' : 'block';
+      moreList.setAttribute('aria-hidden', shown ? 'true' : 'false');
+    });
+    document.addEventListener('click', ()=> { document.querySelectorAll('.more-list').forEach(el=>{ el.style.display='none'; el.setAttribute('aria-hidden','true') }) });
+
+    // Search: filter chapter links by text (live)
+    const searchInput = document.getElementById('searchInput');
+    const clearSearch = document.getElementById('clearSearch');
+
+    function filterChapters(q){
+      q = (q || '').trim().toLowerCase();
+      // find all subject-list anchor tags
+      const anchors = Array.from(document.querySelectorAll('.subject-list li a'));
+      if(!q){
+        anchors.forEach(a => { a.parentElement.style.display = ''; });
+        // show all details sections collapsed state unchanged
+        return;
+      }
+      anchors.forEach(a=>{
+        const txt = (a.textContent || a.innerText).toLowerCase();
+        a.parentElement.style.display = txt.includes(q) ? '' : 'none';
+      });
+      // expand any details that contain visible items, collapse those without
+      document.querySelectorAll('details').forEach(d=>{
+        const visible = d.querySelectorAll('.subject-list li:not([style*="display: none"])').length;
+        d.open = visible > 0;
+      });
+    }
+
+    searchInput?.addEventListener('input', (e)=> { filterChapters(e.target.value) });
+    clearSearch?.addEventListener('click', ()=> { searchInput.value=''; filterChapters(''); });
+
+    // keyboard shortcut: '/' focuses search
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'){
+        e.preventDefault(); searchInput.focus();
+      }
+    });
+
+    // accessibility: allow Enter to open/close details via summary (native works but we ensure icon rotates)
+    document.querySelectorAll('details').forEach(d=>{
+      d.addEventListener('toggle', ()=> {
+        const icon = d.querySelector('summary .fa-chevron-down');
+        if(icon){
+          if(d.open) icon.style.transform = 'rotate(180deg)';
+          else icon.style.transform = 'rotate(0deg)';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+    
