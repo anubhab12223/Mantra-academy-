@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC Mock Test - Indian Polity</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Disable tap highlight on mobile */
+        }
+
+        /* Custom scrollbar for question list */
+        .question-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+        .question-nav::-webkit-scrollbar-thumb {
+            background-color: #9ca3af;
+            border-radius: 20px;
+        }
+
+        /* Custom radio buttons */
+        input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #6b7280;
+            border-radius: 50%;
+            outline: none;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        input[type="radio"]:checked {
+            border: 6px solid #2563eb; /* Blue-600 */
+            background-color: white;
+        }
+
+        /* Donut chart styles */
+        .donut-chart {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #10b981 var(--correct-percent),
+                #ef4444 0 var(--incorrect-percent),
+                #6b7280 0 var(--unattempted-percent)
+            );
+        }
+        .donut-chart-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 160px;
+            height: 160px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- 1. Instruction Popup Modal -->
+    <div id="instructionPopup" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold text-center text-blue-700 mb-4">UPSC Exam Instructions</h2>
+            
+            <div class="space-y-4 text-gray-700">
+                <div>
+                    <h3 class="font-semibold text-lg text-red-600">Important Warnings</h3>
+                    <ul class="list-disc list-outside ml-5 space-y-1 mt-2 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <li>Do NOT PRESS any keyboard key once the exam is started. This may LOCK your exam.</li>
+                        <li>Do Not CLICK on the SUBMIT Button unless you have completed the exam.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-blue-600">Answering Questions</h3>
+                    <ul class="list-disc list-outside ml-5 space-y-1 mt-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <li>Click on the radio button next to the option to select your answer.</li>
+                        <li>To change an answer, simply click the desired option button.</li>
+                        <li>Click on the <span class="font-bold text-blue-700">Clear</span> button to deselect a chosen answer.</li>
+                        <li>Click on <span class="font-bold text-blue-700">Next</span> to save your answer and move to the next question.</li>
+                        <li>Click on <span class="font-bold text-purple-700">Mark for Review</span> to mark a question for later review.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-between items-center">
+                <button id="skipButton" onclick="skipPopup()" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition duration-200">
+                    Skip
+                </button>
+                <span id="popupTimer" class="text-sm text-gray-500">Auto-skipping in 10s...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Start Screen -->
+    <div id="startScreen" class="hidden min-h-screen w-full flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md p-8 text-center">
+            <svg class="w-16 h-16 text-blue-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            <h1 class="text-3xl font-bold text-gray-800 mt-4">Ready to Begin?</h1>
+            <p class="text-gray-600 mt-2">Click "Start Test" when you're ready to begin the examination.</p>
+            <div class="bg-blue-50 border border-blue-200 text-blue-800 rounded-lg p-4 mt-6 text-left">
+                <h3 class="font-bold">Mock Test Details:</h3>
+                <ul class="list-disc list-outside ml-5 mt-2">
+                    <li><span class="font-semibold">Topic:</span> Indian Constitution (1773-1935, Making & Features)</li>
+                    <li><span class="font-semibold">Questions:</span> 50</li>
+                    <li><span class="font-semibold">Time Limit:</span> 60 Minutes</li>
+                </ul>
+            </div>
+            <button onclick="startTest()" class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75 transition duration-200 mt-8 text-lg">
+                Start Test
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. Quiz Screen -->
+    <div id="quizScreen" class="hidden">
+        <!-- Header -->
+        <div class="bg-white shadow-md sticky top-0 z-10">
+            <div class="container mx-auto max-w-7xl px-4 flex justify-between items-center h-16">
+                <h1 class="text-sm sm:text-lg font-bold text-blue-800">CIVIL SER. (P) MOCK TEST - INDIAN POLITY</h1>
+                <div class="flex items-center space-x-2 bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span id="timerDisplay">60:00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content (Quiz + Nav) -->
+        <div class="container mx-auto max-w-7xl p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Question Area (Left) -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-lg">
+                <!-- Question Header -->
+                <div class="p-5 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800" id="questionHeader">Question 1:</h2>
+                    <p class="text-sm text-white bg-blue-500 rounded-full px-3 py-0.5 inline-block mt-2">Multiple Choice</p>
+                </div>
+                
+                <!-- Question Body -->
+                <div class="p-5">
+                    <p class="text-lg text-gray-900 mb-6" id="questionText">Loading question...</p>
+                    
+                    <!-- Options -->
+                    <div class="space-y-5" id="optionsContainer">
+                        <!-- Options will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="p-5 border-t border-gray-200 bg-gray-50 rounded-b-lg flex flex-wrap gap-3 justify-between items-center">
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="prevQuestion()" id="backButton" class="bg-gray-200 text-gray-800 font-semibold py-2 px-5 rounded-lg hover:bg-gray-300 transition duration-200">&larr; Back</button>
+                        <button onclick="clearAnswer()" class="bg-yellow-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-yellow-600 transition duration-200">Clear</button>
+                        <button onclick="toggleMarkForReview()" id="markButton" class="bg-purple-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-purple-600 transition duration-200">Mark for Review</button>
+                        <button onclick="nextQuestion()" id="nextButton" class="bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-blue-700 transition duration-200">Next &rarr;</button>
+                    </div>
+                    <button onclick="confirmSubmit()" class="bg-red-600 text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-700 transition duration-200">Submit Test Now</button>
+                </div>
+            </div>
+
+            <!-- Question Navigation (Right) -->
+            <div class="bg-white rounded-lg shadow-lg p-5 lg:sticky lg:top-20 self-start">
+                <h3 class="text-lg font-semibold border-b pb-3 mb-4">Question Palette</h3>
+                <div class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-3 max-h-96 overflow-y-auto question-nav" id="questionNavPalette">
+                    <!-- Question numbers will be dynamically inserted here -->
+                </div>
+                <div class="mt-6 border-t pt-4 space-y-2">
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-gray-300 mr-2"></span> Not Visited</div>
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-red-500 mr-2"></span> Not Answered</div>
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-green-500 mr-2"></span> Answered</div>
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-purple-500 mr-2"></span> Marked for Review</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Confirm Submission</h2>
+            <p class="text-gray-600 mb-6">Are you sure you want to submit the test?</p>
+            <div class="flex justify-center gap-4">
+                <button onclick="closeConfirmModal()" class="py-2 px-6 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                <button onclick="submitTest()" class="py-2 px-6 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition">Submit</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 4. Results Screen -->
+    <div id="resultsScreen" class="hidden min-h-screen container mx-auto max-w-7xl p-4">
+        <div class="bg-white rounded-lg shadow-xl p-6">
+            <h1 class="text-3xl font-bold text-center text-blue-800 mb-6">Test Performance Report</h1>
+
+            <!-- Tabs -->
+            <div class="border-b border-gray-200 mb-6">
+                <nav class="flex space-x-4" aria-label="Tabs">
+                    <button id="tabSummary" onclick="switchResultTab('Summary')" class="text-blue-600 border-blue-600 border-b-2 font-semibold py-3 px-4 text-lg">Summary</button>
+                    <button id="tabSolutions" onclick="switchResultTab('Solutions')" class="text-gray-500 hover:text-gray-700 border-transparent border-b-2 font-medium py-3 px-4 text-lg">View All Solutions</button>
+                </nav>
+            </div>
+
+            <!-- Summary Tab Content -->
+            <div id="contentSummary">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <!-- Donut Chart -->
+                    <div class="flex flex-col items-center">
+                        <div id="donutChart" class="donut-chart">
+                            <div class="donut-chart-center">
+                                <span class="text-4xl font-bold text-gray-800" id="scorePercent">0%</span>
+                                <span class="text-gray-500">Overall Score</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Score Details -->
+                    <div class="space-y-4">
+                        <div class="bg-green-100 border border-green-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-green-800">Correct</span>
+                            <span class="text-2xl font-bold text-green-800" id="correctCount">0</span>
+                        </div>
+                        <div class="bg-red-100 border border-red-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-red-800">Incorrect</span>
+                            <span class="text-2xl font-bold text-red-800" id="incorrectCount">0</span>
+                        </div>
+                        <div class="bg-gray-100 border border-gray-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-gray-800">Unattempted</span>
+                            <span class="text-2xl font-bold text-gray-800" id="unattemptedCount">0</span>
+                        </div>
+                        <div class="bg-blue-100 border border-blue-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-blue-800">Total Questions</span>
+                            <span class="text-2xl font-bold text-blue-800">50</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solutions Tab Content -->
+            <div id="contentSolutions" class="hidden">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Detailed Solutions</h2>
+                <div class="space-y-6" id="solutionsList">
+                    <!-- Solutions will be dynamically inserted here -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- JavaScript -->
+    <script>
+        // --- 1. DATA (Questions) ---
+        const questions = [
+            // History (1773-1935)
+            {
+                q: "Which Act is known for establishing the Supreme Court at Calcutta in 1774?",
+                o: ["Regulating Act, 1773", "Pitt's India Act, 1784", "Charter Act, 1813", "Charter Act, 1833"],
+                a: 0,
+                e: "The Regulating Act of 1773 established a Supreme Court at Fort William, Calcutta, comprising one Chief Justice and three other judges."
+            },
+            {
+                q: "The Pitt's India Act, 1784, is significant for establishing which body to manage the political affairs of the East India Company?",
+                o: ["Board of Directors", "Board of Control", "Governor-General's Council", "Secretary of State for India"],
+                a: 1,
+                e: "Pitt's India Act of 1784 established the 'Board of Control' in Britain to supervise the civil, military, and revenue affairs of the Company in India, creating a dual system of government."
+            },
+            {
+                q: "Which Act ended the trade monopoly of the East India Company in India, except for trade in tea and trade with China?",
+                o: ["Charter Act, 1793", "Charter Act, 1813", "Charter Act, 1833", "Charter Act, 1853"],
+                a: 1,
+                e: "The Charter Act of 1813 ended the company's monopoly on trade with India, allowing other British merchants to trade. However, it retained the monopoly on the tea trade and trade with China."
+            },
+            {
+                q: "The Governor-General of Bengal was made the Governor-General of India by which Act?",
+                o: ["Pitt's India Act, 1784", "Charter Act, 1813", "Charter Act, 1833", "Government of India Act, 1858"],
+                a: 2,
+                e: "The Charter Act of 1833 centralized British power in India by making the Governor-General of Bengal the Governor-General of India. Lord William Bentinck was the first to hold this title."
+            },
+            {
+                q: "The Government of India Act, 1858, transferred the powers of the East India Company to whom?",
+                o: ["The British Parliament", "The British Crown", "The Board of Control", "The Secretary of State"],
+                a: 1,
+                e: "Following the Revolt of 1857, the Act for the Better Government of India (1858) was passed, which liquidated the East India Company and transferred all powers to the British Crown."
+            },
+            {
+                q: "The 'Portfolio System' (allocating specific departments to members of the council) was introduced by which Act?",
+                o: ["Indian Councils Act, 1861", "Indian Councils Act, 1892", "Morley-Minto Reforms, 1909", "Montagu-Chelmsford Reforms, 1919"],
+                a: 0,
+                e: "The Indian Councils Act of 1861 initiated the portfolio system, introduced by Lord Canning. It empowered the Viceroy to make rules for the more convenient transaction of business in the council."
+            },
+            {
+                q: "Which Act introduced the principle of separate electorates for Muslims, also known as communal representation?",
+                o: ["Indian Councils Act, 1892", "Morley-Minto Reforms, 1909", "Montagu-Chelmsford Reforms, 1919", "Government of India Act, 1935"],
+                a: 1,
+                e: "The Indian Councils Act of 1909, commonly known as the Morley-Minto Reforms, introduced separate electorates for Muslims, sowing the seeds of communal politics."
+            },
+            {
+                q: "The concept of 'Dyarchy' (dual government) at the provincial level was introduced by which Act?",
+                o: ["Morley-Minto Reforms, 1909", "Montagu-Chelmsford Reforms, 1919", "Government of India Act, 1935", "Simon Commission"],
+                a: 1,
+                e: "The Montagu-Chelmsford Reforms (Government of India Act, 1919) introduced dyarchy in the provinces, dividing provincial subjects into 'Transferred' (administered by the governor with ministers) and 'Reserved' (administered by the governor with his executive council)."
+            },
+            {
+                q: "The Government of India Act, 1935, proposed the establishment of:",
+                o: ["Dyarchy at the Centre", "Provincial Autonomy", "An All-India Federation", "All of the above"],
+                a: 3,
+                e: "The Government of India Act, 1935, was a lengthy document. It proposed an All-India Federation (which never came into being), abolished dyarchy in the provinces and introduced provincial autonomy, and provided for dyarchy at the Centre (which also did not come into effect)."
+            },
+            {
+                q: "The Simon Commission was appointed in 1927 to review the working of which Act?",
+                o: ["Government of India Act, 1909", "Government of India Act, 1919", "Government of India Act, 1935", "Indian Independence Act, 1947"],
+                a: 1,
+                e: "The Government of India Act, 1919, had a provision that a commission would be appointed after 10 years to review its working. The British government appointed the Simon Commission in 1927 (two years early)."     },
+             {
+                q: "Which Act for the first time introduced the principle of election, albeit indirectly?",
+                o: ["Indian Councils Act, 1861", "Indian Councils Act, 1892", "Morley-Minto Reforms, 1909", "Government of India Act, 1919"],
+                a: 1,
+                e: "The Indian Councils Act of 1892 increased the number of non-official members and introduced an indirect system of election for some of these members, though the word 'election' was not explicitly used."
+            },
+            {
+                q: "The establishment of the Reserve Bank of India (RBI) was recommended by the Hilton Young Commission and provided for by which Act?",
+                o: ["Government of India Act, 1919", "Government of India Act, 1935", "Indian Independence Act, 1947", "Charter Act, 1833"],
+                a: 1,
+                e: "The Government of India Act, 1935, provided for the establishment of a Federal Bank, and the Reserve Bank of India was subsequently established in 1935 under the RBI Act, 1934."
+            },
+            {
+                q: "The office of the Secretary of State for India was created by which Act?",
+                o: ["Pitt's India Act, 1784", "Charter Act, 1853", "Government of India Act, 1858", "Indian Councils Act, 1861"],
+                a: 2,
+                e: "The Government of India Act, 1858, created the new office of the Secretary of State for India, who was a member of the British Cabinet and was assisted by the Council of India."
+            },
+             {
+                q: "Which Act made the first attempt to associate Indians with the law-making process?",
+                o: ["Charter Act, 1853", "Indian Councils Act, 1861", "Indian Councils Act, 1892", "Morley-Minto Reforms, 1909"],
+                a: 1,
+                e: "The Indian Councils Act of 1861 made a beginning in representative institutions by associating Indians with legislation. The Viceroy nominated some Indians as non-official members to his expanded legislative council."
+            },
+            {
+                q: "The Government of India Act, 1935, vested the residuary powers in the:",
+                o: ["Governor-General", "Federal Legislature", "Provincial Legislatures", "Secretary of State"],
+                a: 0,
+                e: "The Act divided powers into three lists: Federal, Provincial, and Concurrent. The residuary powers, i.e., those not mentioned in any list, were vested in the Governor-General (Viceroy)."
+            },
+
+            // Making of the Constitution
+            {
+                q: "The idea of a Constituent Assembly for India was first put forward by:",
+                o: ["Mahatma Gandhi", "M.N. Roy", "Jawaharlal Nehru", "Sardar Patel"],
+                a: 1,
+                e: "The idea of a Constituent Assembly to frame a constitution for India was first proposed by M.N. Roy, a pioneer of the communist movement in India, in 1934."
+            },
+            {
+                q: "The Constituent Assembly of India was set up under the framework of:",
+                o: ["The Cripps Mission", "The Cabinet Mission Plan, 1946", "The Simon Commission", "The Government of India Act, 1935"],
+                a: 1,
+                e: "The Constituent Assembly was constituted in November 1946 under the scheme formulated by the Cabinet Mission Plan."
+            },
+            {
+                q: "Who was the President of the Constituent Assembly of India?",
+                o: ["Dr. B.R. Ambedkar", "Dr. Rajendra Prasad", "Jawaharlal Nehru", "Sardar Patel"],
+                a: 1,
+                e: "Dr. Sachchidananda Sinha was the temporary president for the first meeting. Dr. Rajendra Prasad was subsequently elected as the permanent President of the Assembly."
+            },
+            {
+                q: "The 'Objectives Resolution', which laid down the philosophical foundations of the Constitution, was moved by:",
+                o: ["Dr. B.R. Ambedkar", "Jawaharlal Nehru", "Dr. Rajendra Prasad", "K.M. Munshi"],
+                a: 1,
+                e: "Jawaharlal Nehru moved the historic 'Objectives Resolution' in the Constituent Assembly on December 13, 1946. It later became the Preamble of the Constitution."
+            },
+            {
+                q: "Who was the Chairman of the Drafting Committee of the Indian Constitution?",
+                o: ["Dr. B.R. Ambedkar", "Alladi Krishnaswami Ayyar", "N. Gopalaswami Ayyangar", "K.M. Munshi"],
+                a: 0,
+                e: "The Drafting Committee, set up on August 29, 1947, was the most important committee. Its chairman was Dr. B.R. Ambedkar, who is widely recognized as the 'Father of the Indian Constitution'."
+            },
+            {
+                q: "On what date was the Constitution of India finally adopted and enacted by the Constituent Assembly?",
+                o: ["January 26, 1950", "August 15, 1947", "November 26, 1949", "December 9, 1946"],
+                a: 2,
+                e: "The Constitution was adopted, enacted, and gave to themselves by the people of India in the Constituent Assembly on November 26, 1949. This date is mentioned in the Preamble."
+            },
+            {
+                q: "How long did the Constituent Assembly take to finalize the Constitution?",
+                o: ["1 year, 10 months, 12 days", "2 years, 11 months, 18 days", "3 years, 1 month, 20 days", "4 years, 5 months, 5 days"],
+                a: 1,
+                e: "The Constituent Assembly took 2 years, 11 months, and 18 days to complete its task, holding 11 sessions over this period."
+            },
+            {
+                q: "Who was the Constitutional Advisor (Legal Advisor) to the Constituent Assembly?",
+                o: ["Dr. B.R. Ambedkar", "K.M. Munshi", "Sir B.N. Rau", "Dr. Rajendra Prasad"],
+                a: 2,
+                e: "Sir B.N. Rau was appointed as the Constitutional Advisor to the Assembly. He prepared the initial draft of the constitution for the Drafting Committee to consider."
+            },
+            {
+                q: "The first meeting of the Constituent Assembly was held on:",
+                o: ["August 15, 1947", "January 26, 1950", "December 9, 1946", "November 26, 1949"],
+                a: 2,
+                e: "The Constituent Assembly held its first meeting on December 9, 1946. It was boycotted by the Muslim League."
+            },
+            {
+                q: "The idea of the Constitution being 'drawn from various sources' is a key aspect. The concept of 'Fundamental Rights' was borrowed from:",
+                o: ["Constitution of UK", "Constitution of USA", "Constitution of Ireland", "Constitution of Canada"],
+                a: 1,
+                e: "The inspiration for Fundamental Rights was drawn from the 'Bill of Rights' in the Constitution of the United States of America (USA)."
+            },
+             {
+                q: "The 'Directive Principles of State Policy' (DPSP) were borrowed from which country's constitution?",
+                o: ["USA", "Australia", "Ireland", "UK"],
+                a: 2,
+                e: "The Directive Principles of State Policy (DPSP) are based on the 'Directive Principles' found in the Constitution of Ireland."
+            },
+            {
+                q: "The idea of 'Liberty, Equality, and Fraternity' in the Preamble was inspired by the:",
+                o: ["Russian Revolution", "French Revolution", "American War of Independence", "Industrial Revolution"],
+                a: 1,
+                e: "The ideals of Liberty, Equality, and Fraternity in the Indian Preamble were taken from the motto of the French Revolution (1789)."
+            },
+            {
+                q: "The design of the National Flag was adopted by the Constituent Assembly on:",
+                o: ["July 22, 1947", "August 15, 1947", "January 24, 1950", "November 26, 1949"],
+                a: 0,
+                e: "The design of the tricolour as the National Flag of India was adopted by the Constituent Assembly on July 22, 1947."
+            },
+            {
+                q: "Which of the following was NOT a member of the Drafting Committee?",
+                o: ["Dr. B.R. Ambedkar", "K.M. Munshi", "Jawaharlal Nehru", "N. Gopalaswami Ayyangar"],
+                a: 2,
+                e: "Jawaharlal Nehru was the chairman of the Union Powers Committee and Union Constitution Committee, but he was NOT a member of the Drafting Committee."
+            },
+            {
+                q: "The Constitution of India came into force on:",
+                o: ["November 26, 1949", "January 26, 1950", "August 15, 1947", "January 30, 1948"],
+                a: 1,
+                e: "While adopted on Nov 26, 1949, the Constitution came into full effect on January 26, 1950, a date chosen to commemorate the 'Purna Swaraj' resolution of 1930."
+            },
+
+            // Features of the Constitution
+            {
+                q: "Which feature of the Indian Constitution describes it as the 'longest written constitution' in the world?",
+                o: ["Parliamentary Form", "Federal System", "Length and Detail", "Fundamental Rights"],
+                a: 2,
+                e: "The Indian Constitution is renowned for its length and detail, originally containing a Preamble, 395 Articles (in 22 Parts), and 8 Schedules, making it the most voluminous constitution ever created."
+            },
+            {
+                q: "The Indian Constitution is described as 'quasi-federal'. This means it is:",
+                o: ["Purely federal like the USA", "Purely unitary like the UK", "A blend of federal and unitary features", "A confederation of states"],
+                a: 2,
+                e: "The Constitution establishes a federal system (division of powers) but also contains many unitary features (strong centre, single citizenship, emergency provisions), leading to the description 'quasi-federal' or 'federal with a unitary bias'."
+            },
+            {
+                q: "What does the term 'Sovereign' in the Preamble signify?",
+                o: ["India is a friend to all nations", "India is not dependent on any external authority", "India has a democratic government", "India has a socialist economy"],
+                a: 1,
+                e: "'Sovereign' means that India is an independent state. It is not a dominion or dependency of any other external power and is free to conduct its own internal and external affairs."
+            },
+            {
+                q: "The feature of 'Parliamentary Form of Government' is adopted from which country?",
+                o: ["USA (Presidential)", "UK (Westminster model)", "France (Semi-Presidential)", "Switzerland (Direct Democracy)"],
+                a: 1,
+                e: "India adopted the Parliamentary system, also known as the 'Westminster' model, from the United Kingdom (UK). It is characterized by the cooperation and coordination between the legislative and executive organs."
+            },
+            {
+                q: "What does the term 'Secular' (added by the 42nd Amendment) in the Preamble mean?",
+                o: ["The state will promote one religion", "The state will be anti-religion", "The state has no official religion and treats all religions equally", "The state will regulate religious institutions"],
+                a: 2,
+                e: "In the Indian context, 'Secular' means that the state does not uphold any single religion as the official state religion. It maintains neutrality and impartiality towards all religions."
+            },
+            {
+                q: "The 'Judicial Review' feature of the Indian Constitution is primarily borrowed from:",
+                o: ["UK", "USA", "Australia", "Canada"],
+                a: 1,
+                e: "The concept of Judicial Review, the power of the judiciary to examine the constitutionality of legislative and executive actions, is a prominent feature borrowed from the US Constitution."
+            },
+            {
+                q: "Which Part of the Indian Constitution is described as the 'Magna Carta' of India?",
+                o: ["Part I (The Union and its Territory)", "Part II (Citizenship)", "Part III (Fundamental Rights)", "Part IV (DPSP)"],
+                a: 2,
+                e: "Part III of the Constitution, which deals with Fundamental Rights, is rightly described as the 'Magna Carta' of India, as it contains a very comprehensive and justiciable list of basic rights."
+            },
+            {
+                q: "The Directive Principles of State Policy (DPSP) in Part IV are:",
+                o: ["Justiciable (enforceable by courts)", "Non-justiciable (not enforceable by courts)", "Only applicable to the Union Government", "A part of the Fundamental Rights"],
+                a: 1,
+                e: "Unlike Fundamental Rights, the DPSP are non-justiciable. This means they are not legally enforceable by the courts for their violation, but they are fundamental in the governance of the country."
+            },
+            {
+                q: "The feature of 'Single Citizenship' in India is adopted from:",
+                o: ["USA (has dual citizenship)", "Canada", "Australia", "UK"],
+                a: 3,
+                e: "Despite its federal structure, India provides for only a single citizenship (Indian citizenship), not separate state citizenships. This feature was borrowed from the UK to promote a sense of national unity."
+            },
+            {
+                q: "The 'Emergency Provisions' in the Indian Constitution, which allow the Centre to become all-powerful, are largely based on:",
+                o: ["The Weimar Constitution of Germany", "The Constitution of USA", "The Constitution of Australia", "The Government of India Act, 1935"],
+                a: 0,
+                e: "The provisions for a National Emergency (Article 352) and the suspension of Fundamental Rights during an emergency were influenced by the Weimar Constitution of Germany."
+            },
+            {
+                q: "Fundamental Duties were added to the Constitution by the 42nd Amendment (1976) on the recommendation of which committee?",
+                o: ["Santhanam Committee", "Swaran Singh Committee", "Sarkaria Commission", "Ashok Mehta Committee"],
+                a: 1,
+                e: "The Fundamental Duties were added to Part IV-A of the Constitution based on the recommendations of the Swaran Singh Committee."
+            },
+            {
+                q: "The Indian Constitution establishes an 'Integrated Judiciary'. What does this mean?",
+                o: ["The Supreme Court and High Courts have separate powers", "There is a single, hierarchical judicial system with the Supreme Court at the top", "The judiciary is integrated with the executive", "Each state has its own independent judicial system"],
+                a: 1,
+                e: "India has an integrated judicial system, meaning there is a single hierarchy of courts (Supreme Court, High Courts, and subordinate courts) that enforces both Central and state laws."
+            },
+            {
+                q: "Which constitutional feature provides for a 'blend of rigidity and flexibility'?",
+                o: ["The Preamble", "The Amendment Process (Article 368)", "The Federal System", "The Parliamentary System"],
+                a: 1,
+                e: "The Constitution is a blend of rigidity and flexibility. Some provisions can be amended by a simple majority (flexible), while others require a special majority or a special majority with state ratification (rigid)."
+            },
+            {
+                q: "The concept of 'Concurrent List' (on which both Union and States can legislate) is borrowed from which country's constitution?",
+                o: ["Canada", "Australia", "Germany", "USA"],
+                a: 1,
+                e: "The 'Concurrent List' and the provision for 'joint sitting' of both Houses of Parliament were borrowed from the Constitution of Australia."
+            },
+            {
+                q: "The Preamble of the Indian Constitution is based on the:",
+                o: ["'Objectives Resolution' by Jawaharlal Nehru", "Bill of Rights of the USA", "Preamble of the Government of India Act, 1935", "Speech by Dr. B.R. Ambedkar"],
+                a: 0,
+                e: "The Preamble is largely based on the 'Objectives Resolution' that was drafted and moved by Jawaharlal Nehru in the Constituent Assembly on December 13, 1946."
+            },
+            {
+                q: "What does 'Universal Adult Franchise' mean as a feature of the Indian Constitution?",
+                o: ["Only graduates can vote", "Only property owners can vote", "All citizens above a certain age (18) can vote without discrimination", "Only men can vote"],
+                a: 2,
+                e: "It means that every citizen who is not less than 18 years of age (originally 21) has the right to vote without any discrimination based on caste, race, religion, sex, literacy, wealth, etc."
+            },
+            {
+                q: "Which feature ensures that the Indian state is headed by an elected head (the President) and not a hereditary monarch?",
+                o: ["Sovereign", "Socialist", "Secular", "Republic"],
+                a: 3,
+                e: "The term 'Republic' in the Preamble indicates that India has an elected head of state, the President, who is elected indirectly for a fixed term. This is in contrast to a monarchy, like the UK."
+            },
+            {
+                q: "The provision for 'Federation with a strong Centre' was borrowed from:",
+                o: ["USA", "Canada", "UK", "France"],
+                a: 1,
+                e: "While India's federalism is unique, the structure of a 'Federation with a strong Centre' (e.g., vesting residuary powers in the Centre) was largely borrowed from the Canadian Constitution."
+            },
+            {
+                q: "The Indian Constitution establishes a 'synthesis of Parliamentary Sovereignty and Judicial Supremacy'. What does this mean?",
+                o: ["Parliament is supreme, and courts have no power", "Courts are supreme, and Parliament has no power", "A balance where Parliament can make laws and the Supreme Court can declare them void if unconstitutional", "The President has the final say"],
+                a: 2,
+                e: "India strikes a balance. Unlike the UK (Parliamentary Sovereignty) or the USA (Judicial Supremacy), India allows Parliament to amend the Constitution (Art 368) but empowers the Supreme Court (Judicial Review) to strike down laws that violate the Constitution."
+            },
+            {
+                q: "Which part of the Constitution contains provisions for 'Panchayati Raj' institutions?",
+                o: ["Part IX", "Part X", "Part XI", "Part XII"],
+                a: 0,
+                e: "Part IX of the Constitution, titled 'The Panchayats', was added by the 73rd Constitutional Amendment Act of 1992, giving constitutional status to Panchayati Raj institutions."
+            }
+        ];
+
+        // --- 2. STATE VARIABLES ---
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let markedForReview = new Array(questions.length).fill(false);
+        let timerInterval;
+        let timeLeft = 3600; // 60 minutes * 60 seconds
+        let popupTimerInterval;
+
+        // --- 3. DOM ELEMENTS ---
+        const instructionPopup = document.getElementById('instructionPopup');
+        const popupTimerDisplay = document.getElementById('popupTimer');
+        const skipButton = document.getElementById('skipButton');
+           const quizScreen = document.getElementById('quizScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const questionHeader = document.getElementById('questionHeader');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const questionNavPalette = document.getElementById('questionNavPalette');
+        const backButton = document.getElementById('backButton');
+        const nextButton = document.getElementById('nextButton');
+        const markButton = document.getElementById('markButton');
+        const confirmModal = document.getElementById('confirmModal');
+        
+        // Results Elements
+        const donutChart = document.getElementById('donutChart');
+        const scorePercent = document.getElementById('scorePercent');
+        const correctCount = document.getElementById('correctCount');
+        const incorrectCount = document.getElementById('incorrectCount');
+        const unattemptedCount = document.getElementById('unattemptedCount');
+        const solutionsList = document.getElementById('solutionsList');
+        const tabSummary = document.getElementById('tabSummary');
+        const tabSolutions = document.getElementById('tabSolutions');
+        const contentSummary = document.getElementById('contentSummary');
+        const contentSolutions = document.getElementById('contentSolutions');
+
+        // --- 4. FUNCTIONS ---
+        // Popup and Start
+        function startPopupTimer() {
+            let popupTime = 10;
+            popupTimerDisplay.textContent = `Auto-skipping in ${popupTime}s...`;
+
+            popupTimerInterval = setInterval(() => {
+                popupTime--;
+                popupTimerDisplay.textContent = `Auto-skipping in ${popupTime}s...`;
+                if (popupTime <= 0) {
+                    skipPopup();
+                }
+            }, 1000);
+        }
+
+        function skipPopup() {
+            clearInterval(popupTimerInterval);
+            instructionPopup.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+            startScreen.classList.add('flex');
+        }
+
+        function startTest() {
+            startScreen.classList.add('hidden');
+            startScreen.classList.remove('flex');
+            quizScreen.classList.remove('hidden');
+            
+            // Initialize userAnswers and markedForReview arrays
+            userAnswers = new Array(questions.length).fill(null);
+            markedForReview = new Array(questions.length).fill(false);
+
+            buildQuestionPalette();
+            loadQuestion(0);
+            startMainTimer();
+        }
+
+        // Timer
+        function startMainTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                
+                timerDisplay.textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        // Quiz Navigation
+        function loadQuestion(index) {
+            if (index < 0 || index >= questions.length) return;
+
+            saveAnswer(); // Save answer from the *previous* question before loading new one
+            
+            currentQuestionIndex = index;
+            const q = questions[index];
+
+            questionHeader.textContent = `Question ${index + 1}:`;
+            questionText.textContent = q.q;
+            optionsContainer.innerHTML = '';
+
+            const optionLetters = ['A', 'B', 'C', 'D'];
+            q.o.forEach((option, i) => {
+                const isChecked = (userAnswers[index] === i);
+                optionsContainer.innerHTML += `
+                    <label for="option${i}" class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition duration-200">
+                        <input type="radio" id="option${i}" name="answer" value="${i}" ${isChecked ? 'checked' : ''} class="mr-4 flex-shrink-0">
+                        <span class="font-medium text-gray-800">${optionLetters[i]}. ${option}</span>
+                    </label>
+                `;
+            });
+
+            // Update button states
+            backButton.disabled = (index === 0);
+            backButton.classList.toggle('opacity-50', index === 0);
+            nextButton.disabled = (index === questions.length - 1);
+            nextButton.classList.toggle('opacity-50', index === questions.length - 1);
+            
+            // Update palette
+            updatePalette();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                loadQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        function goToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        function saveAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = parseInt(selectedOption.value);
+            }
+        }
+
+        function clearAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                selectedOption.checked = false;
+            }
+            userAnswers[currentQuestionIndex] = null;
+            updatePalette();
+        }
+
+        function toggleMarkForReview() {
+            markedForReview[currentQuestionIndex] = !markedForReview[currentQuestionIndex];
+            updatePalette();
+        }
+
+        // Question Palette
+        function buildQuestionPalette() {
+            questionNavPalette.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                questionNavPalette.innerHTML += `
+                    <button id="qnav${i}" onclick="goToQuestion(${i})" class="w-10 h-10 flex items-center justify-center font-bold rounded-md bg-gray-300 text-gray-700 transition duration-200">
+                        ${i + 1}
+                    </button>
+                `;
+            }
+        }
+
+        function updatePalette() {
+            for (let i = 0; i < questions.length; i++) {
+                const btn = document.getElementById(`qnav${i}`);
+                btn.className = "w-10 h-10 flex items-center justify-center font-bold rounded-md transition duration-200"; // Reset classes
+                
+                if (markedForReview[i]) {
+                    btn.classList.add('bg-purple-500', 'text-white');
+                } else if (userAnswers[i] !== null) {
+                    btn.classList.add('bg-green-500', 'text-white');
+                } else if (i === currentQuestionIndex) {
+                    btn.classList.add('bg-red-500', 'text-white'); // Not answered, currently on it
+                } else {
+                    btn.classList.add('bg-gray-300', 'text-gray-700'); // Not visited (or skipped)
+                }
+
+                // Add border if it's the current question
+                if (i === currentQuestionIndex) {
+                    btn.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
+                }
+            }
+        }
+
+        // Submission
+        function confirmSubmit() {
+            saveAnswer(); // Save the very last answer
+            updatePalette(); // Update palette one last time
+            confirmModal.classList.remove('hidden');
+        }
+        
+        function closeConfirmModal() {
+            confirmModal.classList.add('hidden');
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            closeConfirmModal();
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            
+            calculateAndShowResults();
+        }
+
+        // Results
+        function calculateAndShowResults() {
+            let correct = 0;
+            let incorrect = 0;
+            let unattempted = 0;
+
+            for (let i = 0; i < questions.length; i++) {
+                if (userAnswers[i] === null) {
+                    unattempted++;
+                } else if (userAnswers[i] === questions[i].a) {
+                    correct++;
+                } else {
+                    incorrect++;
+                }
+            }
+            
+            let total = questions.length;
+            let score = (correct / total) * 100;
+
+            // 1. Populate Summary
+            scorePercent.textContent = `${score.toFixed(0)}%`;
+            correctCount.textContent = correct;
+            incorrectCount.textContent = incorrect;
+            unattemptedCount.textContent = unattempted;
+
+            // 2. Update Donut Chart
+            let correctPercent = (correct / total) * 100;
+            let incorrectPercent = correctPercent + (incorrect / total) * 100;
+            let unattemptedPercent = 100;
+
+            donutChart.style.setProperty('--correct-percent', `${correctPercent}%`);
+            donutChart.style.setProperty('--incorrect-percent', `${incorrectPercent}%`);
+            donutChart.style.setProperty('--unattempted-percent', `${unattemptedPercent}%`);
+
+            // 3. Populate Solutions
+            solutionsList.innerHTML = '';
+            const optionLetters = ['A', 'B', 'C', 'D'];
+            questions.forEach((q, i) => {
+                const userAnswerIndex = userAnswers[i];
+                const correctAnswerIndex = q.a;
+
+                let statusClass, statusText, userAnswerText;
+
+                if (userAnswerIndex === null) {
+                    statusClass = 'bg-gray-100 text-gray-800 border-gray-300';
+                    statusText = 'Unattempted';
+                    userAnswerText = '---';
+                } else if (userAnswerIndex === correctAnswerIndex) {
+                    statusClass = 'bg-green-100 text-green-800 border-green-300';
+                    statusText = 'Correct';
+                    userAnswerText = `${optionLetters[userAnswerIndex]}. ${q.o[userAnswerIndex]}`;
+                } else {
+                    statusClass = 'bg-red-100 text-red-800 border-red-300';
+                    statusText = 'Incorrect';
+                    userAnswerText = `${optionLetters[userAnswerIndex]}. ${q.o[userAnswerIndex]}`;
+                }
+
+                const correctAnswerText = `${optionLetters[correctAnswerIndex]}. ${q.o[correctAnswerIndex]}`;
+
+                solutionsList.innerHTML += `
+                    <div class="border ${statusClass} rounded-lg p-5">
+                        <h3 class="font-bold text-lg mb-2">Q ${i + 1}: ${q.q}</h3>
+                        <p class="mb-1"><span class="font-semibold">Your Answer: </span><span class="${statusText === 'Incorrect' ? 'text-red-700 font-bold' : ''}">${userAnswerText}</span></p>
+                        <p class="mb-3"><span class="font-semibold">Correct Answer: </span><span class="text-green-700 font-bold">${correctAnswerText}</span></p>
+                        <div class="bg-white border border-gray-200 p-3 rounded-md">
+                            <h4 class="font-semibold text-gray-800 mb-1">Explanation:</h4>
+                            <p class="text-gray-700">${q.e}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        function switchResultTab(tabName) {
+            if (tabName === 'Summary') {
+                contentSummary.classList.remove('hidden');
+                contentSolutions.classList.add('hidden');
+                tabSummary.classList.add('text-blue-600', 'border-blue-600');
+                tabSummary.classList.remove('text-gray-500', 'border-transparent');
+                tabSolutions.classList.add('text-gray-500', 'border-transparent');
+                tabSolutions.classList.remove('text-blue-600', 'border-blue-600');
+            } else {
+                contentSummary.classList.add('hidden');
+                contentSolutions.classList.remove('hidden');
+                tabSolutions.classList.add('text-blue-600', 'border-blue-600');
+                tabSolutions.classList.remove('text-gray-500', 'border-transparent');
+                tabSummary.classList.add('text-gray-500', 'border-transparent');
+                tabSummary.classList.remove('text-blue-600', 'border-blue-600');
+            }
+        }
+
+        // --- 5. INITIALIZATION ---
+        window.onload = () => {
+            startPopupTimer();
+        };
+
+    </script>
+</body>
+</html>
