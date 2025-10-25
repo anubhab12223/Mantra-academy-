@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC Mock Test - Ecology</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Disable tap highlight on mobile */
+        }
+
+        /* Custom scrollbar for question list */
+        .question-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+        .question-nav::-webkit-scrollbar-thumb {
+            background-color: #9ca3af;
+            border-radius: 20px;
+        }
+
+        /* Custom radio buttons */
+        input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #6b7280;
+            border-radius: 50%;
+            outline: none;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        input[type="radio"]:checked {
+            border: 6px solid #2563eb; /* Blue-600 */
+            background-color: white;
+        }
+
+        /* Donut chart styles */
+        .donut-chart {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #10b981 var(--correct-percent),
+                #ef4444 0 var(--incorrect-percent),
+                #6b7280 0 var(--unattempted-percent)
+            );
+        }
+        .donut-chart-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 160px;
+            height: 160px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- 1. Instruction Popup Modal -->
+    <div id="instructionPopup" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold text-center text-blue-700 mb-4">UPSC Exam Instructions</h2>
+            
+            <div class="space-y-4 text-gray-700">
+                <div>
+                    <h3 class="font-semibold text-lg text-red-600">Important Warnings</h3>
+                    <ul class="list-disc list-outside ml-5 space-y-1 mt-2 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <li>Do NOT PRESS any keyboard key once the exam is started. This may LOCK your exam.</li>
+                        <li>Do Not CLICK on the SUBMIT Button unless you have completed the exam.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-blue-600">Answering Questions</h3>
+                    <ul class="list-disc list-outside ml-5 space-y-1 mt-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <li>Click on the radio button next to the option to select your answer.</li>
+                        <li>To change an answer, simply click the desired option button.</li>
+                        <li>Click on the <span class="font-bold text-blue-700">Clear</span> button to deselect a chosen answer.</li>
+                        <li>Click on <span class="font-bold text-blue-700">Next</span> to save your answer and move to the next question.</li>
+                        <li>Click on <span class="font-bold text-purple-700">Mark for Review</span> to mark a question for later review.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-between items-center">
+                <button id="skipButton" onclick="skipPopup()" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition duration-200">
+                    Skip
+                </button>
+                <span id="popupTimer" class="text-sm text-gray-500">Auto-skipping in 10s...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Start Screen -->
+    <div id="startScreen" class="hidden min-h-screen w-full flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md p-8 text-center">
+            <svg class="w-16 h-16 text-blue-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            <h1 class="text-3xl font-bold text-gray-800 mt-4">Ready to Begin?</h1>
+            <p class="text-gray-600 mt-2">Click "Start Test" when you're ready to begin the examination.</p>
+            <div class="bg-blue-50 border border-blue-200 text-blue-800 rounded-lg p-4 mt-6 text-left">
+                <h3 class="font-bold">Mock Test Details:</h3>
+                <ul class="list-disc list-outside ml-5 mt-2">
+                    <li><span class="font-semibold">Topic:</span> Ecology & Ecosystem Functions</li>
+                    <li><span class="font-semibold">Questions:</span> 50</li>
+                    <li><span class="font-semibold">Time Limit:</span> 60 Minutes</li>
+                </ul>
+            </div>
+            <button onclick="startTest()" class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75 transition duration-200 mt-8 text-lg">
+                Start Test
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. Quiz Screen -->
+    <div id="quizScreen" class="hidden">
+        <!-- Header -->
+        <div class="bg-white shadow-md sticky top-0 z-10">
+            <div class="container mx-auto max-w-7xl px-4 flex justify-between items-center h-16">
+                <h1 class="text-sm sm:text-lg font-bold text-blue-800">CIVIL SER. (P) MOCK TEST - ECOLOGY</h1>
+                <div class="flex items-center space-x-2 bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span id="timerDisplay">60:00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content (Quiz + Nav) -->
+        <div class="container mx-auto max-w-7xl p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Question Area (Left) -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-lg">
+                <!-- Question Header -->
+                <div class="p-5 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800" id="questionHeader">Question 1:</h2>
+                    <p class="text-sm text-white bg-blue-500 rounded-full px-3 py-0.5 inline-block mt-2">Multiple Choice</p>
+                </div>
+                
+                <!-- Question Body -->
+                <div class="p-5">
+                    <p class="text-lg text-gray-900 mb-6" id="questionText">Loading question...</p>
+                    
+                    <!-- Options -->
+                    <div class="space-y-5" id="optionsContainer">
+                        <!-- Options will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="p-5 border-t border-gray-200 bg-gray-50 rounded-b-lg flex flex-wrap gap-3 justify-between items-center">
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="prevQuestion()" id="backButton" class="bg-gray-200 text-gray-800 font-semibold py-2 px-5 rounded-lg hover:bg-gray-300 transition duration-200">&larr; Back</button>
+                        <button onclick="clearAnswer()" class="bg-yellow-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-yellow-600 transition duration-200">Clear</button>
+                        <button onclick="toggleMarkForReview()" id="markButton" class="bg-purple-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-purple-600 transition duration-200">Mark for Review</button>
+                        <button onclick="nextQuestion()" id="nextButton" class="bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-blue-700 transition duration-200">Next &rarr;</button>
+                    </div>
+                    <button onclick="confirmSubmit()" class="bg-red-600 text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-700 transition duration-200">Submit Test Now</button>
+                </div>
+            </div>
+
+            <!-- Question Navigation (Right) -->
+            <div class="bg-white rounded-lg shadow-lg p-5 lg:sticky lg:top-20 self-start">
+                <h3 class="text-lg font-semibold border-b pb-3 mb-4">Question Palette</h3>
+                <div class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-3 max-h-96 overflow-y-auto question-nav" id="questionNavPalette">
+                    <!-- Question numbers will be dynamically inserted here -->
+                </div>
+                <div class="mt-6 border-t pt-4 space-y-2">
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-gray-300 mr-2"></span> Not Visited</div>
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-red-500 mr-2"></span> Not Answered</div>
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-green-500 mr-2"></span> Answered</div>
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-purple-500 mr-2"></span> Marked for Review</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Confirm Submission</h2>
+            <p class="text-gray-600 mb-6">Are you sure you want to submit the test?</p>
+            <div class="flex justify-center gap-4">
+                <button onclick="closeConfirmModal()" class="py-2 px-6 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                <button onclick="submitTest()" class="py-2 px-6 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition">Submit</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 4. Results Screen -->
+    <div id="resultsScreen" class="hidden min-h-screen container mx-auto max-w-7xl p-4">
+        <div class="bg-white rounded-lg shadow-xl p-6">
+            <h1 class="text-3xl font-bold text-center text-blue-800 mb-6">Test Performance Report</h1>
+
+            <!-- Tabs -->
+            <div class="border-b border-gray-200 mb-6">
+                <nav class="flex space-x-4" aria-label="Tabs">
+                    <button id="tabSummary" onclick="switchResultTab('Summary')" class="text-blue-600 border-blue-600 border-b-2 font-semibold py-3 px-4 text-lg">Summary</button>
+                    <button id="tabSolutions" onclick="switchResultTab('Solutions')" class="text-gray-500 hover:text-gray-700 border-transparent border-b-2 font-medium py-3 px-4 text-lg">View All Solutions</button>
+                </nav>
+            </div>
+
+            <!-- Summary Tab Content -->
+            <div id="contentSummary">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <!-- Donut Chart -->
+                    <div class="flex flex-col items-center">
+                        <div id="donutChart" class="donut-chart">
+                            <div class="donut-chart-center">
+                                <span class="text-4xl font-bold text-gray-800" id="scorePercent">0%</span>
+                                <span class="text-gray-500">Overall Score</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Score Details -->
+                    <div class="space-y-4">
+                        <div class="bg-green-100 border border-green-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-green-800">Correct</span>
+                            <span class="text-2xl font-bold text-green-800" id="correctCount">0</span>
+                        </div>
+                        <div class="bg-red-100 border border-red-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-red-800">Incorrect</span>
+                            <span class="text-2xl font-bold text-red-800" id="incorrectCount">0</span>
+                        </div>
+                        <div class="bg-gray-100 border border-gray-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-gray-800">Unattempted</span>
+                            <span class="text-2xl font-bold text-gray-800" id="unattemptedCount">0</span>
+                        </div>
+                        <div class="bg-blue-100 border border-blue-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-blue-800">Total Questions</span>
+                            <span class="text-2xl font-bold text-blue-800">50</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solutions Tab Content -->
+            <div id="contentSolutions" class="hidden">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Detailed Solutions</h2>
+                <div class="space-y-6" id="solutionsList">
+                    <!-- Solutions will be dynamically inserted here -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- JavaScript -->
+    <script>
+        // --- 1. DATA (Questions) ---
+        const questions = [
+            // Basic Concepts
+            {
+                q: "Which is the correct hierarchical order of ecological organization?",
+                o: ["Population -> Community -> Ecosystem -> Organism -> Biome", "Organism -> Community -> Population -> Ecosystem -> Biome", "Organism -> Population -> Community -> Ecosystem -> Biome", "Community -> Population -> Organism -> Biome -> Ecosystem"],
+                a: 2,
+                e: "The correct sequence from smallest to largest is: Organism (individual), Population (group of same species), Community (group of different species), Ecosystem (community + abiotic factors), Biome (large group of ecosystems), Biosphere (all biomes)."
+            },
+            {
+                q: "What is the primary difference between a 'habitat' and a 'niche'?",
+                o: ["Habitat is the organism's 'address', while niche is its 'profession' or functional role.", "Niche is the physical space, while habitat is the organism's interaction with that space.", "Habitat and niche are interchangeable terms for the same concept.", "Habitat applies to animals, while niche applies to plants."],
+                a: 0,
+                e: "A habitat is the physical environment in which an organism lives (its 'address'). A niche describes the specific functional role an organism plays within that ecosystem, including its interactions, resource use, and place in the food web (its 'profession')."
+            },
+            {
+                q: "Organisms that can tolerate a wide range of temperatures are called:",
+                o: ["Stenothermal", "Eurythermal", "Stenohaline", "Euryhaline"],
+                a: 1,
+                e: "Eurythermal organisms can tolerate a wide range of temperature fluctuations (eury = broad, thermal = temperature). Stenothermal organisms can only tolerate a narrow range (steno = narrow)."
+            },
+            {
+                q: "The interaction where one species benefits and the other is neither harmed nor benefited is known as:",
+                o: ["Mutualism", "Commensalism", "Amensalism", "Parasitism"],
+                a: 1,
+                e: "Commensalism (+/0) is an interaction where one organism benefits, and the other is unaffected. A classic example is an orchid growing on a mango tree; the orchid gets support and sunlight, while the mango tree is unaffected."
+            },
+            {
+                q: "The interaction where one species is harmed and the other is unaffected is known as:",
+                o: ["Competition", "Predation", "Parasitism", "Amensalism"],
+                a: 3,
+                e: "Amensalism (-/0) is an interaction where one organism is inhibited or harmed, while the other is unaffected. An example is the Penicillium fungus releasing penicillin, which kills bacteria, but the fungus itself gains no direct benefit from killing them."
+            },
+            {
+                q: "What is the term for the accumulation of pesticides or other chemicals in an individual organism?",
+                o: ["Biomagnification", "Bioaccumulation", "Eutrophication", "Biodegradation"],
+                a: 1,
+                e: "Bioaccumulation refers to the gradual build-up of a chemical substance (like a pesticide) within a single organism over time as it absorbs the substance at a rate faster than it can excrete or metabolize it."
+            },
+            {
+                q: "The process where the concentration of a toxin, such as DDT, increases at successive trophic levels of a food chain is called:",
+                o: ["Biomagnification", "Bioaccumulation", "Eutrophication", "Bioremediation"],
+                a: 0,
+                e: "Biomagnification (or bioamplification) is the increasing concentration of a substance in organisms at successively higher levels in a food chain. A small concentration in plankton becomes a larger concentration in fish, and a very high concentration in birds (like eagles) that eat the fish."
+            },
+            {
+                q: "Which of the following describes a 'keystone species'?",
+                o: ["A species that is the most abundant in an ecosystem.", "A species that has a disproportionately large effect on its environment relative to its abundance.", "A species that is an indicator of environmental health.", "A species that has been introduced from another region."],
+                a: 1,
+                e: "A keystone species plays a critical role in maintaining the structure of an ecological community. Its removal would cause a cascade of effects, drastically changing the ecosystem, even if the species itself is not abundant. (e.g., sea otters in kelp forests)."
+            },
+            {
+                q: "What are 'abiotic components' of an ecosystem?",
+                o: ["Producers, consumers, and decomposers.", "All the living organisms in a habitat.", "The non-living chemical and physical factors of the environment.", "Only the predators at the top of the food chain."],
+                a: 2,
+                      e: "Abiotic components are the non-living parts of an ecosystem that influence the organisms. Examples include sunlight, temperature, water, soil composition, and pH."
+            },
+            {
+                q: "The transition zone between two distinct ecosystems (e.g., forest and grassland) is known as an:",
+                o: ["Ecotone", "Ecological niche", "Biome", "Habitat"],
+                a: 0,
+                e: "An ecotone is a zone of transition between two different biological communities. It often has a high species diversity (known as the 'edge effect') because it contains species from both adjacent ecosystems."
+            },
+
+            // Ecosystem Functions: Energy Flow
+            {
+                q: "What is the primary function of producers (autotrophs) in an ecosystem?",
+                o: ["To break down dead organic matter.", "To consume other organisms for energy.", "To convert light energy into chemical energy through photosynthesis.", "To regulate the population of herbivores."],
+                a: 2,
+                e: "Producers, such as plants and algae, are autotrophs ('self-feeders'). Their primary function is photosynthesis: using sunlight, water, and CO2 to create glucose (chemical energy), which forms the base of the food web."
+            },
+            {
+                q: "What is 'Net Primary Productivity' (NPP)?",
+                o: ["The total rate of biomass production by producers.", "The rate of biomass available for consumption by herbivores.", "The total energy stored in an ecosystem.", "The rate of decomposition by microorganisms."],
+                a: 1,
+                e: "Gross Primary Productivity (GPP) is the total rate of photosynthesis. Producers use some of this energy for their own respiration (R). Net Primary Productivity (NPP) is the remaining energy, stored as biomass, that is available to the next trophic level (herbivores). The formula is: NPP = GPP - R."
+            },
+            {
+                q: "According to Lindeman's 10% Law, what happens to the energy transferred between trophic levels?",
+                o: ["Only 10% of the energy is lost as heat; 90% is transferred.", "100% of the energy is transferred efficiently.", "Only about 10% of the energy from one trophic level is stored as biomass in the next.", "Energy transfer is random and unpredictable."],
+                a: 2,
+                e: "Lindeman's 10% Law states that, on average, only about 10% of the energy consumed at one trophic level is converted into new biomass at the next trophic level. The remaining 90% is lost to metabolic processes, heat, and incomplete consumption."
+            },
+            {
+                q: "Which of the following ecological pyramids is *always* upright (never inverted)?",
+                o: ["Pyramid of Numbers", "Pyramid of Biomass", "Pyramid of Energy", "Both A and B"],
+                a: 2,
+                e: "The Pyramid of Energy is always upright because energy is always lost at each successive trophic level. Pyramids of numbers (e.g., one large tree supporting many insects) and biomass (e.g., phytoplankton and zooplankton in an ocean) can be inverted."
+            },
+            {
+                q: "In an aquatic ecosystem (like a pond or ocean), the 'Pyramid of Biomass' is typically:",
+                o: ["Upright", "Inverted", "Spindle-shaped", "Absent"],
+                a: 1,
+                e: "The pyramid of biomass is inverted in most aquatic ecosystems. This is because the producers (phytoplankton) have a very short lifespan and rapid turnover rate. At any given time, their total mass (biomass) is less than the biomass of the zooplankton that feed on them."
+            },
+            {
+                q: "Organisms that feed on dead organic matter (detritus) are called:",
+                o: ["Autotrophs", "Carnivores", "Herbivores", "Detritivores"],
+                a: 3,
+                e: "Detritivores (like earthworms, millipedes) are organisms that feed on detritus (dead and decaying organic matter). They are a crucial part of decomposition and nutrient cycling, distinct from decomposers (bacteria/fungi) which break down matter at a molecular level."
+            },
+            {
+                q: "A food web is a more realistic representation of an ecosystem than a food chain because:",
+                o: ["It shows only the flow from producers to top consumers.", "It includes abiotic factors like sunlight and water.", "It demonstrates that most organisms feed on multiple species and are fed upon by multiple species.", "It is a linear and simple diagram."],
+                a: 2,
+                e: "A food chain is a simple, linear path of energy flow. A food web is a complex network of many interconnected food chains, showing the multiple feeding relationships and energy pathways that actually exist in an ecosystem."
+            },
+            {
+                q: "What is the primary role of decomposers (like bacteria and fungi) in an ecosystem?",
+                o: ["To provide a food source for producers.", "To convert solar energy into chemical energy.", "To break down complex organic matter into simple inorganic nutrients.", "To control the population of primary consumers."],
+                a: 2,
+                e: "Decomposers are saprotrophs. Their essential function is to perform 'mineralization'—breaking down dead organic material (detritus) and releasing simple inorganic nutrients (like nitrates, phosphates) back into the soil and water, making them available for producers again."
+            },
+            {
+                q: "Which of the following ecosystems is expected to have the highest Net Primary Productivity (NPP) per unit area?",
+                o: ["Tropical Rainforest", "Arctic Tundra", "Open Ocean", "Desert"],
+                a: 0,
+                e: "Tropical rainforests have high temperatures, high rainfall, and intense sunlight throughout the year, leading to extremely high rates of photosynthesis and biomass production, resulting in the highest NPP per unit area."
+            },
+            {
+                q: "If a tertiary consumer has 10 kJ of energy, how much energy did the primary producers in that food chain originally capture? (Assuming the 10% rule)",
+                o: ["100 kJ", "1,000 kJ", "10,000 kJ", "100,000 kJ"],
+                a: 2,
+                e: "Using the 10% rule, you work backward: Tertiary Consumer (10 kJ) <- Secondary Consumer (100 kJ) <- Primary Consumer (1,000 kJ) <- Primary Producer (10,000 kJ). The producers needed to capture 10,000 kJ of energy."
+            },
+
+            // Ecosystem Functions: Decomposition & Nutrient Cycling
+            {
+                q: "Which of the following is the correct sequence of the major processes in decomposition?",
+                o: ["Humification -> Catabolism -> Fragmentation -> Leaching -> Mineralization", "Fragmentation -> Leaching -> Catabolism -> Humification -> Mineralization", "Catabolism -> Fragmentation -> Humification -> Leaching -> Mineralization", "Leaching -> Humification -> Catabolism -> Mineralization -> Fragmentation"],
+                a: 1,
+                e: "Decomposition involves several simultaneous processes: 1. Fragmentation (breakdown by detritivores), 2. Leaching (water-soluble nutrients seep into soil), 3. Catabolism (bacterial/fungal enzymes degrade detritus), 4. Humification (accumulation of dark humus), 5. Mineralization (release of inorganic nutrients)."
+            },
+            {
+                q: "The process of 'Humification' during decomposition leads to the formation of:",
+                o: ["Simple inorganic nutrients.", "A dark-colored, amorphous substance called humus, which is highly resistant to microbial action.", "Carbon dioxide and water.", "Living microbial biomass."],
+                a: 1,
+                e: "Humification is the process by which simplified detritus is converted into humus, a dark, stable, amorphous substance. Humus is a reservoir of nutrients and improves soil structure, but it decomposes very slowly."
+            },
+            {
+                q: "Which process in the Nitrogen Cycle converts atmospheric nitrogen gas (N₂) into ammonia (NH₃)?",
+                o: ["Nitrification", "Denitrification", "Nitrogen Fixation", "Ammonification"],
+                a: 2,
+                e: "Nitrogen Fixation is the conversion of inert atmospheric nitrogen (N₂) into a usable form, ammonia (NH₃). This is primarily carried out by symbiotic bacteria (like Rhizobium) and free-living cyanobacteria."
+            },
+            {
+                q: "The process of 'Nitrification' involves:",
+                o: ["Conversion of ammonia (NH₃) to nitrate (NO₃⁻).", "Conversion of nitrate (NO₃⁻) back to nitrogen gas (N₂).", "Conversion of nitrogen gas (N₂) to ammonia (NH₃).", "Conversion of organic nitrogen to ammonia (NH₃)."],
+                a: 0,
+                e: "Nitrification is a two-step process carried out by specific bacteria: 1. Nitrosomonas converts ammonia (NH₃) to nitrite (NO₂⁻). 2. Nitrobacter converts nitrite (NO₂⁻) to nitrate (NO₃⁻), which is the primary form of nitrogen absorbed by plants."
+            },
+            {
+                q: "Which biogeochemical cycle is primarily 'sedimentary' and lacks a significant gaseous component?",
+                o: ["The Carbon Cycle", "The Nitrogen Cycle", "The Sulphur Cycle", "The Phosphorus Cycle"],
+                a: 3,
+                e: "The Phosphorus Cycle is a sedimentary cycle. The main reservoir of phosphorus is in rocks and soil minerals. It does not have a significant gaseous phase like carbon (CO₂), nitrogen (N₂), or sulphur (SO₂)."
+            },
+            {
+                q: "The process of 'Denitrification' is ecologically important because it:",
+                o: ["Makes nitrogen available for plants.", "Returns nitrogen gas (N₂) to the atmosphere, completing the cycle.", "Converts ammonia to a toxic form.", "Is the primary source of acid rain."],
+                a: 1,
+                e: "Denitrification is an anaerobic process where bacteria (like Pseudomonas) convert nitrates (NO₃⁻) back into nitrogen gas (N₂), which is then released into the atmosphere, thus balancing the nitrogen fixed from the atmosphere."
+            },
+            {
+                q: "What is the main reservoir for the Carbon Cycle?",
+                o: ["The atmosphere", "Fossil fuels", "Forests and terrestrial biomass", "The oceans"],
+                a: 3,
+                e: "While the atmosphere, biomass, and fossil fuels are all significant carbon reservoirs, the oceans are by far the largest, holding over 70% of the Earth's carbon, primarily as dissolved carbonate and bicarbonate ions."
+            },
+            {
+                q: "The process of 'Ammonification' refers to:",
+                o: ["The conversion of nitrates to nitrogen gas.", "The conversion of atmospheric nitrogen to ammonia.", "The decomposition of organic nitrogen (from dead organisms and waste) into ammonia.", "The absorption of ammonia by plants."],
+                a: 2,
+                e: "Ammonification is the process where decomposers (bacteria and fungi) break down the organic nitrogen found in dead plants, animals, and their waste products (like urea) and convert it back into inorganic ammonia (NH₃) or ammonium (NH₄⁺)."
+            },
+            {
+                q: "How do humans primarily intervene in the global Sulphur Cycle?",
+                o: ["By using nitrogen-based fertilizers.", "By burning fossil fuels, which releases large amounts of sulphur dioxide (SO₂).", "By cutting down forests, which reduces carbon uptake.", "By mining phosphorus for detergents."],
+                a: 1,
+                e: "The primary human impact on the Sulphur Cycle is the combustion of fossil fuels (especially coal) and industrial processes (like smelting), which release large quantities of sulphur dioxide (SO₂) into the atmosphere, leading to acid rain."
+            },
+            {
+                q: "Decomposition rate is *slower* if the detritus is rich in:",
+                o: ["Nitrogen and sugars", "Lignin and chitin", "Water and simple carbohydrates", "Phosphorus and potassium"],
+                a: 1,
+                e: "Decomposition is slower in anaerobic (low oxygen) and cold conditions. Chemically, it is much slower if the detritus is rich in complex, tough substances like lignin (in wood) and chitin (in fungal cell walls and insect exoskeletons)."
+            },
+
+            // Population & Community Ecology
+            {
+                q: "Which of the following describes a 'J-shaped' population growth curve?",
+                o: ["Logistic growth, where the population stabilizes at the carrying capacity.", "Exponential growth, where the population grows rapidly without any limiting factors.", "A population that is declining rapidly.", "A population with a stable, unchanging size."],
+                a: 1,
+                e: "A J-shaped curve represents exponential growth (dN/dt = rN). This occurs when resources are unlimited, and the population grows at its maximum intrinsic rate (r). It is often seen in new or rapidly recovering populations."
+            },
+            {
+                q: "The 'Carrying Capacity' (K) of an environment is defined as:",
+                o: ["The maximum population size that the environment can sustain indefinitely.", "The intrinsic rate of natural increase of a population.", "The minimum number of individuals required to start a population.", "The rate at which a population grows in the absence of predators."],
+                a: 0,
+                e: "Carrying Capacity (K) is a concept in the logistic growth model. It represents the maximum population of a species that the environment can support indefinitely, given the available food, water, and other resources."
+            },
+            {
+                q: "The 'S-shaped' or sigmoid growth curve, which includes the concept of carrying capacity, is also known as:",
+                o: ["Exponential growth", "Logistic growth", "Geometric growth", "Stochastic growth"],
+                a: 1,
+                e: "The S-shaped curve represents logistic growth (dN/dt = rN[(K-N)/K]). It shows a population initially growing exponentially, then slowing down as it approaches the carrying capacity (K) due to resource limitation."
+            },
+            {
+                q: "The gradual and fairly predictable change in the species composition of a given area over time is called:",
+                o: ["Ecological Succession", "Ecological Niche", "Population Dynamics", "Homeostasis"],
+                a: 0,
+                e: "Ecological succession is the orderly and sequential process of community change in an ecosystem over time, following a disturbance or on new land, leading towards a stable climax community."
+            },
+            {
+                q: "What is the key difference between Primary Succession and Secondary Succession?",
+                o: ["Primary succession is fast, while secondary succession is very slow.", "Primary succession occurs on newly formed or exposed land (like bare rock), while secondary succession occurs on land where a community previously existed (like after a forest fire).", "Primary succession involves only plants, while secondary succession involves both plants and animals.", "Primary succession leads to a grassland, while secondary succession leads to a forest."],
+                a: 1,
+                e: "Primary succession begins in an environment that is essentially lifeless, such as new volcanic rock or a sand dune, where no soil exists. Secondary succession occurs in an area that has been disturbed (e.g., by fire, logging, farming) but where the soil and some life (like seeds) still remain."
+            },
+            {
+                q: "The stable, self-perpetuating community that forms at the end of ecological succession is called the:",
+                o: ["Pioneer community", "Seral community", "Climax community", "Ecotone community"],
+                a: 2,
+                e: "The climax community is the final, relatively stable stage of succession for a given environment. It is in equilibrium with its environment and has high species diversity and complex food webs."
+            },
+            {
+                q: "The 'Pioneer Species' in a primary succession (like on bare rock) are typically:",
+                o: ["Large trees like oaks and maples.", "Grasses and shrubs.", "Lichens and mosses.", "Small mammals and birds."],
+                a: 2,
+                e: "Lichens and mosses are common pioneer species in primary succession (lithosere). They are extremely hardy, can grow on bare rock, and their actions (like secreting acids) help to break down the rock and form the very first layer of soil."
+            },
+            {
+                q: "In the context of species interactions, Gause's 'Competitive Exclusion Principle' states that:",
+                o: ["Two species can coexist indefinitely if they compete for the same resource.", "Competition between two species always leads to mutualism.", "Two species competing for the exact same limiting resource cannot coexist at constant population values; one will eventually be eliminated.", "Competition is a driving force for evolution."],
+                a: 2,
+                e: "The Competitive Exclusion Principle states that if two species have identical niches (i.e., they compete for the exact same limited resources), one will be slightly more efficient and will eventually outcompete and eliminate the other. 'Complete competitors cannot coexist.'"
+            },
+            {
+        q: "The relationship between a sea anemone and a clownfish, where the clownfish gets protection and the anemone is unaffected, is an example of:",
+                o: ["Mutualism", "Commensalism", "Parasitism", "Competition"],
+                a: 1,
+                e: "This is a classic example of Commensalism (+/0). The clownfish is protected from predators by the anemone's stinging tentacles (to which it is immune), while the sea anemone receives no clear benefit or harm from the fish's presence."
+            },
+            {
+                q: "The relationship between nitrogen-fixing Rhizobium bacteria and the root nodules of leguminous plants is a prime example of:",
+                o: ["Mutualism", "Parasitism", "Amensalism", "Commensalism"],
+                a: 0,
+                e: "This is Mutualism (+/+). The bacteria receive carbohydrates (food) and a protected environment from the plant. In return, the bacteria fix atmospheric nitrogen into a form (ammonia) that the plant can absorb and use as a nutrient."
+            },
+            {
+                q: "An 'Indicator Species' is a species whose:",
+                o: ["Presence, absence, or abundance reflects a specific environmental condition.", "Role is crucial for the survival of many other species.", "Charisma is used to raise public awareness for conservation.", "Population grows exponentially in a new environment."],
+                a: 0,
+                e: "An indicator species is like an environmental 'canary in a coal mine'. Their sensitivity to changes in the environment (e.g., pollution, temperature) makes them useful tools for monitoring ecosystem health. Lichens, for example, are indicators of air quality."
+            },
+            {
+                q: "A species that is used as a symbol for a conservation campaign, often because it is charismatic (like the Giant Panda or Tiger), is called a:",
+                o: ["Keystone Species", "Indicator Species", "Flagship Species", "Umbrella Species"],
+                a: 2,
+                e: "A flagship species is a species selected to act as an ambassador, icon, or symbol for a defined habitat, issue, or environmental cause. They are chosen for their 'charisma' and ability to attract public support for conservation efforts."
+            },
+
+            // Ecosystem Services
+            {
+                q: "Consider the following ecosystem services:\n1. Pollination of crops\n2. Nutrient cycling\n3. Climate regulation (e.g., carbon sequestration)\n4. Food and fresh water\nWhich of the above are classified as 'Regulating Services'?",
+                o: ["1, 2, 3, and 4", "1, 2, and 3 only", "1 and 3 only", "4 only"],
+                a: 2,
+                e: "Ecosystem services are categorized: 1. Provisioning (food, water). 2. Regulating (climate regulation, pollination, water purification). 3. Supporting (nutrient cycling, soil formation). 4. Cultural. Therefore, pollination (1) and climate regulation (3) are regulating services. Nutrient cycling (2) is a supporting service, and food/water (4) are provisioning services."
+            },
+            {
+                q: "Which of the following is an example of a 'Provisioning Service' provided by an ecosystem?",
+                o: ["Soil formation", "Climate regulation", "Recreational and spiritual benefits", "Timber and medicinal plants"],
+                a: 3,
+                e: "Provisioning services are the tangible products obtained from ecosystems. Examples include food, fresh water, fuelwood, fiber, and genetic resources (like timber and medicinal plants). Soil formation and climate regulation are supporting/regulating services, while recreation is a cultural service."
+            },
+            {
+                q: "Services necessary for the production of all other ecosystem services, such as soil formation, nutrient cycling, and primary production, are known as:",
+                o: ["Regulating Services", "Provisioning Services", "Supporting Services", "Cultural Services"],
+                a: 2,
+                e: "Supporting services form the fundamental base upon which all other services depend. They are the background processes that enable the ecosystem to function. Examples: soil formation, photosynthesis, nutrient cycling, and water cycling."
+            },
+            {
+                q: "Eutrophication, or the nutrient enrichment of water bodies, is primarily caused by runoff containing high levels of:",
+                o: ["Nitrogen and Phosphorus", "Carbon and Oxygen", "Sulphur and Iron", "Salt and Chlorine"],
+                a: 0,
+                e: "Eutrophication is caused by the excessive loading of nutrients, particularly nitrogen (from sewage and fertilizer) and phosphorus (from detergents and fertilizer), into an aquatic ecosystem. This leads to massive algal blooms, oxygen depletion, and fish kills."
+            },
+            {
+                q: "The phenomenon of 'Algal Bloom' in a eutrophic lake leads to a sharp decrease in:",
+                o: ["Water temperature", "Dissolved Oxygen (DO)", "Nutrient concentration", "Carbon dioxide levels"],
+                a: 1,
+                e: "When the massive algal bloom dies, decomposer bacteria feed on the dead algae. This decomposition process consumes large amounts of dissolved oxygen (DO) in the water, leading to hypoxia or anoxia (low or no oxygen), which kills fish and other aquatic organisms."
+            },
+            {
+                q: "Organisms with a very narrow range of tolerance for a specific environmental factor (e.g., salinity) are called:",
+                o: ["Euryhaline", "Stenohaline", "Eurythermal", "Stenothermal"],
+                a: 1,
+                e: "Stenohaline organisms can only tolerate a narrow range of salinity (steno = narrow, haline = salt). Euryhaline organisms can tolerate a wide range."
+            },
+            {
+                q: "Which ecological concept explains why two species competing for the same resource can coexist by using that resource at different times or in different ways?",
+                o: ["Competitive Exclusion", "Resource Partitioning", "Character Displacement", "Mutualism"],
+                a: 1,
+                e: "Resource partitioning is an evolutionary mechanism that allows two or more competing species to coexist by dividing a limiting resource. For example, different species of warblers may forage for insects in different parts of the same tree (e.g., top, middle, bottom branches)."
+            },
+            {
+                q: "What is 'Standing Crop' in an ecosystem?",
+                o: ["The total amount of inorganic nutrients present in the soil.", "The total biomass of producers in an ecosystem.", "The total biomass of living organisms (producers and consumers) in a trophic level at a particular time.", "The amount of dead organic matter (detritus) in an ecosystem."],
+                a: 2,
+                e: "Standing crop is the total biomass (mass of living material) of a specific group of organisms (like a trophic level) in a given area at a specific point in time. It is measured as mass per unit area (e.g., g/m²)."
+            }
+        ];
+
+
+        // --- 2. STATE VARIABLES ---
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let markedForReview = new Array(questions.length).fill(false);
+        let timerInterval;
+        let timeLeft = 3600; // 60 minutes * 60 seconds
+        let popupTimerInterval;
+
+        // --- 3. DOM ELEMENTS ---
+        const instructionPopup = document.getElementById('instructionPopup');
+        const popupTimerDisplay = document.getElementById('popupTimer');
+        const skipButton = document.getElementById('skipButton');
+        const startScreen = document.getElementById('startScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const questionHeader = document.getElementById('questionHeader');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const questionNavPalette = document.getElementById('questionNavPalette');
+        const backButton = document.getElementById('backButton');
+        const nextButton = document.getElementById('nextButton');
+        const markButton = document.getElementById('markButton');
+        const confirmModal = document.getElementById('confirmModal');
+        
+        // Results Elements
+        const donutChart = document.getElementById('donutChart');
+        const scorePercent = document.getElementById('scorePercent');
+        const correctCount = document.getElementById('correctCount');
+        const incorrectCount = document.getElementById('incorrectCount');
+        const unattemptedCount = document.getElementById('unattemptedCount');
+        const solutionsList = document.getElementById('solutionsList');
+        const tabSummary = document.getElementById('tabSummary');
+        const tabSolutions = document.getElementById('tabSolutions');
+        const contentSummary = document.getElementById('contentSummary');
+        const contentSolutions = document.getElementById('contentSolutions');
+
+        // --- 4. FUNCTIONS ---
+
+        // Popup and Start
+        function startPopupTimer() {
+            let popupTime = 10;
+            popupTimerDisplay.textContent = `Auto-skipping in ${popupTime}s...`;
+
+            popupTimerInterval = setInterval(() => {
+                popupTime--;
+                popupTimerDisplay.textContent = `Auto-skipping in ${popupTime}s...`;
+                if (popupTime <= 0) {
+                    skipPopup();
+                }
+            }, 1000);
+        }
+
+        function skipPopup() {
+            clearInterval(popupTimerInterval);
+            instructionPopup.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+            startScreen.classList.add('flex');
+        }
+
+        function startTest() {
+            startScreen.classList.add('hidden');
+            startScreen.classList.remove('flex');
+            quizScreen.classList.remove('hidden');
+            
+            // Initialize userAnswers and markedForReview arrays
+            userAnswers = new Array(questions.length).fill(null);
+            markedForReview = new Array(questions.length).fill(false);
+
+            buildQuestionPalette();
+            loadQuestion(0);
+            startMainTimer();
+        }
+
+        // Timer
+        function startMainTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                
+                timerDisplay.textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        // Quiz Navigation
+        function loadQuestion(index) {
+            if (index < 0 || index >= questions.length) return;
+
+            saveAnswer(); // Save answer from the *previous* question before loading new one
+            
+            currentQuestionIndex = index;
+            const q = questions[index];
+
+            questionHeader.textContent = `Question ${index + 1}:`;
+            questionText.textContent = q.q;
+            optionsContainer.innerHTML = '';
+
+            const optionLetters = ['A', 'B', 'C', 'D'];
+            q.o.forEach((option, i) => {
+                const isChecked = (userAnswers[index] === i);
+                optionsContainer.innerHTML += `
+                    <label for="option${i}" class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition duration-200">
+                        <input type="radio" id="option${i}" name="answer" value="${i}" ${isChecked ? 'checked' : ''} class="mr-4 flex-shrink-0">
+                        <span class="font-medium text-gray-800">${optionLetters[i]}. ${option}</span>
+                    </label>
+                `;
+            });
+
+            // Update button states
+            backButton.disabled = (index === 0);
+            backButton.classList.toggle('opacity-50', index === 0);
+            nextButton.disabled = (index === questions.length - 1);
+            nextButton.classList.toggle('opacity-50', index === questions.length - 1);
+            
+            // Update palette
+            updatePalette();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                loadQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        function goToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        function saveAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = parseInt(selectedOption.value);
+            }
+        }
+
+        function clearAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                selectedOption.checked = false;
+            }
+            userAnswers[currentQuestionIndex] = null;
+            updatePalette();
+        }
+
+        function toggleMarkForReview() {
+            markedForReview[currentQuestionIndex] = !markedForReview[currentQuestionIndex];
+            updatePalette();
+        }
+
+        // Question Palette
+        function buildQuestionPalette() {
+            questionNavPalette.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                questionNavPalette.innerHTML += `
+                    <button id="qnav${i}" onclick="goToQuestion(${i})" class="w-10 h-10 flex items-center justify-center font-bold rounded-md bg-gray-300 text-gray-700 transition duration-200">
+                        ${i + 1}
+                    </button>
+                `;
+            }
+        }
+
+        function updatePalette() {
+            for (let i = 0; i < questions.length; i++) {
+                const btn = document.getElementById(`qnav${i}`);
+                btn.className = "w-10 h-10 flex items-center justify-center font-bold rounded-md transition duration-200"; // Reset classes
+                
+                if (markedForReview[i]) {
+                    btn.classList.add('bg-purple-500', 'text-white');
+                } else if (userAnswers[i] !== null) {
+                    btn.classList.add('bg-green-500', 'text-white');
+                } else if (i === currentQuestionIndex) {
+                    btn.classList.add('bg-red-500', 'text-white'); // Not answered, currently on it
+                } else {
+                    btn.classList.add('bg-gray-300', 'text-gray-700'); // Not visited (or skipped)
+                }
+
+                // Add border if it's the current question
+                if (i === currentQuestionIndex) {
+                    btn.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
+                }
+            }
+        }
+
+        // Submission
+        function confirmSubmit() {
+            saveAnswer(); // Save the very last answer
+            updatePalette(); // Update palette one last time
+            confirmModal.classList.remove('hidden');
+        }
+        
+        function closeConfirmModal() {
+            confirmModal.classList.add('hidden');
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            closeConfirmModal();
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            
+            calculateAndShowResults();
+        }
+
+        // Results
+        function calculateAndShowResults() {
+            let correct = 0;
+            let incorrect = 0;
+            let unattempted = 0;
+
+            for (let i = 0; i < questions.length; i++) {
+                if (userAnswers[i] === null) {
+                    unattempted++;
+                } else if (userAnswers[i] === questions[i].a) {
+                    correct++;
+                } else {
+                    incorrect++;
+                }
+            }
+            
+            let total = questions.length;
+            let score = (correct / total) * 100;
+
+            // 1. Populate Summary
+            scorePercent.textContent = `${score.toFixed(0)}%`;
+            correctCount.textContent = correct;
+            incorrectCount.textContent = incorrect;
+            unattemptedCount.textContent = unattempted;
+
+            // 2. Update Donut Chart
+            let correctPercent = (correct / total) * 100;
+            let incorrectPercent = correctPercent + (incorrect / total) * 100;
+            let unattemptedPercent = 100;
+
+            donutChart.style.setProperty('--correct-percent', `${correctPercent}%`);
+            donutChart.style.setProperty('--incorrect-percent', `${incorrectPercent}%`);
+            donutChart.style.setProperty('--unattempted-percent', `${unattemptedPercent}%`);
+
+            // 3. Populate Solutions
+            solutionsList.innerHTML = '';
+            const optionLetters = ['A', 'B', 'C', 'D'];
+            questions.forEach((q, i) => {
+                const userAnswerIndex = userAnswers[i];
+                const correctAnswerIndex = q.a;
+
+                let statusClass, statusText, userAnswerText;
+
+                if (userAnswerIndex === null) {
+                    statusClass = 'bg-gray-100 text-gray-800 border-gray-300';
+                    statusText = 'Unattempted';
+                    userAnswerText = '---';
+                } else if (userAnswerIndex === correctAnswerIndex) {
+                    statusClass = 'bg-green-100 text-green-800 border-green-300';
+                    statusText = 'Correct';
+                    userAnswerText = `${optionLetters[userAnswerIndex]}. ${q.o[userAnswerIndex]}`;
+                } else {
+                    statusClass = 'bg-red-100 text-red-800 border-red-300';
+                    statusText = 'Incorrect';
+                    userAnswerText = `${optionLetters[userAnswerIndex]}. ${q.o[userAnswerIndex]}`;
+                }
+
+                const correctAnswerText = `${optionLetters[correctAnswerIndex]}. ${q.o[correctAnswerIndex]}`;
+
+                solutionsList.innerHTML += `
+                    <div class="border ${statusClass} rounded-lg p-5">
+                        <h3 class="font-bold text-lg mb-2">Q ${i + 1}: ${q.q}</h3>
+                        <p class="mb-1"><span class="font-semibold">Your Answer: </span><span class="${statusText === 'Incorrect' ? 'text-red-700 font-bold' : ''}">${userAnswerText}</span></p>
+                        <p class="mb-3"><span class="font-semibold">Correct Answer: </span><span class="text-green-700 font-bold">${correctAnswerText}</span></p>
+                        <div class="bg-white border border-gray-200 p-3 rounded-md">
+                            <h4 class="font-semibold text-gray-800 mb-1">Explanation:</h4>
+                            <p class="text-gray-700">${q.e}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        function switchResultTab(tabName) {
+            if (tabName === 'Summary') {
+                contentSummary.classList.remove('hidden');
+                contentSolutions.classList.add('hidden');
+                tabSummary.classList.add('text-blue-600', 'border-blue-600');
+                tabSummary.classList.remove('text-gray-500', 'border-transparent');
+                tabSolutions.classList.add('text-gray-500', 'border-transparent');
+                tabSolutions.classList.remove('text-blue-600', 'border-blue-600');
+            } else {
+                contentSummary.classList.add('hidden');
+                contentSolutions.classList.remove('hidden');
+                tabSolutions.classList.add('text-blue-600', 'border-blue-600');
+                tabSolutions.classList.remove('text-gray-500', 'border-transparent');
+                tabSummary.classList.add('text-gray-500', 'border-transparent');
+                tabSummary.classList.remove('text-blue-600', 'border-blue-600');
+            }
+        }
+
+        // --- 5. INITIALIZATION ---
+        window.onload = () => {
+            startPopupTimer();
+        };
+
+    </script>
+</body>
+</html>
+
+
+
+            
