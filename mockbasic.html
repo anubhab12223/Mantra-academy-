@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC Mock Test - Fiscal Policy, Budget & Taxes</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Disable tap highlight on mobile */
+        }
+
+        /* Custom scrollbar for question list */
+        .question-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+        .question-nav::-webkit-scrollbar-thumb {
+            background-color: #9ca3af;
+            border-radius: 20px;
+        }
+
+        /* Custom radio buttons */
+        input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #6b7280;
+            border-radius: 50%;
+            outline: none;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        input[type="radio"]:checked {
+            border: 6px solid #2563eb; /* Blue-600 */
+            background-color: white;
+        }
+
+        /* Donut chart styles */
+        .donut-chart {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #10b981 var(--correct-percent),
+                #ef4444 0 var(--incorrect-percent),
+                #6b7280 0 var(--unattempted-percent)
+            );
+        }
+        .donut-chart-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 160px;
+            height: 160px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Mobile compatibility for solutions list */
+        @media (max-width: 768px) {
+            .solution-detail {
+                display: block !important;
+                padding-left: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- 1. Instruction Popup Modal -->
+    <div id="instructionPopup" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold text-center text-blue-700 mb-4">UPSC Exam Instructions</h2>
+            
+            <div class="space-y-4 text-gray-700">
+                <div>
+                    <h3 class="font-semibold text-lg text-red-600">Important Warnings</h3>
+                    <ul class="list-disc list-outside ml-5 space-y-1 mt-2 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <li>Do NOT PRESS any keyboard key once the exam is started. This may LOCK your exam.</li>
+                        <li>Do Not CLICK on the SUBMIT Button unless you have completed the exam.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-blue-600">Answering Questions</h3>
+                    <ul class="list-disc list-outside ml-5 space-y-1 mt-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <li>Click on the radio button next to the option to select your answer.</li>
+                        <li>To change an answer, simply click the desired option button.</li>
+                        <li>Click on the <span class="font-bold text-blue-700">Clear</span> button to deselect a chosen answer.</li>
+                        <li>Click on <span class="font-bold text-blue-700">Next</span> to save your answer and move to the next question.</li>
+                        <li>Click on <span class="font-bold text-purple-700">Mark for Review</span> to mark a question for later review.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-between items-center">
+                <button id="skipButton" onclick="skipPopup()" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition duration-200">
+                    Skip
+                </button>
+                <span id="popupTimer" class="text-sm text-gray-500">Auto-skipping in 10s...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Start Screen -->
+    <div id="startScreen" class="hidden min-h-screen w-full flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md p-8 text-center">
+            <svg class="w-16 h-16 text-blue-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            <h1 class="text-3xl font-bold text-gray-800 mt-4">Ready to Begin?</h1>
+            <p class="text-gray-600 mt-2">Click "Start Test" when you're ready to begin the examination.</p>
+            <div class="bg-blue-50 border border-blue-200 text-blue-800 rounded-lg p-4 mt-6 text-left">
+                <h3 class="font-bold">Mock Test Details:</h3>
+                <ul class="list-disc list-outside ml-5 mt-2">
+                    <li><span class="font-semibold">Topic:</span> Fiscal Policy, Budget & Taxation</li>
+                    <li><span class="font-semibold">Questions:</span> 50</li>
+                    <li><span class="font-semibold">Time Limit:</span> 60 Minutes (1 Hours)</li>
+                </ul>
+            </div>
+            <button onclick="startTest()" class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75 transition duration-200 mt-8 text-lg">
+                Start Test
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. Quiz Screen -->
+    <div id="quizScreen" class="hidden">
+        <!-- Header -->
+        <div class="bg-white shadow-md sticky top-0 z-10">
+            <div class="container mx-auto max-w-7xl px-4 flex justify-between items-center h-16">
+                <h1 class="text-sm sm:text-lg font-bold text-blue-800">CIVIL SER. (P) MOCK TEST - FISCAL POLICY & TAXES</h1>
+                <div class="flex items-center space-x-2 bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span id="timerDisplay">120:00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content (Quiz + Nav) -->
+        <div class="container mx-auto max-w-7xl p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Question Area (Left) -->
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-lg">
+                <!-- Question Header -->
+                <div class="p-5 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800" id="questionHeader">Question 1:</h2>
+                    <p class="text-sm text-white bg-blue-500 rounded-full px-3 py-0.5 inline-block mt-2">Multiple Choice</p>
+                </div>
+                
+                <!-- Question Body -->
+                <div class="p-5">
+                    <p class="text-lg text-gray-900 mb-6" id="questionText">Loading question...</p>
+                    
+                    <!-- Options -->
+                    <div class="space-y-5" id="optionsContainer">
+                        <!-- Options will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="p-5 border-t border-gray-200 bg-gray-50 rounded-b-lg flex flex-wrap gap-3 justify-between items-center">
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="prevQuestion()" id="backButton" class="bg-gray-200 text-gray-800 font-semibold py-2 px-5 rounded-lg hover:bg-gray-300 transition duration-200">&larr; Back</button>
+                        <button onclick="clearAnswer()" class="bg-yellow-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-yellow-600 transition duration-200">Clear</button>
+                        <button onclick="toggleMarkForReview()" id="markButton" class="bg-purple-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-purple-600 transition duration-200">Mark for Review</button>
+                        <button onclick="nextQuestion()" id="nextButton" class="bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-blue-700 transition duration-200">Next &rarr;</button>
+                    </div>
+                    <button onclick="confirmSubmit()" class="bg-red-600 text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-700 transition duration-200">Submit Test Now</button>
+                </div>
+            </div>
+
+            <!-- Question Navigation (Right) -->
+            <div class="bg-white rounded-lg shadow-lg p-5 lg:sticky lg:top-20 self-start">
+                <h3 class="text-lg font-semibold border-b pb-3 mb-4">Question Palette</h3>
+                <div class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-3 max-h-96 overflow-y-auto question-nav" id="questionNavPalette">
+                    <!-- Question numbers will be dynamically inserted here -->
+                </div>
+                <div class="mt-6 border-t pt-4 space-y-2">
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-gray-300 mr-2"></span> Not Visited</div>
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-red-500 mr-2"></span> Not Answered</div>
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-green-500 mr-2"></span> Answered</div>
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-purple-500 mr-2"></span> Marked for Review</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Confirm Submission</h2>
+            <p class="text-gray-600 mb-6">Are you sure you want to submit the test?</p>
+            <div class="flex justify-center gap-4">
+                <button onclick="closeConfirmModal()" class="py-2 px-6 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                <button onclick="submitTest()" class="py-2 px-6 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition">Submit</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 4. Results Screen -->
+    <div id="resultsScreen" class="hidden min-h-screen container mx-auto max-w-7xl p-4">
+        <div class="bg-white rounded-lg shadow-xl p-6">
+            <h1 class="text-3xl font-bold text-center text-blue-800 mb-6">Test Performance Report</h1>
+
+            <!-- Tabs -->
+            <div class="border-b border-gray-200 mb-6">
+                <nav class="flex space-x-4" aria-label="Tabs">
+                    <button id="tabSummary" onclick="switchResultTab('Summary')" class="text-blue-600 border-blue-600 border-b-2 font-semibold py-3 px-4 text-lg">Summary</button>
+                    <button id="tabSolutions" onclick="switchResultTab('Solutions')" class="text-gray-500 hover:text-gray-700 border-transparent border-b-2 font-medium py-3 px-4 text-lg">View All Solutions</button>
+                </nav>
+            </div>
+
+            <!-- Summary Tab Content -->
+            <div id="contentSummary">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <!-- Donut Chart -->
+                    <div class="flex flex-col items-center">
+                        <div id="donutChart" class="donut-chart">
+                            <div class="donut-chart-center">
+                                <span class="text-4xl font-bold text-gray-800" id="scorePercent">0%</span>
+                                <span class="text-gray-500">Overall Score</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Score Details -->
+                    <div class="space-y-4">
+                        <div class="bg-green-100 border border-green-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-green-800">Correct</span>
+                            <span class="text-2xl font-bold text-green-800" id="correctCount">0</span>
+                        </div>
+                        <div class="bg-red-100 border border-red-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-red-800">Incorrect</span>
+                            <span class="text-2xl font-bold text-red-800" id="incorrectCount">0</span>
+                        </div>
+                        <div class="bg-gray-100 border border-gray-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-gray-800">Unattempted</span>
+                            <span class="text-2xl font-bold text-gray-800" id="unattemptedCount">0</span>
+                        </div>
+                        <div class="bg-blue-100 border border-blue-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-blue-800">Total Questions</span>
+                            <span class="text-2xl font-bold text-blue-800">50</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solutions Tab Content -->
+            <div id="contentSolutions" class="hidden">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Detailed Solutions</h2>
+                <div class="space-y-6" id="solutionsList">
+                    <!-- Solutions will be dynamically inserted here -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- JavaScript -->
+    <script>
+        // --- 1. DATA (Questions) ---
+        const questions = [
+            // 100 UPSC-level MCQs on Fiscal Policy, Budget & Taxes
+            {
+                q: "Which of the following is the most comprehensive measure of the government's borrowing requirement in a given financial year?",
+                o: ["Revenue Deficit", "Primary Deficit", "Fiscal Deficit", "Effective Revenue Deficit"],
+                a: 2,
+                e: "The **Fiscal Deficit** represents the total borrowing requirement of the government. It is the difference between total expenditure and the sum of revenue receipts and non-debt capital receipts."
+            },
+            {
+                q: "The term **'Revenue Deficit'** indicates that the government is:",
+                o: ["Borrowing to finance capital expenditure.", "Borrowing to meet past interest payments.", "Spending more on current consumption than it is earning from current income (dissavings).", "Earning less from non-tax sources."],
+                a: 2,
+                e: "**Revenue Deficit** ($\text{Revenue Expenditure} - \text{Revenue Receipts}$) shows the government's dissavings, meaning current consumption spending is exceeding current income, requiring borrowing for consumption."
+            },
+            {
+                q: "The difference between **Fiscal Deficit** and **Primary Deficit** is always equal to:",
+                o: ["Net Factor Income from Abroad (NFIA)", "Interest Payments", "Grants for Capital Assets", "Net Borrowings"],
+                a: 1,
+                e: "By definition, $\text{Primary Deficit} = \text{Fiscal Deficit} - \text{Interest Payments}$. Thus, the difference between the two is the **Interest Payments** on loans taken in previous years."
+            },
+            {
+                q: "Which of the following receipts are **Non-Debt Capital Receipts**?",
+                o: ["Market borrowings (loans)", "Disinvestment proceeds", "Recovery of loans and advances", "Both 2 and 3"],
+                a: 3,
+                e: "**Non-Debt Capital Receipts** are those that either reduce a liability (recovery of loans) or reduce assets (disinvestment), without creating any future debt obligation. Market borrowings create debt."
+            },
+            {
+                q: "Under which Article of the Constitution of India is the Annual Financial Statement (Union Budget) laid before both Houses of Parliament?",
+                o: ["Article 110", "Article 112", "Article 265", "Article 280"],
+                a: 1,
+                e: "**Article 112** of the Constitution requires the President to lay before both Houses of Parliament an **Annual Financial Statement**, which is the formal name for the Union Budget."
+            },
+            {
+                q: "The imposition of a **Cess** is distinct from a Tax because:",
+                o: ["Cess is levied by the State Government, not the Centre.", "The proceeds of a Cess must be utilized for a specific, predetermined purpose.", "A Cess is progressive in nature.", "A Cess is generally not included in the divisible pool of taxes (unlike Surcharge)."],
+                a: 1,
+                e: "A **Cess** is levied for a **specific purpose** (e.g., Education Cess, Health Cess) and the proceeds must be spent on that purpose, which makes it distinct from a general tax."
+            },
+            {
+                q: "Which of the following is an example of **Capital Expenditure** by the Central Government?",
+                o: ["Interest payments on loans.", "Grants given to States for the creation of capital assets.", "Salaries and pensions of government employees.", "Defense purchases of non-durable goods."],
+                a: 1,
+                e: "**Capital Expenditure** creates assets or reduces liabilities. **Grants for the creation of capital assets** are classified as Capital Expenditure because they lead to asset creation, even if by a state government (this concept is formalized as Effective Revenue Deficit)."
+            },
+            {
+                q: "The term **'Fiscal Policy'** refers to the government's policy regarding:",
+                o: ["Money supply and interest rates.", "Taxation and public expenditure.", "Foreign exchange rates.", "Trade tariffs and quotas."],
+                a: 1,
+                e: "**Fiscal Policy** is the means by which a government adjusts its spending levels and tax rates to monitor and influence a nation's economy."
+            },
+            {
+                q: "If the government decides to use **Expansionary Fiscal Policy** to combat a recession, it would typically:",
+                o: ["Increase taxes and reduce government spending.", "Increase government spending and reduce taxes.", "Sell government bonds in the open market.", "Reduce the Cash Reserve Ratio (CRR)."],
+                    a: 1,
+                e: "**Expansionary Fiscal Policy** involves increasing **government spending** and/or reducing **taxes** to boost aggregate demand and stimulate economic activity during a recession."
+            },
+            {
+                q: "The **Goods and Services Tax (GST)** is structurally a:",
+                o: ["Progressive Direct Tax.", "Regressive Direct Tax.", "Regressive Indirect Tax.", "Progressive Indirect Tax."],
+                a: 2,
+                e: "**GST** is an **Indirect Tax**. Since poorer people spend a larger proportion of their income on consumption than richer people, indirect taxes tend to be **regressive** in their impact (though GST aims to be less regressive than previous taxes)."
+            },
+            {
+                q: "The concept of **'Effective Revenue Deficit'** was introduced to:",
+                o: ["Measure the difference between Fiscal Deficit and Primary Deficit.", "Exclude the portion of grants used by States/UTs for capital asset creation from the Revenue Deficit.", "Measure the total debt of the government.", "Exclusively track subsidies in the budget."],
+                a: 1,
+                e: "**Effective Revenue Deficit** ($\text{Revenue Deficit} - \text{Grants for Capital Asset Creation}$) was introduced to reflect that revenue deficit is overstated when grants are used for genuinely productive capital assets."
+            },
+            {
+                q: "The **Contingency Fund of India** is placed at the disposal of which authority?",
+                o: ["President of India", "Parliament of India", "Prime Minister of India", "Finance Minister of India"],
+                a: 0,
+                e: "The **Contingency Fund of India** is held by the **President of India** and can be advanced for unforeseen expenditure pending authorization by the Parliament."
+            },
+            {
+                q: "Which of the following is an example of a **Proportional Tax**?",
+                o: ["A tax where the rate increases with income.", "A fixed-rate tax applied uniformly regardless of income.", "A tax where the rate decreases with income.", "A tax on wealth."],
+                a: 1,
+                e: "A **Proportional Tax** is one where the tax rate remains the **same (fixed)** across all income levels. (e.g., a flat 10% tax on all income)."
+            },
+            {
+                q: "The **'Tax Buoyancy'** of the Goods and Services Tax (GST) is defined as the ratio of:",
+                o: ["Growth in tax revenue to the growth in inflation.", "Growth in tax revenue to the growth in Nominal GDP.", "Growth in tax revenue to the growth in Real GDP.", "Growth in tax revenue to the growth in money supply."],
+                a: 1,
+                e: "**Tax Buoyancy** measures the responsiveness of tax revenue to changes in **Nominal GDP**. If tax revenue grows faster than Nominal GDP, the buoyancy is $> 1$."
+            },
+            {
+                q: "The term **'Zero Budgeting'** (or Zero-Based Budgeting) implies that:",
+                o: ["The government has a zero fiscal deficit target.", "The government starts budgeting from a zero base, justifying every item of expenditure anew.", "The budget focuses only on capital expenditure.", "The budget is presented in a paperless (zero-paper) format."],
+                a: 1,
+                e: "**Zero Budgeting** requires that every government department or program justifies its entire budget request from a **zero base**, rather than only justifying new increases over the previous year's budget."
+            },
+            {
+                q: "Which tax is an example of a **Direct Tax** in India?",
+                o: ["Customs Duty", "Excise Duty", "Corporation Tax", "Service Tax (Pre-GST)"],
+                a: 2,
+                e: "**Corporation Tax** is levied directly on the profits of a company, and its incidence cannot be shifted. It is thus a Direct Tax."
+            },
+            {
+                q: "The **Contractionary Fiscal Policy** is generally used during:",
+                o: ["Recessionary periods to stimulate demand.", "Periods of high inflation to curb demand.", "Periods of stable GDP growth.", "Wartime to increase government borrowing."],
+                a: 1,
+                e: "**Contractionary Fiscal Policy** involves reducing spending and/or increasing taxes to lower aggregate demand, typically used to control **high inflation**."
+            },
+            {
+                q: "The **'Vote on Account'** is introduced by Parliament to meet government expenditure during:",
+                o: ["The current financial year's last two months.", "The time gap between the presentation of the Budget and its final passing (April 1 onwards).", "Emergency situations only.", "The time when a general election is announced."],
+                a: 1,
+                e: "A **Vote on Account** is a grant made by Parliament to the government to cover essential expenditures for a short period (usually two months) until the regular Budget is **passed by Parliament**."
+            },
+            {
+                q: "What is the key difference between **Revenue Expenditure** and **Capital Expenditure**?",
+                o: ["Capital Expenditure is always larger than Revenue Expenditure.", "Revenue Expenditure creates assets, while Capital Expenditure does not.", "Capital Expenditure creates assets or reduces liabilities, while Revenue Expenditure does neither.", "Revenue Expenditure is non-plan, while Capital Expenditure is plan."],
+                a: 2,
+                e: "**Capital Expenditure** leads to the creation of physical/financial assets or the reduction of financial liabilities. **Revenue Expenditure** covers day-to-day running costs and does neither."
+            },
+            {
+                q: "Which component of the budget is the largest contributor to the revenue receipts of the Union Government?",
+                o: ["Non-Tax Revenue (e.g., Interest Receipts, Dividends)", "Corporation Tax", "Goods and Services Tax (GST)", "Income Tax"],
+                a: 2,
+                e: "Historically and currently, **Goods and Services Tax (GST)** has emerged as the single largest component of the Union Government's revenue receipts, surpassing both Corporation Tax and Income Tax."
+            },
+            {
+                q: "The **Fiscal Responsibility and Budget Management (FRBM) Act** primarily mandates the government to progressively reduce which deficit measures?",
+                o: ["External Debt and Revenue Deficit.", "Fiscal Deficit and Revenue Deficit.", "Trade Deficit and Current Account Deficit.", "Primary Deficit and External Debt."],
+                a: 1,
+                e: "The core targets of the **FRBM Act** are to eliminate or reduce the **Revenue Deficit** and bring down the **Fiscal Deficit** to a manageable percentage of GDP."
+            },
+            {
+                q: "If the government imposes a **Surcharge** on income tax, its proceeds:",
+                o: ["Must be shared with the States as per the Finance Commission recommendations.", "Are exclusively retained by the Central Government.", "Must be used for a specific social welfare purpose.", "Are transferred to the Contingency Fund of India."],
+                a: 1,
+                e: "A **Surcharge** is a tax on tax. Unlike shared taxes and Cesses, the proceeds of a Surcharge are usually **not shared with the States** and are retained by the Centre."
+            },
+            {
+                q: "The constitutional provision that mandates that no tax shall be levied or collected except by authority of law is:",
+                o: ["Article 265", "Article 266", "Article 280", "Article 292"],
+                a: 0,
+                e: "**Article 265** states, 'No tax shall be levied or collected except by authority of law.' This is the basic constitutional principle governing taxation in India."
+            },
+            {
+                q: "The term **'Crowding Out'** in the context of Fiscal Policy refers to:",
+                o: ["An increase in private investment due to government spending.", "Government borrowing leading to higher interest rates and reduced private investment.", "A reduction in tax revenue due to a recession.", "Government expenditure being funded entirely by taxes."],
+                a: 1,
+                e: "**Crowding Out** occurs when aggressive government borrowing (due to high fiscal deficit) increases the demand for funds in the market, raising interest rates, which in turn reduces or 'crowds out' private sector investment."
+            },
+            {
+                q: "The concept of **'Tax Expenditure'** refers to:",
+                o: ["The cost of running the tax department.", "The mandatory tax sharing with the States.", "The revenue foregone by the government due to tax incentives, exemptions, and deductions.", "The tax collected from international trade."],
+                a: 2,
+                e: "**Tax Expenditure** (or 'revenue forgone') is the loss of tax revenue that the government experiences due to providing certain tax concessions (exemptions, deductions, rebates) to promote specific economic or social goals."
+            },
+            {
+                q: "The proceeds from **Disinvestment** (selling government shares in PSUs) are classified under which component of the budget?",
+                o: ["Revenue Receipts", "Non-Tax Revenue", "Non-Debt Capital Receipts", "Debt Capital Receipts"],
+                a: 2,
+                e: "**Disinvestment** reduces the government's assets but does not create a debt. Therefore, it is categorized as a **Non-Debt Capital Receipt**."
+            },
+            {
+                q: "Which tax structure is considered most equitable (fair) in terms of the ability-to-pay principle?",
+                o: ["Regressive Tax", "Proportional Tax", "Progressive Tax", "Indirect Tax"],
+                a: 2,
+                e: "A **Progressive Tax** (where the tax rate increases as income increases) aligns with the **ability-to-pay principle**, making it the most equitable structure."
+            },
+            {
+                q: "What is the primary objective of a **Balanced Budget** in Fiscal Policy?",
+                o: ["To ensure that total expenditure equals total revenue (without borrowing).", "To maximize government spending.", "To minimize taxes.", "To eliminate the Primary Deficit."],
+                a: 0,
+                e: "A **Balanced Budget** is one where the $\text{Total Receipts} = \text{Total Expenditure}$, meaning the government does not resort to net borrowing or deficit financing."
+            },
+            {
+                q: "The primary source of **Non-Tax Revenue** for the Union Government includes:",
+                o: ["Income Tax.", "Borrowings from the market.", "Interest receipts, dividends, and profits from PSUs.", "Goods and Services Tax (GST)."],
+                a: 2,
+                e: "**Non-Tax Revenue** comes from sources other than taxes, such as **interest received on loans, dividends and profits** from Public Sector Undertakings (PSUs), and fees/fines."
+            },
+            {
+                q: "The **Budget Estimate (BE)** and **Revised Estimate (RE)** figures for a financial year differ because:",
+                o: ["RE is the final actual expenditure.", "BE is based on the previous year's actuals, while RE is a mid-year projection.", "RE is the provisional actual, while BE is the final actual.", "RE is based on the final tax collection figures."],
+                a: 1,
+                e: "The **Budget Estimate (BE)** is the initial projection made before the start of the year. The **Revised Estimate (RE)** is a mid-year (e.g., in February) projection based on current trends, while the **Actuals** come much later."
+            },
+            {
+                q: "Which tax is an example of a **Specific Tax**?",
+                o: ["A tax of 15% on the value of imported goods.", "A tax of ₹ 10 per packet of cigarettes, regardless of the price.", "A tax where the rate increases with the value of the good.", "A tax on corporate profits."],
+                a: 1,
+                e: "A **Specific Tax** is levied as a **fixed amount per unit** of the commodity, irrespective of its price or value ($\text{Ad Valorem}$ tax is based on value)."
+            },
+            {
+                q: "The concept of **'Automatic Stabilizers'** in Fiscal Policy implies:",
+                o: ["Discretionary changes made to tax rates by the Finance Minister.", "Non-discretionary changes in government revenue and expenditure that counteract the business cycle.", "A policy of maintaining a zero revenue deficit.", "The government borrowing from the RBI automatically."],
+                a: 1,
+                e: "**Automatic Stabilizers** are features of the tax and spending system (e.g., progressive income tax, unemployment benefits) that automatically **dampen economic fluctuations** without requiring explicit, discretionary government action."
+            },
+            {
+                q: "The **Consolidated Fund of India** is dealt with under which Article of the Constitution?",
+                o: ["Article 266(1)", "Article 267", "Article 275", "Article 293"],
+                a: 0,
+                e: "**Article 266(1)** deals with the **Consolidated Fund of India**, into which all revenues received by the Government of India, all loans raised by it, and all moneys received in repayment of loans are credited."
+            },
+            {
+                q: "What does the government's liability related to market borrowings fall under?",
+                o: ["Revenue Receipts", "Non-Debt Capital Receipts", "Debt Capital Receipts", "Revenue Expenditure"],
+                a: 2,
+                e: "Market borrowings increase the government's liabilities and create future debt obligations. Hence, they are classified as **Debt Capital Receipts**."
+            },
+            {
+                q: "The key objective of the **Tax to GDP Ratio** is to indicate the:",
+                o: ["Total capital expenditure by the government.", "Government's spending on subsidies.", "Tax revenue mobilization capacity relative to the size of the economy.", "Foreign debt level."],
+                a: 2,
+                e: "The **Tax to GDP Ratio** is a measure of the government's effectiveness in **tax revenue mobilization** and is a key indicator of fiscal strength."
+            },
+            {
+                q: "Which term is most relevant to the concept of **Inter-generational Equity** in Fiscal Policy?",
+                o: ["Revenue Deficit", "Primary Deficit", "Total Public Debt", "Subsidies"],
+                a: 2,
+                e: "**Total Public Debt** is most relevant. High debt shifts the burden of repayment (and interest costs) to future generations, directly impacting **Inter-generational Equity**."
+            },
+            {
+                q: "The **Public Account of India** deals with money where the government is acting as a:",
+                o: ["Borrower (Debt).", "Trustee (e.g., Provident Funds, Small Savings).", "Revenue collector (Taxes).", "Grant dispenser (Grants to States)."],
+                a: 1,
+                e: "The **Public Account** is for funds where the government is acting like a **banker or trustee** (e.g., Provident Funds, remittances), which do not belong to the Consolidated Fund and do not require parliamentary approval for withdrawal."
+            },
+            {
+                q: "If the government wants to reduce inequality through fiscal measures, it should primarily rely on:",
+                o: ["A higher reliance on Indirect Taxes.", "Increased capital expenditure.", "A higher reliance on Progressive Direct Taxes.", "Reduced social sector spending."],
+                a: 2,
+                e: "A higher reliance on **Progressive Direct Taxes** (Income Tax, Wealth Tax) ensures that the wealthy pay a larger proportion of their income, which is the most effective way for fiscal policy to reduce **income inequality**."
+            },
+            {
+                q: "The difference between **Fiscal Deficit** and **Primary Deficit** reflects the burden of **debt servicing** incurred due to past borrowings. This is measured by:",
+                o: ["Interest receipts.", "Interest payments.", "Disinvestment proceeds.", "Loan recoveries."],
+                a: 1,
+                e: "The difference is simply the **Interest Payments** made by the government on the debt accumulated over previous years, reflecting the cost of debt servicing."
+            },
+            {
+                q: "Which document contains detailed data on the economic and fiscal performance of the country over the last year, serving as a background to the Budget?",
+                o: ["Finance Bill", "Economic Survey", "Appropriation Bill", "Vote on Account"],
+                a: 1,
+                e: "The **Economic Survey**, prepared by the Chief Economic Adviser (CEA), is released just before the Budget and provides a comprehensive review of the economy's performance."
+            },
+            {
+                q: "The **GST Council**, which governs the GST regime, is chaired by the:",
+                o: ["Prime Minister.", "Union Finance Minister.", "RBI Governor.", "Chairman of the Finance Commission."],
+                a: 1,
+                e: "The **GST Council** is the constitutional body (Article 279A) that makes recommendations on GST matters and is chaired by the **Union Finance Minister**."
+            },
+            {
+                q: "The constitutional authority responsible for making recommendations to the President on the distribution of net tax proceeds between the Union and the States is the:",
+                o: ["NITI Aayog.", "Finance Commission.", "Inter-State Council.", "GST Council."],
+                a: 1,
+                e: "The **Finance Commission** (Article 280) is the constitutional body that decides the principle and criteria for the vertical (Centre to States) and horizontal (among States) devolution of central taxes."
+            },
+            {
+                q: "The **Finance Bill** introduced after the Budget presentation contains the legislative proposals for:",
+                o: ["Authorization of expenditures from the Consolidated Fund.", "Giving effect to the financial proposals of the Government for the following financial year (Tax changes).", "Allowing the government to borrow money.", "Proposing the annual plan for NITI Aayog."],
+                a: 1,
+                e: "The **Finance Bill** contains the proposals of the government for the imposition, abolition, remission, alteration, or regulation of taxes and duties (the **tax changes**)."
+            },
+            {
+                q: "If a government decides to fund its expenditure by printing new currency notes, this method is known as:",
+                o: ["Market Borrowing", "Deficit Financing (Monetized Deficit)", "Disinvestment", "External Borrowing"],
+                a: 1,
+                e: "When a government finances its deficit by borrowing directly from the Central Bank (RBI) against T-Bills, which often leads to the printing of new currency, it is termed **Deficit Financing** or **Monetized Deficit**."
+            },
+            {
+                q: "The **'Tax Incidence'** refers to:",
+                o: ["Who legally pays the tax to the government.", "Who ultimately bears the burden of the tax.", "The rate at which the tax is levied.", "The total revenue collected from the tax."],
+                a: 1,
+                e: "**Tax Incidence** refers to the final **economic burden** of the tax, which may fall on a different person than the one who legally paid the tax (the tax impact)."
+            },
+            {
+                          q: "Which type of debt increases the demand for funds in the economy and potentially raises interest rates?",
+                o: ["External Debt only.", "Domestic (Market) Borrowing.", "Debt from the RBI (Monetized Deficit).", "Non-debt Capital Receipts."],
+                a: 1,
+                e: "**Domestic (Market) Borrowing** is done by issuing bonds, which competes with the private sector for available savings, thus increasing the demand for funds and potentially raising interest rates (**Crowding Out**)."
+            },
+            {
+                q: "Which item is generally classified under **Revenue Receipt**?",
+                o: ["Recovery of loans.", "Proceeds from the sale of shares in a PSU.", "Borrowings from the World Bank.", "Dividends and profits from PSUs."],
+                a: 3,
+                e: "**Dividends and profits** from PSUs are a form of income that neither creates a liability nor reduces an asset, classifying them as **Non-Tax Revenue Receipts**."
+            },
+            {
+                q: "The **Appropriation Bill** is introduced after the Vote on Account and aims to grant Parliament's authorization for:",
+                o: ["Introducing new taxes.", "Borrowing funds from the public.", "Withdrawing money from the Consolidated Fund of India to meet expenditure.", "Amending the Constitution."],
+                a: 2,
+                e: "The **Appropriation Bill**, once passed, allows the government to legally **withdraw money from the Consolidated Fund of India** to meet the expenses approved in the Budget."
+            },
+            {
+                q: "The concept of **'Revenue Neutral Rate (RNR)'** in GST aimed to ensure that:",
+                o: ["All states receive equal GST revenue.", "The introduction of GST does not lead to any loss of revenue for the Centre or the States.", "All goods are taxed at a single, uniform rate.", "The total tax collection remains at zero."],
+                a: 1,
+                e: "The **RNR** was the single tax rate that would have generated the **same amount of revenue** as the sum of taxes it replaced (VAT, Service Tax, Excise, etc.), ensuring revenue neutrality for the government."
+            },
+            {
+                q: "In the context of fiscal management, a **Primary Surplus** means:",
+                o: ["The government has eliminated its fiscal deficit.", "The government's borrowing is less than its interest payment obligation.", "The government is using current revenues to pay for current spending and part of the interest on past debt.", "The government is only borrowing to meet past interest obligations."],
+                a: 2,
+                e: "A Primary Surplus means $(\text{Revenue} + \text{Non-Debt Capital Receipts}) > \text{Non-Interest Expenditure}$. This means the government is generating enough revenue to cover all its non-interest spending and has a surplus left over to pay for **part of the interest on past debt**."
+            },
+            
+        ];
+        
+        const TOTAL_QUESTIONS = questions.length;
+
+        // --- 2. STATE VARIABLES ---
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(TOTAL_QUESTIONS).fill(null);
+        let markedForReview = new Array(TOTAL_QUESTIONS).fill(false);
+        let timerInterval;
+        let timeLeft = 3600; // 60 minutes * 60 seconds = 3600 seconds
+        let popupTimerInterval;
+
+        // --- 3. DOM ELEMENTS ---
+        const instructionPopup = document.getElementById('instructionPopup');
+        const popupTimerDisplay = document.getElementById('popupTimer');
+        const skipButton = document.getElementById('skipButton');
+        const startScreen = document.getElementById('startScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const questionHeader = document.getElementById('questionHeader');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const questionNavPalette = document.getElementById('questionNavPalette');
+        const backButton = document.getElementById('backButton');
+        const nextButton = document.getElementById('nextButton');
+        const markButton = document.getElementById('markButton');
+        const confirmModal = document.getElementById('confirmModal');
+        
+        // Results Elements
+        const donutChart = document.getElementById('donutChart');
+        const scorePercent = document.getElementById('scorePercent');
+        const correctCount = document.getElementById('correctCount');
+        const incorrectCount = document.getElementById('incorrectCount');
+        const unattemptedCount = document.getElementById('unattemptedCount');
+        const solutionsList = document.getElementById('solutionsList');
+        const tabSummary = document.getElementById('tabSummary');
+        const tabSolutions = document.getElementById('tabSolutions');
+        const contentSummary = document.getElementById('contentSummary');
+        const contentSolutions = document.getElementById('contentSolutions');
+        
+        // Update total questions display on results screen
+        document.querySelectorAll('#contentSummary .text-2xl.font-bold.text-blue-800')[1].textContent = TOTAL_QUESTIONS;
+
+
+        // --- 4. FUNCTIONS ---
+
+        // Popup and Start
+        function startPopupTimer() {
+            let popupTime = 10;
+            popupTimerDisplay.textContent = `Auto-skipping in ${popupTime}s...`;
+
+            popupTimerInterval = setInterval(() => {
+                popupTime--;
+                popupTimerDisplay.textContent = `Auto-skipping in ${popupTime}s...`;
+                if (popupTime <= 0) {
+                    skipPopup();
+                }
+            }, 1000);
+        }
+
+        function skipPopup() {
+            clearInterval(popupTimerInterval);
+            instructionPopup.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+            startScreen.classList.add('flex');
+        }
+
+        function startTest() {
+            startScreen.classList.add('hidden');
+            startScreen.classList.remove('flex');
+            quizScreen.classList.remove('hidden');
+            
+            // Initialize arrays based on TOTAL_QUESTIONS
+            userAnswers = new Array(TOTAL_QUESTIONS).fill(null);
+            markedForReview = new Array(TOTAL_QUESTIONS).fill(false);
+
+            buildQuestionPalette();
+            loadQuestion(0);
+            startMainTimer();
+        }
+
+        // Timer
+        function startMainTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                
+                timerDisplay.textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        // Quiz Navigation
+        function loadQuestion(index) {
+            if (index < 0 || index >= TOTAL_QUESTIONS) return;
+
+            saveAnswer(); // Save answer from the *previous* question before loading new one
+            
+            currentQuestionIndex = index;
+            const q = questions[index];
+
+            questionHeader.textContent = `Question ${index + 1}:`;
+            questionText.textContent = q.q;
+            optionsContainer.innerHTML = '';
+
+            const optionLetters = ['A', 'B', 'C', 'D'];
+            q.o.forEach((option, i) => {
+                const isChecked = (userAnswers[index] === i);
+                optionsContainer.innerHTML += `
+                    <label for="option${i}" class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition duration-200">
+                        <input type="radio" id="option${i}" name="answer" value="${i}" ${isChecked ? 'checked' : ''} class="mr-4 flex-shrink-0">
+                        <span class="font-medium text-gray-800">${optionLetters[i]}. ${option}</span>
+                    </label>
+                `;
+            });
+
+            // Update button states
+            backButton.disabled = (index === 0);
+            backButton.classList.toggle('opacity-50', index === 0);
+            nextButton.disabled = (index === TOTAL_QUESTIONS - 1);
+            nextButton.classList.toggle('opacity-50', index === TOTAL_QUESTIONS - 1);
+            
+            // Update palette
+            updatePalette();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                loadQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        function goToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        function saveAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = parseInt(selectedOption.value);
+            }
+        }
+
+        function clearAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                selectedOption.checked = false;
+            }
+            userAnswers[currentQuestionIndex] = null;
+            updatePalette();
+        }
+
+        function toggleMarkForReview() {
+            markedForReview[currentQuestionIndex] = !markedForReview[currentQuestionIndex];
+            updatePalette();
+        }
+
+        // Question Palette
+        function buildQuestionPalette() {
+            questionNavPalette.innerHTML = '';
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                questionNavPalette.innerHTML += `
+                    <button id="qnav${i}" onclick="goToQuestion(${i})" class="w-10 h-10 flex items-center justify-center font-bold rounded-md bg-gray-300 text-gray-700 transition duration-200">
+                        ${i + 1}
+                    </button>
+                `;
+            }
+        }
+
+        function updatePalette() {
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                const btn = document.getElementById(`qnav${i}`);
+                btn.className = "w-10 h-10 flex items-center justify-center font-bold rounded-md transition duration-200"; // Reset classes
+                
+                if (markedForReview[i]) {
+                    btn.classList.add('bg-purple-500', 'text-white');
+                } else if (userAnswers[i] !== null) {
+                    btn.classList.add('bg-green-500', 'text-white');
+                } else if (i === currentQuestionIndex) {
+                    btn.classList.add('bg-red-500', 'text-white'); // Not answered, currently on it
+                } else {
+                    btn.classList.add('bg-gray-300', 'text-gray-700'); // Not visited (or skipped)
+                }
+
+                // Add border if it's the current question
+                if (i === currentQuestionIndex) {
+                    btn.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
+                }
+            }
+        }
+
+        // Submission
+        function confirmSubmit() {
+            saveAnswer(); // Save the very last answer
+            updatePalette(); // Update palette one last time
+            confirmModal.classList.remove('hidden');
+        }
+        
+        function closeConfirmModal() {
+            confirmModal.classList.add('hidden');
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            closeConfirmModal();
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            
+            calculateAndShowResults();
+        }
+
+        // Results
+        function calculateAndShowResults() {
+            let correct = 0;
+            let incorrect = 0;
+            let unattempted = 0;
+
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                if (userAnswers[i] === null) {
+                    unattempted++;
+                } else if (userAnswers[i] === questions[i].a) {
+                    correct++;
+                } else {
+                    incorrect++;
+                }
+            }
+            
+            let total = TOTAL_QUESTIONS;
+            let score = (correct / total) * 100;
+
+            // 1. Populate Summary
+            scorePercent.textContent = `${score.toFixed(0)}%`;
+            correctCount.textContent = correct;
+            incorrectCount.textContent = incorrect;
+            unattemptedCount.textContent = unattempted;
+
+            // 2. Update Donut Chart
+            let correctPercent = (correct / total) * 100;
+            let incorrectPercent = correctPercent + (incorrect / total) * 100;
+            let unattemptedPercent = 100;
+
+            donutChart.style.setProperty('--correct-percent', `${correctPercent}%`);
+            donutChart.style.setProperty('--incorrect-percent', `${incorrectPercent}%`);
+            donutChart.style.setProperty('--unattempted-percent', `${unattemptedPercent}%`);
+
+            // 3. Populate Solutions
+            solutionsList.innerHTML = '';
+            const optionLetters = ['A', 'B', 'C', 'D'];
+            questions.forEach((q, i) => {
+                const userAnswerIndex = userAnswers[i];
+                const correctAnswerIndex = q.a;
+
+                let statusClass, statusText, userAnswerText;
+
+                if (userAnswerIndex === null) {
+                    statusClass = 'bg-gray-100 text-gray-800 border-gray-300';
+                    statusText = 'Unattempted';
+                    userAnswerText = '---';
+                } else if (userAnswerIndex === correctAnswerIndex) {
+                    statusClass = 'bg-green-100 text-green-800 border-green-300';
+                    statusText = 'Correct';
+                    userAnswerText = `${optionLetters[userAnswerIndex]}. ${q.o[userAnswerIndex]}`;
+                } else {
+                    statusClass = 'bg-red-100 text-red-800 border-red-300';
+                    statusText = 'Incorrect';
+                    userAnswerText = `${optionLetters[userAnswerIndex]}. ${q.o[userAnswerIndex]}`;
+                }
+
+                const correctAnswerText = `${optionLetters[correctAnswerIndex]}. ${q.o[correctAnswerIndex]}`;
+
+                solutionsList.innerHTML += `
+                    <div class="border ${statusClass} rounded-lg p-5">
+                        <h3 class="font-bold text-lg mb-2">Q ${i + 1}: ${q.q}</h3>
+                        <p class="mb-1"><span class="font-semibold">Your Answer: </span><span class="${statusText === 'Incorrect' ? 'text-red-700 font-bold' : ''}">${userAnswerText}</span></p>
+                        <p class="mb-3"><span class="font-semibold">Correct Answer: </span><span class="text-green-700 font-bold">${correctAnswerText}</span></p>
+                        <div class="bg-white border border-gray-200 p-3 rounded-md">
+                            <h4 class="font-semibold text-gray-800 mb-1">Explanation:</h4>
+                            <p class="text-gray-700">${q.e}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        function switchResultTab(tabName) {
+            if (tabName === 'Summary') {
+                contentSummary.classList.remove('hidden');
+                contentSolutions.classList.add('hidden');
+                tabSummary.classList.add('text-blue-600', 'border-blue-600');
+                tabSummary.classList.remove('text-gray-500', 'border-transparent');
+                tabSolutions.classList.add('text-gray-500', 'border-transparent');
+                tabSolutions.classList.remove('text-blue-600', 'border-blue-600');
+            } else {
+                contentSummary.classList.add('hidden');
+                contentSolutions.classList.remove('hidden');
+                tabSolutions.classList.add('text-blue-600', 'border-blue-600');
+                tabSolutions.classList.remove('text-gray-500', 'border-transparent');
+                tabSummary.classList.add('text-gray-500', 'border-transparent');
+                tabSummary.classList.remove('text-blue-600', 'border-blue-600');
+            }
+        }
+
+        // --- 5. INITIALIZATION ---
+        window.onload = () => {
+            startPopupTimer();
+        };
+
+    </script>
+</body>
+</html>
+
