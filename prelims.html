@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC Prelims Comprehensive Notes Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import { createIcons, BookOpen, FileText, Download, Calendar, Users, Globe, Leaf, Zap, Code, Shield, Factory, Feather, LandPlot } from 'https://unpkg.com/lucide@latest';
+        createIcons({ icons: { BookOpen, FileText, Download, Calendar, Users, Globe, Leaf, Zap, Code, Shield, Factory, Feather, LandPlot } });
+    </script>
+    <style>
+        :root {
+            --color-blue: #1d4ed8;
+            --color-secondary: #0c4a6e;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: auto;
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            color: #4b5563;
+        }
+        .sidebar-item:hover {
+            background-color: #e0f2fe;
+            color: var(--color-blue);
+        }
+        .sidebar-item.active {
+            background-color: var(--color-blue);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-item.active svg {
+            color: white;
+        }
+        .resource-group {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            background-color: #fafafa;
+        }
+        .subtopic-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            color: #1e40af;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .subtopic-link:hover {
+            background-color: #e0f2fe;
+            text-decoration: underline;
+        }
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--color-secondary);
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+            border-left: 4px solid #3b82f6;
+        }
+        /* Mobile Adjustments */
+        @media (max-width: 1023px) {
+            .sidebar {
+                display: none;
+            }
+            .mobile-selector {
+                display: block;
+            }
+        }
+        @media (min-width: 1024px) {
+            .mobile-selector {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="main-container p-4 lg:p-10">
+        
+        <!-- Header -->
+        <header class="bg-white p-6 mb-8 rounded-xl shadow-lg border border-gray-100">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2 flex items-center">
+                <i data-lucide="book-open" class="w-8 h-8 mr-4 text-blue-700"></i>
+                UPSC Prelims Comprehensive Notes Library
+            </h1>
+            <p class="text-lg text-gray-500">
+                Systematic, subject-wise collection of core notes and revision materials derived directly from the detailed UPSC syllabus.
+            </p>
+        </header>
+
+        <!-- Mobile Subject Selector -->
+        <div class="mobile-selector mb-6">
+            <label for="subject-select" class="block text-lg font-medium text-gray-700 mb-2">Select Subject</label>
+            <select id="subject-select" onchange="switchContent(this.value, true)" 
+                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-3 bg-white text-gray-800">
+                <option value="polity-content">1. Polity & Governance</option>
+                <option value="history-content">2. History & Culture</option>
+                <option value="economy-content">3. Indian Economy</option>
+                <option value="geography-content">4. Geography</option>
+                <option value="environment-content">5. Environment & Ecology</option>
+                <option value="science-tech-content">6. Science & Technology</option>
+                <option value="current-affairs-content">7. General Current Affairs</option>
+            </select>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="lg:grid lg:grid-cols-4 lg:gap-8">
+            
+            <!-- Column 1: Vertical Subject Sidebar (Desktop Only) -->
+            <nav class="sidebar hidden lg:block lg:col-span-1 bg-white p-4 rounded-xl shadow-md border border-gray-100 h-fit sticky top-0" role="tablist">
+                <div id="polity-tab" class="sidebar-item active" data-target="polity-content" onclick="switchContent('polity-content', false)">
+                    <i data-lucide="shield" class="w-5 h-5 mr-3 text-white"></i>
+                    Polity & Governance
+                </div>
+                <div id="history-tab" class="sidebar-item" data-target="history-content" onclick="switchContent('history-content', false)">
+                    <i data-lucide="calendar" class="w-5 h-5 mr-3 text-gray-500"></i>
+                    History & Culture
+                </div>
+                <div id="economy-tab" class="sidebar-item" data-target="economy-content" onclick="switchContent('economy-content', false)">
+                    <i data-lucide="factory" class="w-5 h-5 mr-3 text-gray-500"></i>
+                    Indian Economy
+                </div>
+                <div id="geography-tab" class="sidebar-item" data-target="geography-content" onclick="switchContent('geography-content', false)">
+                    <i data-lucide="globe" class="w-5 h-5 mr-3 text-gray-500"></i>
+                    Geography (World & India)
+                </div>
+                <div id="environment-tab" class="sidebar-item" data-target="environment-content" onclick="switchContent('environment-content', false)">
+                    <i data-lucide="leaf" class="w-5 h-5 mr-3 text-gray-500"></i>
+                    Environment & Ecology
+                </div>
+                <div id="science-tech-tab" class="sidebar-item" data-target="science-tech-content" onclick="switchContent('science-tech-content', false)">
+                    <i data-lucide="zap" class="w-5 h-5 mr-3 text-gray-500"></i>
+                    Science & Technology
+                </div>
+                <div id="current-affairs-tab" class="sidebar-item" data-target="current-affairs-content" onclick="switchContent('current-affairs-content', false)">
+                    <i data-lucide="feather" class="w-5 h-5 mr-3 text-gray-500"></i>
+                    General Current Affairs
+                </div>
+            </nav>
+
+            <!-- Column 2: Subject Content Area -->
+            <main class="lg:col-span-3 bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                
+                <!-- 1. Polity & Governance Content (Initial Active) -->
+                <section id="polity-content" class="subject-content">
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6 border-b pb-2">Polity & Governance (Syllabus Topics)</h2>
+                    
+                    <!-- Topic: Evolution of the Constitution -->
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Evolution of the Constitution</h3>
+                        <p class="section-title">The Company Rule (1773-1858)</p>
+                        <a href="./notes/polity_evolution_company_rule.md" class="subtopic-link">Regulating Act, 1773</a>
+                        <a href="./notes/polity_evolution_company_rule.md" class="subtopic-link">Pitt's India Act, 1784 & Amending Acts</a>
+                        <a href="./notes/polity_evolution_company_rule.md" class="subtopic-link">Charter Acts (1793, 1813, 1833, 1853)</a>
+                        
+                        <p class="section-title">The Crown Rule (1858-1947)</p>
+                        <a href="./notes/polity_evolution_crown_rule.md" class="subtopic-link">Government of India Act, 1858</a>
+                        <a href="./notes/polity_evolution_crown_rule.md" class="subtopic-link">Indian Councils Acts (1861, 1892, 1909)</a>
+                        <a href="./notes/polity_evolution_crown_rule.md" class="subtopic-link">GoI Act, 1919 (Montague-Chelmsford Reforms)</a>
+                        <a href="./notes/polity_evolution_crown_rule.md" class="subtopic-link">Government of India Act, 1935</a>
+                        <a href="./notes/polity_evolution_crown_rule.md" class="subtopic-link">Indian Independence Act, 1947</a>
+
+                        <p class="section-title">Drafting and Sources of Indian Constitution</p>
+                        <a href="./notes/polity_making_constitution.md" class="subtopic-link">Making of the Constitution (Committees and Milestones) - **Sample Notes Available**</a>
+                        <a href="./notes/polity_sources_features.md" class="subtopic-link">Sources of Indian Constitution (Seminal, External, Developmental)</a>
+                    </div>
+
+                    <!-- Topic: Salient Features, Union & Citizenship -->
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Salient Features and Basic Structure</h3>
+                        <a href="./notes/polity_sources_features.md" class="subtopic-link">Constitution and Types, Parliamentary vs. Presidential Systems</a>
+                        <a href="./notes/polity_basic_structure.md" class="subtopic-link">Amendment Procedure & Ingredients of Basic Structure</a>
+                        <a href="./notes/polity_preamble.md" class="subtopic-link">Preamble and Values (Sovereign, Secular, Socialist, Republic)</a>
+                    </div>
+                    
+                    <!-- Topic: Fundamental Rights, DPSP, FD -->
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Rights and Duties</h3>
+                        <a href="./notes/polity_fr_dpsp.md" class="subtopic-link">Fundamental Rights (Art. 14-32) - **Sample Notes Available**</a>
+                        <a href="./notes/polity_dpsp.md" class="subtopic-link">Directive Principles of State Policy (Socialistic, Gandhian, Liberal)</a>
+                        <a href="./notes/polity_fd.md" class="subtopic-link">Fundamental Duties (Art. 51A)</a>
+                    </div>
+
+                    <!-- Topic: System of Governance & Executive -->
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Union Executive and Legislature</h3>
+                        <a href="./notes/polity_union_exec.md" class="subtopic-link">President (Election, Powers, Impeachment) & Vice President</a>
+                        <a href="./notes/polity_pm_com.md" class="subtopic-link">Prime Minister, Council of Ministers & Collective Responsibility</a>
+                        <a href="./notes/polity_parliament.md" class="subtopic-link">Parliament: Lok Sabha and Rajya Sabha (Composition, Powers)</a>
+                        <a href="./notes/polity_legislative_proc.md" class="subtopic-link">Legislative Procedure (Ordinary, Money, Financial, CA Bills)</a>
+                    </div>
+                    
+                    <!-- Topic: Local Government & Judiciary -->
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Local Governance and Judiciary</h3>
+                        <a href="./notes/polity_panchayati_raj.md" class="subtopic-link">Panchayati Raj and Urban Local Government (73rd & 74th CAAs)</a>
+                        <a href="./notes/polity_judiciary_sc_hc.md" class="subtopic-link">The Supreme Court and High Courts (Jurisdiction, Appointments, Removal)</a>
+                        <a href="./notes/polity_bodies_const.md" class="subtopic-link">Constitutional & Non-Constitutional Bodies (UPSC, CAG, NHRC, Lokpal)</a>
+                    </div>
+                </section>
+
+                <!-- 2. History & Culture Content -->
+                <section id="history-content" class="subject-content hidden">
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6 border-b pb-2">History & Culture (Syllabus Topics)</h2>
+                    
+                    <!-- Topic: Ancient History -->
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Ancient History</h3>
+                        <a href="./notes/history_pre_historic.md" class="subtopic-link">Pre Historic Times (Palaeolithic, Mesolithic, Neolithic, Chalcolithic)</a>
+                        <a href="./notes/history_ivc.md" class="subtopic-link">Indus Valley Civilization (IVC Geography, Town Planning, Decline) - **Sample Notes Available**</a>
+                        <a href="./notes/history_vedic.md" class="subtopic-link">Rig Vedic and Later Vedic Period (Polity, Society, Economy, Religion) - **Sample Notes Available**</a>
+                        <a href="./notes/history_budd_jain.md" class="subtopic-link">Jainism and Buddhism (Life, Teachings, Councils, Decline)</a>
+                        <a href="./notes/history_mahajanapadas.md" class="subtopic-link">Mahajanapadas Period & Early Dynasties (Magadha, Persian/Alexander Invasions)</a>
+                        <a href="./notes/history_mauryan.md" class="subtopic-link">Mauryan Empire (Sources, Ashoka's Dhamma, Administration, Decline)</a>
+                        <a href="./notes/history_post_mauryan.md" class="subtopic-link">Post-Mauryan India (Satavahanas, Foreign Dynasties, Schools of Art)</a>
+                        <a href="./notes/history_gupta.md" class="subtopic-link">Gupta Period & Harshavardhana (Administration, Science & Tech, Literature)</a>
+                        <a href="./notes/history_sangam.md" class="subtopic-link">Sangam Period (Cholas, Cheras, Pandyas, Sangam Literature)</a>
+                    </div>
+                    
+                    <!-- Topic: Medieval History -->
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Medieval India</h3>
+                        <a href="./notes/history_early_medieval.md" class="subtopic-link">Major Dynasties (750-1200 AD): Palas, Pratiharas, Rashtrakutas (Tripartite Struggle)</a>
+                        <a href="./notes/history_cholas.md" class="subtopic-link">Cholas and Other South Indian Kingdoms (Administration, Society, Culture)</a>
+                        <a href="./notes/history_muslim_invasions.md" class="subtopic-link">Early Muslim Invasions (Arab Conquest of Sindh, Mahmud of Ghazni, Muhammad Ghori)</a>
+                        <a href="./notes/history_delhi_sultanate.md" class="subtopic-link">The Delhi Sultanate (Dynasties, Administration, Urbanization, Decline)</a>
+                        <a href="./notes/history_mughal_empire.md" class="subtopic-link">Mughal Empire (Babur, Humayun, Sher Shah, Akbar, Jahangir, Shah Jahan)</a>
+                        <a href="./notes/history_mughal_crisis.md" class="subtopic-link">Climax and Crisis of the Mughal Empire (Aurangzeb, Marathas, Jagirdari Crisis)</a>
+                        <a href="./notes/history_vijayanagar.md" class="subtopic-link">Vijayanagar Empire (Political History, Administration, Conflict with Bahmani)</a>
+                    </div>
+
+                    <!-- Topic: Modern History -->
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Modern History</h3>
+                        <a href="./notes/history_advent_europeans.md" class="subtopic-link">The Advent of Europeans (Portuguese, Dutch, English, French, Carnatic Wars)</a>
+                        <a href="./notes/history_british_expansion.md" class="subtopic-link">British Expansion in India (Bengal, Anglo-Maratha/Sikh Wars, Subsidiary Alliance, Doctrine of Lapse)</a>
+                        <a href="./notes/history_admin_policies.md" class="subtopic-link">Administration before 1857 & Economic Policies (Dual System, Land Revenue Systems)</a>
+                        <a href="./notes/history_revolt_1857.md" class="subtopic-link">The Revolt of 1857 (Causes, Leaders, Failure, Impact)</a>
+                        <a href="./notes/history_socio_reform.md" class="subtopic-link">Socio-Religious Reforms (Hindu, Muslim, Parsi, Sikh Movements & Personalities)</a>
+                        <a href="./notes/history_national_movement_1.md" class="subtopic-link">Indian National Movement - I (Moderates, Extremists, Partition of Bengal, Swadeshi)</a>
+                        <a href="./notes/history_national_movement_2.md" class="subtopic-link">Indian National Movement - II (Gandhian Era: Non-Cooperation, Civil Disobedience, Quit India)</a>
+                        <a href="./notes/history_constitutional_dev.md" class="subtopic-link">Constitutional Development in India (Regulating Act to Indian Independence Act)</a>
+                    </div>
+                </section>
+
+                <!-- 3. Indian Economy Content -->
+                <section id="economy-content" class="subject-content hidden">
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6 border-b pb-2">Indian Economy (Syllabus Topics)</h2>
+                    
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Basic Concepts & Measurements</h3>
+                        <a href="./notes/economy_basic_concepts.md" class="subtopic-link">Macroeconomic & Microeconomic Concepts (Sectors, Types of Economies)</a>
+                        <a href="./notes/economy_national_income.md" class="subtopic-link">National Income Concepts & Methods (GDP, GFCF, New Series 2011-12)</a>
+                        <a href="./notes/economy_inflation.md" class="subtopic-link">Inflation (Types, Causes, Measures: CPI, WPI, Core Inflation)</a>
+                        <a href="./notes/economy_growth_dev.md" class="subtopic-link">Economic Growth & Development (MDGs, PQLI, Green Accounting)</a>
+                    </div>
+                    
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Money, Banking, and Finance</h3>
+                        <a href="./notes/economy_money_banking.md" class="subtopic-link">Money Function and Classification ($\text{M}_1$, $\text{M}_3$, Digital Money, New Monetary Aggregates)</a>
+                        <a href="./notes/economy_rbi.md" class="subtopic-link">RBI (Functions, Monetary Policy, Monetary Policy Committee) - **Sample Notes Available**</a>
+                        <a href="./notes/economy_banking_structure.md" class="subtopic-link">Banking Structure & Reforms (PSBs, RRBs, Differentiated Banks, Basel Norms)</a>
+                        <a href="./notes/economy_financial_markets.md" class="subtopic-link">Financial Market and its Instruments (Money Market, Capital Market, Stock Exchanges)</a>
+                        <a href="./notes/economy_public_finance.md" class="subtopic-link">Public Finance & Taxation (Budgeting, Deficit, GST, DTC, Finance Commission)</a>
+                    </div>
+
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">External Sector and Planning</h3>
+                        <a href="./notes/economy_planning.md" class="subtopic-link">Planning (Objectives, Strategies: Harrod-Domar, Nehru-Mahalanobis, NITI Aayog)</a>
+                          <a href="./notes/economy_foreign_trade.md" class="subtopic-link">Foreign Trade & Balance of Payments (FDI, FII, FERA, FEMA, Exchange Rate)</a>
+                        <a href="./notes/economy_international_org.md" class="subtopic-link">International Organizations (IMF, World Bank, WTO, Regional Trade Blocs)</a>
+                        <a href="./notes/economy_economic_sectors.md" class="subtopic-link">Economic Sectors (Poverty, Employment, Welfare Schemes, Committees)</a>
+                    </div>
+                </section>
+
+                <!-- 4. Geography Content -->
+                <section id="geography-content" class="subject-content hidden">
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6 border-b pb-2">Geography (Syllabus Topics)</h2>
+                    
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">General and Physical Geography</h3>
+                        <a href="./notes/geo_universe.md" class="subtopic-link">Universe & Earth Evolution (Theories, Solar System, Latitude/Longitude, Eclipses)</a>
+                        <a href="./notes/geo_geomorphology.md" class="subtopic-link">Geomorphology (Earth's Interior, Rocks, Endogenic/Exogenic Forces)</a>
+                        <a href="./notes/geo_plate_tectonics.md" class="subtopic-link">Distribution of Continents & Oceans (Continental Drift, Sea Floor Spreading, Plate Tectonics)</a>
+                        <a href="./notes/geo_landforms.md" class="subtopic-link">Landforms and their evolution (Water, Wind, Glaciers, Ground Water)</a>
+                        <a href="./notes/geo_oceanography.md" class="subtopic-link">Oceanography (Submarine Relief, Temperature, Salinity, Waves, Currents, Tides)</a>
+                        <a href="./notes/geo_atmosphere.md" class="subtopic-link">Atmosphere and Climate (Composition, Structure, Insolation, Heat Budget)</a>
+                        <a href="./notes/geo_winds.md" class="subtopic-link">Winds and Pressure belts (Planetary Winds, General Circulation, Jet Stream)</a>
+                        <a href="./notes/geo_cyclones.md" class="subtopic-link">Air Mass, Fronts, Cyclones (Tropical, Temperate, Thunderstorms, Tornadoes)</a>
+                        <a href="./notes/geo_precipitation.md" class="subtopic-link">Precipitation (Water Vapour, Humidity, Clouds, Types of Rainfall)</a>
+                        <a href="./notes/geo_climatic_zones.md" class="subtopic-link">Climatic Zones of the World (Koppen's Classification)</a>
+                    </div>
+
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Indian and Economic Geography</h3>
+                        <a href="./notes/geo_physiography.md" class="subtopic-link">Physiography of India (Himalayas, Northern Plains, Peninsular Plateau, Coasts)</a>
+                        <a href="./notes/geo_drainage.md" class="subtopic-link">Drainage System (Himalayan & Peninsular: Indus, Ganga, Brahmaputra Systems)</a>
+                        <a href="./notes/geo_monsoon.md" class="subtopic-link">Climate & Monsoon (Factors, Mechanism, El Nino/La Nina, Seasonal Rhythm)</a>
+                        <a href="./notes/geo_soils_veg.md" class="subtopic-link">Soils in India & Natural Vegetation (Types, Erosion, Conservation, Mangroves)</a>
+                        <a href="./notes/geo_population.md" class="subtopic-link">Population & Settlement (Growth, Distribution, Urbanization, Census 2011)</a>
+                        <a href="./notes/geo_resources.md" class="subtopic-link">Mineral & Energy Resources (Distribution, Production: Coal, Petroleum, Atomic Energy)</a>
+                        <a href="./notes/geo_agriculture.md" class="subtopic-link">Agriculture (Cropping Seasons/Patterns, Land Use, Schemes, Productivity of Crops)</a>
+                        <a href="./notes/geo_industry.md" class="subtopic-link">Industry (Iron & Steel, Textile, Engineering, Industrial Regions)</a>
+                        <a href="./notes/geo_world_regional.md" class="subtopic-link">World Regional Geography (Continents, Location in News, Regional Groupings)</a>
+                    </div>
+                </section>
+
+                <!-- 5. Environment & Ecology Content -->
+                <section id="environment-content" class="subject-content hidden">
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6 border-b pb-2">Environment & Ecology (Syllabus Topics)</h2>
+                    
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Environmental Ecology & Ecosystem</h3>
+                        <a href="./notes/env_ecology_basics.md" class="subtopic-link">Basic Concepts of Ecology (Hierarchy, Niche, Principles, Succession)</a>
+                        <a href="./notes/env_ecosystem_dynamics.md" class="subtopic-link">Ecosystem Dynamics (Energy Flow, Trophic Levels, Food Web, Ecological Pyramids)</a>
+                        <a href="./notes/env_population_ecology.md" class="subtopic-link">Population Ecology & Adaptation (Growth Models, Species Types: Keystone, Indicator, Invasive)</a>
+                        <a href="./notes/env_terrestrial_aquatic.md" class="subtopic-link">Terrestrial & Aquatic Ecosystems (Forests, Grasslands, Tundra, Marine, Coral Reefs)</a>
+                        <a href="./notes/env_nutrient_cycling.md" class="subtopic-link">Nutrient Cycling (Biogeochemical Cycles: Carbon, Nitrogen, Sulphur, Phosphorus)</a>
+                    </div>
+                    
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Biodiversity & Conservation</h3>
+                        <a href="./notes/env_biodiversity.md" class="subtopic-link">Biodiversity (Types, Patterns, Hotspots, Threats: Evil Quartet, Extinction) - **Sample Notes Available**</a>
+                        <a href="./notes/env_conservation_methods.md" class="subtopic-link">Conservation (In-situ, Ex-situ: Protected Areas, Biosphere Reserves, Zoological Parks)</a>
+                        <a href="./notes/env_marine_wetlands.md" class="subtopic-link">Estuaries, Mangroves, Coral Reefs, & Wetlands (Ramsar Convention)</a>
+                        <a href="./notes/env_resource_deg.md" class="subtopic-link">Resource Degradation & Management (Land, Forest, Soil, Water, Energy Resources)</a>
+                    </div>
+
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Pollution & Climate Change</h3>
+                        <a href="./notes/env_pollution.md" class="subtopic-link">Environmental Pollution (Air, Water, Marine, Noise, Radioactive, Thermal, Waste Management)</a>
+                        <a href="./notes/env_climate_change.md" class="subtopic-link">Climate Change (Global Warming, Impact: Acid Rain, El Nino, Ozone Depletion) - **Sample Notes Available**</a>
+                        <a href="./notes/env_mitigation_gov.md" class="subtopic-link">Mitigation & Governance (Acts, Policies, EIA, UNFCCC, Kyoto, Paris, International Bodies)</a>
+                    </div>
+                </section>
+
+                <!-- 6. Science & Technology Content -->
+                <section id="science-tech-content" class="subject-content hidden">
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6 border-b pb-2">Science & Technology (Syllabus Topics)</h2>
+                    
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">S&T in India & Space</h3>
+                        <a href="./notes/science_policy.md" class="subtopic-link">Policy Development of S&T in India (Policies 1958-2013, Technology Vision 2035)</a>
+                        <a href="./notes/science_orgs.md" class="subtopic-link">Different Organization/Institution for S&T (DST, CSIR, Technology Development Board)</a>
+                        <a href="./notes/science_space_basics.md" class="subtopic-link">Space Research Programme (Orbits, Launch Vehicles, GSLV, PSLV, Cryogenic)</a>
+                        <a href="./notes/science_space_missions.md" class="subtopic-link">Satellites, Launch Vehicles & Missions (IRS, INSAT, Chandrayaan, MOM, IRNSS, GAGAN)</a>
+                    </div>
+
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">IT, Nano, Robotics & Defense</h3>
+                        <a href="./notes/science_it_comm.md" class="subtopic-link">IT and Communication (E-Governance, Digital India, Cyber Security, Net Neutrality, Block Chain)</a>
+                        <a href="./notes/science_nano_robotics.md" class="subtopic-link">Nano Technology & Robotics (Basics, Applications, Carbon Nanotube, Graphene, AI, Laws of Robotics)</a>
+                        <a href="./notes/science_defense.md" class="subtopic-link">Defence Technology (Missile systems, IGMDP, Prithvi, Agni, Brahmos, Submarines, AWACS)</a>
+                        <a href="./notes/science_nuclear.md" class="subtopic-link">Nuclear Technology (Fission, Fusion, 3-Stage Programme, Reactors, Safety Standards)</a>
+                        <a href="./notes/science_ipr.md" class="subtopic-link">IPR (Copyrights, Trademarks, Patents, Industrial Design)</a>
+                    </div>
+
+                    <div class="resource-group">
+                        <h3 class="font-bold text-xl text-gray-800 mb-3">Biotechnology & General Science</h3>
+                        <a href="./notes/science_biotech.md" class="subtopic-link">Biotechnology (Genetics, Recombinant DNA, Biofuels, Animal/Plant BT, Recent Developments) - **Sample Notes Available**</a>
+                        <a href="./notes/science_general_biology.md" class="subtopic-link">General Science: Biology (Cells, Genetics, Evolution, Diseases, Economic Zoology)</a>
+                    </div>
+                </section>
+                
+                <!-- 7. General Current Affairs Content -->
+                <section id="current-affairs-content" class="subject-content hidden">
+                    <h2 class="text-3xl font-bold text-blue-700 mb-6 border-b pb-2">General Current Affairs (Compilations)</h2>
+                    <p class="text-gray-600 mb-6">Monthly compilations and summaries of major national and international events relevant for Prelims.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="resource-group">
+                            <h3 class="font-bold text-lg text-gray-800 mb-3 border-b pb-2">Monthly Compilations</h3>
+                            <a href="./notes/ca_jan_2025.md" class="subtopic-link">January 2025 Current Affairs (Summary)</a>
+                            <a href="./notes/ca_feb_2025.md" class="subtopic-link">February 2025 Current Affairs (Summary)</a>
+                            <a href="./notes/ca_annual_2024.md" class="subtopic-link">Annual Compilation 2024-25 (Comprehensive)</a>
+                        </div>
+                    </div>
+                </section>
+                
+            </main>
+        </div>
+
+    </div>
+
+    <!-- JavaScript for Tab Switching Logic -->
+    <script>
+        function switchContent(targetId, isMobile) {
+            document.querySelectorAll('.subject-content').forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            const targetContent = document.getElementById(targetId);
+            if (targetContent) {
+                targetContent.classList.remove('hidden');
+            }
+
+            if (!isMobile) {
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    item.classList.remove('active');
+                    const icon = item.querySelector('svg');
+                    if (icon) {
+                        icon.classList.remove('text-white');
+                        icon.classList.add('text-gray-500');
+                    }
+                });
+
+                const activeTab = document.querySelector(`[data-target="${targetId}"]`);
+                if (activeTab) {
+                    activeTab.classList.add('active');
+                    const icon = activeTab.querySelector('svg');
+                    if (icon) {
+                         icon.classList.remove('text-gray-500');
+                         icon.classList.add('text-white');
+                    }
+                }
+            } else {
+                document.getElementById('subject-select').value = targetId;
+                // Update active state in desktop sidebar for consistency
+                document.querySelectorAll('.sidebar-item').forEach(item => {
+                    item.classList.remove('active');
+                    const icon = item.querySelector('svg');
+                    if (icon) {
+                        icon.classList.remove('text-white');
+                        icon.classList.add('text-gray-500');
+                    }
+                });
+                const activeTab = document.querySelector(`[data-target="${targetId}"]`);
+                if (activeTab) {
+                    activeTab.classList.add('active');
+                    const icon = activeTab.querySelector('svg');
+                    if (icon) {
+                         icon.classList.remove('text-gray-500');
+                         icon.classList.add('text-white');
+                    }
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+             // Initialize icon rendering
+             if (typeof createIcons !== 'undefined') {
+                createIcons({ icons: { BookOpen, FileText, Download, Calendar, Users, Globe, Leaf, Zap, Code, Shield, Factory, Feather, LandPlot } });
+            }
+
+            // Set initial active state for Polity
+            switchContent('polity-content', false);
+        });
+    </script>
+</body>
+</html>
+
+
