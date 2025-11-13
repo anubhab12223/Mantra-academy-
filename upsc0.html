@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC Mock Test - General Studies Comprehensive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* Disable tap highlight on mobile */
+        }
+
+        /* Custom scrollbar for question list */
+        .question-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+        .question-nav::-webkit-scrollbar-thumb {
+            background-color: #9ca3af;
+            border-radius: 20px;
+        }
+
+        /* Custom radio buttons */
+        input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #6b7280;
+            border-radius: 50%;
+            outline: none;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        input[type="radio"]:checked {
+            border: 6px solid #2563eb; /* Blue-600 */
+            background-color: white;
+        }
+
+        /* Donut chart styles */
+        .donut-chart {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #10b981 var(--correct-percent),
+                #ef4444 0 var(--incorrect-percent),
+                #6b7280 0 var(--unattempted-percent)
+            );
+        }
+        .donut-chart-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 160px;
+            height: 160px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div id="instructionPopup" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+            <h2 class="text-2xl font-bold text-center text-blue-700 mb-4">UPSC Exam Instructions</h2>
+            
+            <div class="space-y-4 text-gray-700">
+                <div>
+                    <h3 class="font-semibold text-lg text-red-600">Important Warnings</h3>
+                    <ul class="list-disc list-outside ml-5 space-y-1 mt-2 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <li>Do NOT PRESS any keyboard key once the exam is started. This may LOCK your exam.</li>
+                        <li>Do Not CLICK on the SUBMIT Button unless you have completed the exam.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-lg text-blue-600">Answering Questions</h3>
+                    <ul class="list-disc list-outside ml-5 space-y-1 mt-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <li>Click on the radio button next to the option to select your answer.</li>
+                        <li>To change an answer, simply click the desired option button.</li>
+                        <li>Click on the <span class="font-bold text-blue-700">Clear</span> button to deselect a chosen answer.</li>
+                        <li>Click on <span class="font-bold text-blue-700">Next</span> to save your answer and move to the next question.</li>
+                        <li>Click on <span class="font-bold text-purple-700">Mark for Review</span> to mark a question for later review.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-between items-center">
+                <button id="skipButton" onclick="skipPopup()" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition duration-200">
+                    Skip
+                </button>
+                <span id="popupTimer" class="text-sm text-gray-500">Auto-skipping in 10s...</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="startScreen" class="hidden min-h-screen w-full flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md p-8 text-center">
+            <svg class="w-16 h-16 text-blue-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            <h1 class="text-3xl font-bold text-gray-800 mt-4">Ready to Begin?</h1>
+            <p class="text-gray-600 mt-2">Click "Start Test" when you're ready to begin the examination.</p>
+            <div class="bg-blue-50 border border-blue-200 text-blue-800 rounded-lg p-4 mt-6 text-left">
+                <h3 class="font-bold">Mock Test Details:</h3>
+                <ul class="list-disc list-outside ml-5 mt-2">
+                    <li><span class="font-semibold">Topic:</span> General Studies (Comprehensive)</li>
+                    <li><span class="font-semibold">Questions:</span> 100</li>
+                    <li><span class="font-semibold">Time Limit:</span> 120 Minutes (2 Hours)</li>
+                </ul>
+            </div>
+            <button onclick="startTest()" class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75 transition duration-200 mt-8 text-lg">
+                Start Test
+            </button>
+        </div>
+    </div>
+
+    <div id="quizScreen" class="hidden">
+        <div class="bg-white shadow-md sticky top-0 z-10">
+            <div class="container mx-auto max-w-7xl px-4 flex justify-between items-center h-16">
+                <h1 class="text-sm sm:text-lg font-bold text-blue-800">CIVIL SER. (P) MOCK TEST - GENERAL STUDIES</h1>
+                <div class="flex items-center space-x-2 bg-red-100 text-red-700 font-bold px-3 py-1.5 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span id="timerDisplay">120:00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mx-auto max-w-7xl p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-lg">
+                <div class="p-5 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800" id="questionHeader">Question 1:</h2>
+                    <p class="text-sm text-white bg-blue-500 rounded-full px-3 py-0.5 inline-block mt-2">Multiple Choice</p>
+                </div>
+                
+                <div class="p-5">
+                    <p class="text-lg text-gray-900 mb-6" id="questionText">Loading question...</p>
+                    
+                    <div class="space-y-5" id="optionsContainer">
+                        </div>
+                </div>
+
+                <div class="p-5 border-t border-gray-200 bg-gray-50 rounded-b-lg flex flex-wrap gap-3 justify-between items-center">
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="prevQuestion()" id="backButton" class="bg-gray-200 text-gray-800 font-semibold py-2 px-5 rounded-lg hover:bg-gray-300 transition duration-200">&larr; Back</button>
+                        <button onclick="clearAnswer()" class="bg-yellow-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-yellow-600 transition duration-200">Clear</button>
+                        <button onclick="toggleMarkForReview()" id="markButton" class="bg-purple-500 text-white font-semibold py-2 px-5 rounded-lg hover:bg-purple-600 transition duration-200">Mark for Review</button>
+                        <button onclick="nextQuestion()" id="nextButton" class="bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-blue-700 transition duration-200">Next &rarr;</button>
+                    </div>
+                    <button onclick="confirmSubmit()" class="bg-red-600 text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-red-700 transition duration-200">Submit Test Now</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-5 lg:sticky lg:top-20 self-start">
+                <h3 class="text-lg font-semibold border-b pb-3 mb-4">Question Palette</h3>
+                <div class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-3 max-h-96 overflow-y-auto question-nav" id="questionNavPalette">
+                    </div>
+                <div class="mt-6 border-t pt-4 space-y-2">
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-gray-300 mr-2"></span> Not Visited</div>
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-red-500 mr-2"></span> Not Answered</div>
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-green-500 mr-2"></span> Answered</div>
+                    <div class="flex items-center"><span class="w-5 h-5 rounded-md bg-purple-500 mr-2"></span> Marked for Review</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Confirm Submission</h2>
+            <p class="text-gray-600 mb-6">Are you sure you want to submit the test?</p>
+            <div class="flex justify-center gap-4">
+                <button onclick="closeConfirmModal()" class="py-2 px-6 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                <button onclick="submitTest()" class="py-2 px-6 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition">Submit</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="resultsScreen" class="hidden min-h-screen container mx-auto max-w-7xl p-4">
+        <div class="bg-white rounded-lg shadow-xl p-6">
+            <h1 class="text-3xl font-bold text-center text-blue-800 mb-6">Test Performance Report</h1>
+
+            <div class="border-b border-gray-200 mb-6">
+                <nav class="flex space-x-4" aria-label="Tabs">
+                    <button id="tabSummary" onclick="switchResultTab('Summary')" class="text-blue-600 border-blue-600 border-b-2 font-semibold py-3 px-4 text-lg">Summary</button>
+                    <button id="tabSolutions" onclick="switchResultTab('Solutions')" class="text-gray-500 hover:text-gray-700 border-transparent border-b-2 font-medium py-3 px-4 text-lg">View All Solutions</button>
+                </nav>
+            </div>
+
+            <div id="contentSummary">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="flex flex-col items-center">
+                        <div id="donutChart" class="donut-chart">
+                            <div class="donut-chart-center">
+                                <span class="text-4xl font-bold text-gray-800" id="scorePercent">0%</span>
+                                <span class="text-gray-500">Overall Score</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-green-100 border border-green-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-green-800">Correct</span>
+                            <span class="text-2xl font-bold text-green-800" id="correctCount">0</span>
+                        </div>
+                        <div class="bg-red-100 border border-red-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-red-800">Incorrect</span>
+                            <span class="text-2xl font-bold text-red-800" id="incorrectCount">0</span>
+                        </div>
+                        <div class="bg-gray-100 border border-gray-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-gray-800">Unattempted</span>
+                            <span class="text-2xl font-bold text-gray-800" id="unattemptedCount">0</span>
+                        </div>
+                        <div class="bg-blue-100 border border-blue-300 p-4 rounded-lg flex justify-between items-center">
+                            <span class="text-lg font-semibold text-blue-800">Total Questions</span>
+                            <span class="text-2xl font-bold text-blue-800">100</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contentSolutions" class="hidden">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Detailed Solutions</h2>
+                <div class="space-y-6" id="solutionsList">
+                    </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script>
+        // --- 1. DATA (Questions) ---
+        const questions = [
+            // 1. POLITY (HARD)
+            {
+                q: "Consider the following statements regarding the powers of the Parliament to legislate on subjects in the State List:\n1. Parliament can legislate on a State List subject if the Rajya Sabha passes a resolution to that effect by a simple majority.\n2. Legislation passed by Parliament under Article 252 is applicable only to the States that consent to it.\n3. Laws passed by Parliament under Article 356 automatically cease to operate six months after the revocation of the Proclamation.",
+                o: ["1 and 2 only", "2 only", "2 and 3 only", "1, 2 and 3"],
+                a: 1,
+                e: "The correct answer is **2 only**. Statement 1 is incorrect: A resolution under Article 249 requires a **special majority** (two-thirds of members present and voting). Statement 3 is incorrect: Laws made under Article 356 (President's Rule) **continue** to be in force until they are altered, repealed, or re-enacted by the competent legislature."
+            },
+            // 2. ECONOMY (HARD)
+            {
+                q: "Which of the following would be the most contractionary measure adopted by the RBI to control inflation?\n1. Raising the Repo Rate.\n2. Selling government securities in the Open Market.\n3. Increasing the Bank Rate.\n4. Lowering the Marginal Standing Facility (MSF) rate.",
+                o: ["1 and 2 only", "2 and 3 only", "1, 2 and 3 only", "1, 2, 3 and 4"],
+                a: 2,
+                e: "The correct answer is **1, 2 and 3 only**. Statement 4 is incorrect: Lowering the MSF rate makes borrowing cheaper for banks, which is an **expansionary** move, counter-productive to controlling inflation. The first three measures reduce liquidity and credit creation, which are contractionary."
+            },
+            // 3. ENVIRONMENT (MEDIUM)
+            {
+                q: "The term 'Ecological Niche' refers to:\n1. The physical space where an organism lives.\n2. The functional role played by a species in an ecosystem.\n3. The tolerance range of a species to various environmental conditions.",
+                o: ["1 only", "2 and 3 only", "1 and 3 only", "1, 2 and 3"],
+                a: 1,
+                e: "The correct answer is **2 and 3 only**. Statement 1 is incorrect: The physical space is the **Habitat**. The Niche encompasses both the functional role (profession) and the range of conditions and resources a species can utilize."
+            },
+            // 4. ANCIENT HISTORY (MEDIUM)
+            {
+                q: "With reference to ancient Indian history, which of the following pairs is/are correctly matched?\n1. Bhaga and Bali: Forms of Land Revenue\n2. Vishti: Voluntary labour service\n3. Hieun Tsang: Traveller during the reign of Chandragupta I",
+                o: ["1 only", "1 and 3 only", "2 and 3 only", "1, 2 and 3"],
+                a: 0,
+                e: "The correct answer is **1 only**. 'Bhaga' was the king's share of the produce (usually 1/6th) and 'Bali' was an obligatory offering or tax, both forms of land revenue. Statement 2 is incorrect: **Vishti** referred to **forced labour** (corvée). Statement 3 is incorrect: Hieun Tsang visited India during the reign of **Harsha Vardhana** (7th Century AD)."
+            },
+            // 5. GEOGRAPHY (HARD)
+            {
+                q: "Which of the following conditions is/are necessary for the formation of a Tropical Cyclone?\n1. Large sea surface with temperature higher than $27^{\circ}\text{C}$.\n2. Presence of the Coriolis force.\n3. Small variations in the vertical wind speed.",
+                o: ["1 only", "2 and 3 only", "1 and 3 only", "1, 2 and 3"],
+                a: 3,
+                e: "The correct answer is **1, 2 and 3**. All three are essential pre-requisites for the genesis and intensification of a tropical cyclone. The Coriolis force provides the necessary rotation, and low vertical wind shear prevents the vertical column of the storm from tilting."
+            },
+            // 6. S&T (MEDIUM/CURRENT)
+            {
+                q: "The recently talked about term 'CRISPR-Cas9' is related to:",
+                o: ["A new form of exoplanet detection technique.", "A technology used for precision gene editing.", "The construction of a specific type of nuclear reactor.", "A cryptographic standard for securing internet communication."],
+                a: 1,
+                e: "The correct answer is **A technology used for precision gene editing**. CRISPR-Cas9 is a revolutionary tool that allows scientists to easily alter DNA sequences and modify gene function with high precision, often called 'molecular scissors'."
+            },
+            // 7. IR/CURRENT AFFAIRS (HARD)
+            {
+                q: "With reference to the 'Group of Seven (G7)' countries, consider the following statements:\n1. India is a permanent member of the G7.\n2. All member countries of the G7 are also members of the European Union.\n3. The G7 represents more than 50% of the world's net wealth.",
+                o: ["1 and 2 only", "3 only", "2 and 3 only", "1, 2 and 3"],
+                a: 1,
+                e: "The correct answer is **3 only**. Statement 1 is incorrect: India is **not** a member but is often invited as a guest. Statement 2 is incorrect: Members include Canada, Japan, and the US, which are not in the EU. (UK, France, Germany, Italy are members of both/were in the EU)."
+            },
+            // 8. POLITY (MEDIUM)
+            {
+                q: "The 'Preamble' of the Indian Constitution is based on the 'Objective Resolution' moved by:\n1. Dr. B. R. Ambedkar.\n2. Jawaharlal Nehru.\n3. Sardar Vallabhbhai Patel.\n4. Rajendra Prasad.",
+                o: ["1 only", "2 only", "3 only", "4 only"],
+                a: 1,
+                          e: "The correct answer is **Jawaharlal Nehru**. The Objective Resolution was moved by Nehru in the Constituent Assembly on December 13, 1946, which later formed the basis of the Preamble."
+            },
+            // 9. MODERN HISTORY (HARD)
+            {
+                q: "Which of the following statements about the 'Non-Cooperation Movement' (1920-22) is/are correct?\n1. It included the surrender of titles and the boycott of government schools and courts.\n2. It was preceded by the Khilafat Movement in India.\n3. The Congress officially adopted the program at the Nagpur Session.",
+                o: ["1 and 2 only", "3 only", "1 and 3 only", "1, 2 and 3"],
+                a: 2,
+                e: "The correct answer is **1 and 3 only**. Statement 2 is incorrect: The Khilafat Movement was **contemporaneous and merged** with the Non-Cooperation Movement, though Khilafat started slightly earlier."
+            },
+            // 10. ECONOMY (MEDIUM)
+            {
+                q: "Which of the following is included in the measurement of **'National Income'** in India?\n1. Value of goods and services produced by resident economic units.\n2. Monetary value of foreign remittances received by non-residents.\n3. Expenditure incurred by the government on the maintenance of police and army.",
+                o: ["1 only", "1 and 3 only", "2 and 3 only", "1, 2 and 3"],
+                a: 1,
+                e: "The correct answer is **1 and 3 only**. Statement 1 is the core of GDP/GNP. Statement 3 represents Government Final Consumption Expenditure, which is included. Statement 2 is incorrect: Foreign remittances received by **non-residents** from India are a debit, not an income component for India's national income."
+            },
+            // 11. ENVIRONMENT (HARD)
+            {
+                q: "Consider the following statements regarding the **'Carbon Cycle'**:\n1. Weathering of rocks contributes to the removal of carbon dioxide from the atmosphere.\n2. Oceans act as the largest short-term reservoir for carbon.\n3. Methane is a more potent greenhouse gas than Carbon Dioxide, but has a shorter atmospheric lifetime.",
+                o: ["1 only", "2 and 3 only", "1 and 3 only", "1, 2 and 3"],
+                a: 2,
+                e: "The correct answer is **1 and 3 only**. Statement 2 is incorrect: The **deep ocean** is the largest **long-term** reservoir; the **atmosphere** is the largest short-term reservoir in terms of carbon exchange rate."
+            },
+            // 12. GEOGRAPHY (MEDIUM)
+            {
+                q: "Which of the following factors is/are responsible for the high salinity of the Dead Sea?\n1. High evaporation rates.\n2. Low influx of freshwater.\n3. Presence of active volcanic vents on the seafloor.",
+                o: ["1 only", "2 and 3 only", "1 and 2 only", "1, 2 and 3"],
+                a: 2,
+                e: "The correct answer is **1 and 2 only**. The Dead Sea's extreme salinity is due to its location in an arid region with high evaporation (1) and the fact that the primary feeder river (Jordan River) has been heavily diverted, drastically reducing freshwater influx (2). Statement 3 is incorrect: Its salinity is not related to volcanism."
+            },
+            // 13. S&T (MEDIUM)
+            {
+                q: "What is the key difference between **3G** and **4G (LTE)** technology in mobile communication?",
+                o: ["4G uses entirely circuit-switched technology, while 3G uses packet switching.", "4G offers only voice communication, while 3G offers both voice and data.", "4G is an all-IP (Internet Protocol) network, designed primarily for data.", "3G has lower latency and higher peak data rates than 4G."],
+                a: 2,
+                e: "The correct answer is **4G is an all-IP (Internet Protocol) network, designed primarily for data**. 4G (LTE) is a significant architectural shift, moving fully to packet-switched communication for both voice (VoLTE) and data, offering much higher speeds and lower latency than 3G's mixed circuit/packet network."
+            },
+            // 14. POLITY (HARD)
+            {
+                q: "Consider the following statements regarding a **'No-Confidence Motion'**:\n1. It can be moved against an individual Minister or the entire Council of Ministers.\n2. It requires the support of at least 50 members to be admitted in the Lok Sabha.\n3. The Constitution specifies the grounds on which it can be moved.",
+                o: ["1 and 2 only", "2 only", "1 and 3 only", "1, 2 and 3"],
+                a: 1,
+                e: "The correct answer is **2 only**. Statement 1 is incorrect: It can **only** be moved against the **entire Council of Ministers** (due to collective responsibility). Statement 3 is incorrect: Rule 198 of the Lok Sabha rules outlines the procedure, but the **Constitution does not specify the grounds**."
+            },
+            // 15. MODERN HISTORY (MEDIUM)
+            {
+                q: "Which of the following events occurred immediately after the withdrawal of the Non-Cooperation Movement?\n1. Formation of the Swaraj Party.\n2. Passing of the Rowlatt Act.\n3. Chauri Chaura incident.\n4. Jallianwala Bagh Massacre.",
+                o: ["1 only", "2 and 4 only", "1 and 3 only", "1, 2, 3 and 4"],
+                a: 0,
+                e: "The correct answer is **Formation of the Swaraj Party**. The NCM was withdrawn after the Chauri Chaura incident (3). Disagreements over the future course led to the formation of the Swaraj Party (Motilal Nehru and C. R. Das) in **1923**."
+            },
+            // 16. CURRENT AFFAIRS (MEDIUM)
+            {
+                q: "The 'Wassenaar Arrangement' and the 'Australia Group' are multinational export control regimes primarily focused on:",
+                o: ["Controlling the export of dual-use goods and technologies.", "Regulating trade in rare earth minerals.", "Coordinating global response to money laundering.", "Standardizing maritime law in international waters."],
+                a: 0,
+                e: "The correct answer is **Controlling the export of dual-use goods and technologies**. These are four major multilateral export control regimes (along with NSG and MTCR) that regulate the trade of items that can have both civilian and military applications."
+            },
+            // 17. ECONOMY (HARD)
+            {
+                q: "Which of the following is considered the most liquid measure of money supply in India?",
+                o: ["M1", "M2", "M3", "M4"],
+                a: 0,
+                e: "The correct answer is **M1**. M1 represents the narrowest and most liquid measure of money supply, including Currency with the Public and Demand Deposits with banks. M4 is the broadest and least liquid."
+            },
+            // 18. ANCIENT HISTORY (MEDIUM)
+            {
+                q: "The term **'Stupa'** is primarily associated with which religion in ancient India?",
+                o: ["Jainism", "Buddhism", "Hinduism", "Ajivika"],
+                a: 1,
+                e: "The correct answer is **Buddhism**. Stupas are hemispherical structures containing relics of the Buddha or Buddhist saints, built for commemoration and worship."
+            },
+            // 19. GEOGRAPHY (HARD)
+            {
+                q: "The phenomenon known as the **'Urban Heat Island'** effect is primarily caused by:",
+                o: ["Excessive use of air conditioners.", "The lack of green spaces and high concentration of concrete/asphalt.", "High population density in urban areas.", "Increased air pollution from vehicular traffic."],
+                a: 1,
+                e: "The correct answer is **The lack of green spaces and high concentration of concrete/asphalt**. Concrete and asphalt absorb and store more heat during the day and release it at night, while the lack of trees and open water reduces evapotranspiration cooling."
+            },
+            // 20. ENVIRONMENT (MEDIUM)
+            {
+                q: "Which of the following is the most significant anthropogenic source of **Sulphur Dioxide** emissions?",
+                o: ["Forest fires", "Volcanic eruptions", "Combustion of fossil fuels in power plants", "Decay of organic matter in wetlands"],
+                a: 2,
+                e: "The correct answer is **Combustion of fossil fuels in power plants**. The burning of coal and oil that contain sulphur is the single largest man-made source of sulphur dioxide, a major precursor to acid rain."
+            },
+            // 21. POLITY (HARD)
+            {
+                q: "The fundamental feature of the Indian federal system is that the Constitution makes a clear distribution of legislative powers between the Union and the States. Which of the following is correct about this division?\n1. The Union List has subjects where the Union Parliament has exclusive power.\n2. In the Concurrent List, a Union law always overrides a State law, even if the State law was enacted later and reserved for the President's assent.\n3. The power to legislate on residuary subjects rests with the State Legislatures.",
+                o: ["1 only", "1 and 2 only", "3 only", "2 and 3 only"],
+                a: 0,
+                e: "The correct answer is **1 only**. Statement 2 is incorrect: If a State law in the Concurrent List is reserved for the President's consideration and receives his assent, it will prevail in that State, overriding the earlier Union law. Statement 3 is incorrect: Residuary powers rest with the **Union Parliament** (Article 248)."
+            },
+            // 22. ECONOMY (HARD)
+            {
+                q: "If the government decides to reduce the income tax rate, which of the following is the most likely long-term impact?\n1. Increase in Aggregate Demand.\n2. Increase in the Tax-to-GDP ratio.\n3. Increase in potential output.",
+                o: ["1 only", "1 and 2 only", "1 and 3 only", "1, 2 and 3"],
+                a: 2,
+                e: "The correct answer is **1 and 3 only**. Lower income tax (1) boosts disposable income and spending. In the long run (3), lower tax rates may incentivize work, investment, and saving, potentially increasing the economy's productive capacity (supply side effects). Statement 2 is incorrect: Reducing the rate is intended to reduce the tax burden, likely reducing the Tax-to-GDP ratio, at least initially."
+            },
+            // 23. S&T (HARD/CURRENT)
+            {
+                q: "What is the primary function of the **'Gravitational-wave Astronomy'** as compared to traditional electromagnetic astronomy?",
+                o: ["To study objects that are optically invisible, such as dark matter and dark energy.", "To observe events like the collision of black holes and neutron stars.", "To achieve higher resolution imaging of nearby galaxies than Hubble Space Telescope.", "To measure the redshift of distant stellar objects more accurately."],
+                a: 1,
+                e: "The correct answer is **To observe events like the collision of black holes and neutron stars**. Gravitational-wave astronomy (pioneered by LIGO) detects ripples in spacetime caused by extremely violent, massive events (mergers) that emit no light, making it a new window to the Universe."
+            },
+            // 24. GEOGRAPHY (MEDIUM)
+            {
+                q: "The **'Kuroshio Current'** is a warm ocean current primarily found in the:",
+                o: ["North Atlantic Ocean.", "South Pacific Ocean.", "North Pacific Ocean.", "Indian Ocean."],
+                a: 2,
+                e: "The correct answer is the **North Pacific Ocean**. It is the North Pacific's equivalent of the Gulf Stream in the Atlantic, flowing northeastward past Japan, transporting warm tropical water northward."
+            },
+            // 25. MODERN HISTORY (HARD)
+            {
+                q: "Which of the following were the reasons for the failure of the **Cripps Mission** (1942)?\n1. Gandhi's opposition to the inclusion of a Muslim League representative in the Viceroy's Executive Council.\n2. The provision for Dominion status was seen as a post-dated cheque on a failing bank by the Congress.\n3. The League rejected the plan because it did not explicitly promise the creation of Pakistan.",
+                o: ["1 and 2 only", "2 and 3 only", "1 and 3 only", "1, 2 and 3"],
+                a: 1,
+                e: "The correct answer is **2 and 3 only**. Statement 1 is incorrect: The opposition was mainly about the offer of **Dominion status** (2) and the absence of a clear plan for immediate transfer of power. The League (3) rejected it because the creation of Pakistan was not explicitly promised."
+            },
+            // 26. ENVIRONMENT (MEDIUM/CURRENT)
+            {
+                q: "The term **'Bioaugmentation'** is used in the context of:",
+                o: ["Enhancing the nutritional value of crops through genetic modification.", "The intentional addition of cultured microorganisms to contaminated sites to aid bioremediation.", "Using satellite data to predict biodiversity hotspots.", "Increasing the total area under forest cover to absorb $\text{CO}_2$. "],
+                a: 1,
+                e: "The correct answer is **The intentional addition of cultured microorganisms to contaminated sites to aid bioremediation**. Bioaugmentation is an environmental clean-up technique where external microbes are introduced to speed up the degradation of pollutants."
+            },
+            // 27. IR (MEDIUM)
+            {
+                q: "Which of the following organizations has its headquarters in Geneva, Switzerland?\n1. World Trade Organization (WTO)\n2. World Health Organization (WHO)\n3. International Labour Organization (ILO)",
+                o: ["1 and 2 only", "3 only", "1 and 3 only", "1, 2 and 3"],
+                a: 3,
+                e: "The correct answer is **1, 2 and 3**. All three organizations—WTO, WHO, and ILO—have their headquarters located in Geneva, Switzerland."
+            },
+            // 28. POLITY (MEDIUM)
+            {
+                q: "The **'Electoral College'** for the election of the Vice-President consists of:",
+                o: ["Elected members of both Houses of Parliament only.", "All members of both Houses of Parliament.", "Elected members of both Houses of Parliament and State Legislative Assemblies.", "All members of the Parliament and State Legislative Councils."],
+                a: 1,
+                e: "The correct answer is **All members of both Houses of Parliament**. Unlike the President's election, the Vice-President's electoral college includes **nominated members** of both Houses and **excludes** members of the State Legislative Assemblies."
+            },
+            // 29. ECONOMY (MEDIUM)
+            {
+                q: "The concept of **'Taper Tantrum'** is generally associated with:",
+                o: ["Sudden increase in domestic food prices.", "Large-scale selling of domestic currency by foreign investors.", "A gradual reduction in Quantitative Easing by the US Federal Reserve.", "Sharp rise in crude oil prices due to geopolitical tension."],
+                a: 2,
+                e: "The correct answer is **A gradual reduction in Quantitative Easing by the US Federal Reserve**. The term refers to the global financial market reaction (panic and volatility) when the US Federal Reserve hinted at slowing or tapering its bond purchases (Quantitative Easing) in 2013."
+            },
+            // 30. ANCIENT HISTORY (HARD)
+            {
+                q: "The famous term **'Trimurti'** which represents the synthesis of Brahma, Vishnu, and Shiva, emerged prominently during the period of the:",
+                o: ["Mauryan Dynasty", "Gupta Dynasty", "Kushana Dynasty", "Chola Dynasty"],
+                a: 1,
+                e: "The correct answer is the **Gupta Dynasty**. While the three deities existed earlier, the concept of Trimurti, symbolizing the cosmic functions of creation (Brahma), preservation (Vishnu), and destruction (Shiva), achieved its classical and most prominent form during the Gupta age."
+            },
+            // 31. S&T (MEDIUM/CURRENT)
+            {
+                q: "The term **'Photovoltaic' (PV) technology** is used in the context of:",
+                o: ["Nuclear fusion reactors.", "Solar energy generation.", "Optical fibre communication.", "Quantum computing."],
+                a: 1,
+                e: "The correct answer is **Solar energy generation**. Photovoltaic technology converts light (photons) directly into electricity (voltage) using semiconductor materials, typically found in solar panels."
+            },
+            // 32. GEOGRAPHY (HARD)
+            {
+                q: "Arrange the following cloud types in ascending order of their altitude (from lowest to highest):\n1. Cumulus\n2. Cirrus\n3. Altostratus",
+                o: ["1 - 3 - 2", "2 - 3 - 1", "3 - 1 - 2", "1 - 2 - 3"],
+                a: 0,
+                e: "The correct answer is **1 - 3 - 2**. **Cumulus** (1) are low-level clouds (below 2 km). **Altostratus** (3) are mid-level clouds (2-7 km). **Cirrus** (2) are high-level clouds (above 6 km)."
+            },
+            // 33. ENVIRONMENT (HARD)
+            {
+                q: "Which of the following best describes the ecological impact of a **'Keystone Species'**?",
+                o: ["It is a species with the highest population density in a community.", "Its removal causes a disproportionately large change in the structure of the ecosystem.", "It is the primary producer in a given trophic level.", "It is the first species to colonize a disturbed ecosystem."],
+                a: 1,
+                e: "The correct answer is **Its removal causes a disproportionately large change in the structure of the ecosystem**. A keystone species is one whose presence and role have a disproportionate effect on the ecosystem compared to its abundance (e.g., starfish in intertidal zones, lions in savannahs)."
+            },
+            // 34. POLITY (HARD)
+            {
+                q: "The power of the Supreme Court to issue writs (Article 32) is part of its **Original Jurisdiction**. The power of the High Court to issue writs (Article 226) is part of its **Original Jurisdiction**.",
+                o: ["First statement is True, Second statement is False.", "First statement is False, Second statement is True.", "Both statements are True.", "Both statements are False."],
+                a: 2,
+                e: "The correct answer is **Both statements are True**. The Supreme Court's power under Article 32 is original because a person can directly approach it. The High Court's power under Article 226 is also considered part of its original jurisdiction because it can issue the writ directly (not on appeal)."
+            },
+            // 35. MODERN HISTORY (MEDIUM)
+            {
+                q: "The concept of **'Drain of Wealth'** was primarily expounded by:",
+                o: ["Bal Gangadhar Tilak", "Gopal Krishna Gokhale", "Dadabhai Naoroji", "Bipin Chandra Pal"],
+                a: 2,
+                e: "The correct answer is **Dadabhai Naoroji**. He was the most prominent proponent of the 'Drain Theory', arguing that British rule systematically drained India's wealth and capital to Britain without a commensurate return."
+            },
+            // 36. IR/CURRENT AFFAIRS (HARD)
+            {
+                q: "Which of the following organizations is primarily known as the lender of 'last resort' for global financial stability?",
+                o: ["World Bank (WB)", "Asian Development Bank (ADB)", "International Monetary Fund (IMF)", "New Development Bank (NDB)"],
+                a: 2,
+                            e: "The correct answer is the **International Monetary Fund (IMF)**. The IMF provides short-term financial assistance to member countries facing Balance of Payments (BoP) crises and instability, fulfilling the role of a global financial 'firefighter' or lender of last resort."
+            },
+            // 37. ECONOMY (MEDIUM)
+            {
+                q: "Which of the following is NOT a component of the **Revenue Expenditure** of the Union Government?",
+                o: ["Interest Payments", "Subsidies", "Defence Capital Expenditure", "Grants to State Governments"],
+                a: 2,
+                e: "The correct answer is **Defence Capital Expenditure**. Capital expenditure leads to the creation of assets (like new equipment, ships, aircraft) or the reduction of liabilities. Interest payments, subsidies, and grants are all non-asset creating and thus fall under Revenue Expenditure."
+            },
+            // 38. ANCIENT HISTORY (MEDIUM)
+            {
+                q: "The famous medical practitioner **Charaka** was associated with the court of which King?",
+                o: ["Ashoka", "Kanishka", "Harsha Vardhana", "Samudragupta"],
+                a: 1,
+                e: "The correct answer is **Kanishka**. Charaka was a court physician of the Kushan King Kanishka and authored the authoritative text on Ayurveda, the *Charaka Samhita*."
+            },
+            // 39. GEOGRAPHY (MEDIUM)
+            {
+                q: "The **'Ring of Fire'** is primarily associated with which of the following features?",
+                o: ["High pressure centres in the Atlantic Ocean.", "Areas of active volcanism and earthquakes around the Pacific Ocean.", "A high-altitude tropical convergence zone.", "A region of high biological productivity in the Indian Ocean."],
+                a: 1,
+                e: "The correct answer is **Areas of active volcanism and earthquakes around the Pacific Ocean**. It is a major area in the basin of the Pacific Ocean where a large number of earthquakes and volcanic eruptions occur due to plate tectonic activity."
+            },
+            // 40. S&T (HARD)
+            {
+                q: "The term **'Exoskeleton'** in robotics and bio-mechanics primarily refers to:",
+                o: ["A new generation of advanced prosthetic limbs.", "Powered mechanical suit worn by a person to enhance strength and endurance.", "A robotic limb designed for surgery under magnetic resonance imaging (MRI).", "The external structural frame of a deep-sea submersible."],
+                a: 1,
+                e: "The correct answer is **Powered mechanical suit worn by a person to enhance strength and endurance**. Exoskeletons are wearable robots that enhance the strength, mobility, and endurance of the user, used in fields from military to medicine."
+            },
+            // 41. ENVIRONMENT (MEDIUM)
+            {
+                q: "The phenomenon of **'Eutrophication'** in aquatic ecosystems is primarily characterized by:",
+                o: ["Increased water transparency.", "High levels of dissolved oxygen.", "Excessive growth of algae and depletion of dissolved oxygen.", "A sharp reduction in nutrient load."],
+                a: 2,
+                e: "The correct answer is **Excessive growth of algae and depletion of dissolved oxygen**. Eutrophication is the enrichment of water bodies with mineral and nutrient load (especially nitrogen and phosphorus), leading to excessive algal growth (algal blooms). The subsequent decay of this algae consumes oxygen, causing hypoxia (oxygen depletion)."
+            },
+            // 42. POLITY (HARD/CURRENT)
+            {
+                q: "The **'Pro tem Speaker'** of the Lok Sabha is appointed by the President. Which of the following statements is/are correct regarding the Pro tem Speaker?\n1. The main duty is to administer the oath to the newly elected members.\n2. The Pro tem Speaker holds office until the Deputy Speaker is elected.\n3. The Pro tem Speaker has all the powers of the Speaker.",
+                o: ["1 only", "1 and 3 only", "1, 2 and 3", "2 and 3 only"],
+                a: 1,
+                e: "The correct answer is **1 and 3 only**. Statement 2 is incorrect: The Pro tem Speaker holds office until the **Speaker** (not Deputy Speaker) is elected. The Deputy Speaker is elected later."
+            },
+            // 43. ECONOMY (HARD)
+            {
+                q: "If the **Fiscal Deficit** of a country is consistently high for several years, which of the following is the most likely consequence?\n1. Higher inflation.\n2. Crowding out of private investment.\n3. Lower interest rates.",
+                o: ["1 only", "1 and 2 only", "2 and 3 only", "1, 2 and 3"],
+                a: 1,
+                e: "The correct answer is **1 and 2 only**. Statement 3 is incorrect: A high fiscal deficit leads to higher government borrowing, which increases demand for funds and typically pushes **interest rates higher**, not lower."
+            },
+            // 44. MODERN HISTORY (MEDIUM)
+            {
+                q: "The **'Ghadar Party'** was formed primarily by Indian revolutionaries in:",
+                o: ["Germany", "United States and Canada", "Britain", "Japan"],
+                a: 1,
+                e: "The correct answer is the **United States and Canada**. The Ghadar Party was established in 1913 in San Francisco, USA, by expatriate Indians (mostly Sikhs) with the aim of overthrowing British rule in India."
+            },
+            // 45. GEOGRAPHY (MEDIUM)
+            {
+                q: "Which Indian state has the largest area under **Tidal Forests (Mangroves)**?",
+                o: ["Gujarat", "West Bengal", "Andhra Pradesh", "Odisha"],
+                a: 1,
+                e: "The correct answer is **West Bengal**. The Sundarbans region in West Bengal has the largest mangrove forest area in India, followed by Gujarat."
+            },
+            // 46. IR (MEDIUM/CURRENT)
+            {
+                q: "The **'Malabar Exercise'** is a trilateral naval exercise primarily involving India and which two other countries?",
+                o: ["Japan and South Korea", "Australia and Indonesia", "The United States and Japan", "The United States and Australia"],
+                a: 2,
+                e: "The correct answer is **The United States and Japan**. The exercise started as a bilateral one between India and the US, expanded to include Japan permanently in 2015, and expanded to include **Australia** in 2020, making it a quadrilateral exercise involving the **Quad** members. However, historically, the initial trilateral phase focused on India, US, and Japan."
+            },
+            // 47. S&T (HARD)
+            {
+                q: "The phenomenon of **'Quantum Entanglement'** suggests that:",
+                o: ["Particles can travel faster than the speed of light.", "Two or more particles become linked and share the same existence, regardless of distance.", "The energy of a photon is quantized and comes in discrete packets.", "Information can be transferred without the need for physical medium."],
+                a: 1,
+                e: "The correct answer is **Two or more particles become linked and share the same existence, regardless of distance**. Entanglement means measuring a property of one particle instantly tells you the corresponding property of the other, even if they are light-years apart ('spooky action at a distance')."
+            },
+            // 48. ENVIRONMENT (HARD)
+            {
+                q: "Which of the following is/are the correct characteristics of the **'Tundra Biome'**?\n1. Absence of trees due to permafrost.\n2. Dominance of coniferous forests.\n3. Presence of only migratory fauna.",
+                o: ["1 only", "1 and 2 only", "2 and 3 only", "1, 2 and 3"],
+                a: 0,
+                e: "The correct answer is **1 only**. Statement 2 is incorrect: Coniferous forests (Taiga) are south of the Tundra. Statement 3 is incorrect: The Tundra has **resident** fauna (e.g., Arctic Fox, Polar Bear) that adapt, alongside migratory species."
+            },
+            // 49. ANCIENT HISTORY (MEDIUM)
+            {
+                q: "The practice of **'Sati'** was first mentioned in which of the following?",
+                o: ["Rigveda", "Aihole Inscription", "Eran Inscription", "Allahabad Pillar Inscription"],
+                a: 2,
+                e: "The correct answer is the **Eran Inscription** (510 AD) of Bhanugupta. This is the earliest specific epigraphic evidence of a wife committing Sati after her husband's death."
+            },
+            // 50. POLITY (HARD)
+            {
+                q: "Which of the following provisions of the Constitution is/are amendable by a **simple majority** of the Parliament?\n1. Creation of new States and alteration of areas/names of existing States.\n2. Provisions relating to the quorum in Parliament.\n3. Directive Principles of State Policy (DPSP).",
+                o: ["1 only", "1 and 2 only", "2 and 3 only", "1, 2 and 3"],
+                a: 1,
+                e: "The correct answer is **1 and 2 only**. Statement 3 is incorrect: Amending DPSP requires a **Special Majority** under Article 368."
+            },
+            // 51. ECONOMY (MEDIUM)
+            {
+                q: "The concept of **'Base Erosion and Profit Shifting' (BEPS)** is primarily a concern in the context of:",
+                o: ["International Trade.", "International Taxation.", "Cross-border investment.", "Foreign Exchange Management."],
+                a: 1,
+                e: "The correct answer is **International Taxation**. BEPS refers to tax planning strategies used by multinational enterprises to exploit gaps and mismatches in tax rules to artificially shift profits to low- or no-tax locations."
+            },
+            // 52. MODERN HISTORY (HARD)
+            {
+                q: "Which Governor-General repealed the **Vernacular Press Act** (1878)?",
+                o: ["Lord Lytton", "Lord Ripon", "Lord Curzon", "Lord Dufferin"],
+                a: 1,
+                e: "The correct answer is **Lord Ripon**. The Act was introduced by Lord Lytton (1878) and was repealed by Lord Ripon in 1882, who was known for his liberal policies."
+            },
+            // 53. GEOGRAPHY (MEDIUM)
+            {
+                q: "The **'Loo'** is a characteristic example of which type of wind?",
+                o: ["Planetary Wind", "Prevailing Wind", "Local Wind", "Seasonal Wind"],
+                a: 2,
+                e: "The correct answer is **Local Wind**. The Loo is a strong, hot, and dry wind that blows over the North Indian plains during the summer months, a classic example of a localized wind phenomenon."
+            },
+            // 54. S&T (MEDIUM/CURRENT)
+            {
+                q: "The primary purpose of the **'Dark Energy Survey' (DES)** is to:",
+                o: ["Measure the effects of Dark Energy on the expansion of the universe.", "Search for evidence of Dark Matter through particle collisions.", "Develop new technologies for deep-space communication.", "Identify the composition of the Sun's core."],
+                a: 0,
+                e: "The correct answer is **Measure the effects of Dark Energy on the expansion of the universe**. DES is an international collaborative effort to map a large part of the southern sky to understand the accelerating expansion of the universe caused by Dark Energy."
+            },
+            // 55. ENVIRONMENT (HARD)
+            {
+                q: "The **'Biological Oxygen Demand' (BOD)** is a standard measure used for:",
+                o: ["Measuring the amount of ozone depletion in the stratosphere.", "Estimating the total carbon content in soil.", "Assessing the quality of water bodies polluted by organic matter.", "Calculating the biomass of primary producers in an ecosystem."],
+                a: 2,
+                e: "The correct answer is **Assessing the quality of water bodies polluted by organic matter**. BOD measures the amount of dissolved oxygen needed by aerobic biological organisms to break down organic material present in a water sample. High BOD indicates high pollution."
+            },
+            // 56. POLITY (HARD)
+            {
+                q: "The protection against self-incrimination (Article 20(3)) applies to:\n1. Criminal proceedings only.\n2. Civil proceedings only.\n3. Both criminal and civil proceedings.",
+                o: ["1 only", "2 only", "3 only", "Neither 1 nor 2"],
+                a: 0,
+                e: "The correct answer is **Criminal proceedings only**. Article 20(3) states 'No person accused of any offence shall be compelled to be a witness against himself.' This protection is available only against **compulsion to be a witness** in criminal proceedings."
+            },
+            // 57. ECONOMY (MEDIUM)
+            {
+                q: "Which of the following is considered the **'mother' of all macroeconomic aggregates**?",
+                o: ["Gross Domestic Product (GDP)", "Inflation Rate (CPI)", "Foreign Exchange Reserve", "Fiscal Deficit"],
+                a: 0,
+                e: "The correct answer is **Gross Domestic Product (GDP)**. GDP is the central measure of a country's economic activity and is the starting point for calculating almost all other major macroeconomic aggregates like GNP, National Income, Per Capita Income, etc."
+            },
+      // 58. MODERN HISTORY (HARD)
+            {
+                q: "The term **'Do or Die'** was associated with which Indian national movement?",
+                o: ["Swadeshi Movement", "Non-Cooperation Movement", "Civil Disobedience Movement", "Quit India Movement"],
+                a: 3,
+                e: "The correct answer is the **Quit India Movement**. Mahatma Gandhi gave the famous 'Do or Die' call during the launch of the Quit India Movement in August 1942."
+            },
+            // 59. ANCIENT HISTORY (MEDIUM)
+            {
+                q: "The famous battle of **'Hydaspes'** was fought between Alexander the Great and which Indian King?",
+                o: ["Chandragupta Maurya", "Porus", "Dhana Nanda", "Ashoka"],
+                a: 1,
+                e: "The correct answer is **Porus**. The battle (326 BC) was fought on the banks of the River Hydaspes (modern Jhelum) between Alexander and the Paurava King Porus."
+            },
+            // 60. GEOGRAPHY (HARD)
+            {
+                q: "Which of the following are the characteristics of the **Equatorial Climate Region**?\n1. Absence of distinct seasons.\n2. High diurnal range of temperature.\n3. Convectional rainfall throughout the year.",
+                o: ["1 and 3 only", "2 and 3 only", "1 and 2 only", "1, 2 and 3"],
+                a: 0,
+                e: "The correct answer is **1 and 3 only**. Statement 2 is incorrect: The equatorial region has a low diurnal range of temperature because of heavy cloud cover and humidity that traps heat, preventing sharp drops at night."
+            },
+            // 61. S&T (MEDIUM/CURRENT)
+            {
+                q: "The **'Param' series** of supercomputers in India were developed by:",
+                o: ["DRDO", "ISRO", "C-DAC", "BARC"],
+                a: 2,
+                e: "The correct answer is **C-DAC (Centre for Development of Advanced Computing)**. C-DAC is responsible for designing and building India's indigenous supercomputers under the Param series."
+            },
+            // 62. ENVIRONMENT (MEDIUM)
+            {
+                q: "Which of the following is an example of an **In-situ conservation** method?",
+                o: ["Botanical Gardens", "Seed Banks", "National Parks", "Zoological Parks"],
+                a: 2,
+                e: "The correct answer is **National Parks**. In-situ conservation refers to the conservation of species in their natural habitat or natural ecosystem. Botanical Gardens, Seed Banks, and Zoological Parks are examples of Ex-situ conservation."
+            },
+            // 63. POLITY (HARD)
+            {
+                q: "The Supreme Court has mandated that the basic structure of the Constitution cannot be amended. Which of the following is **NOT** a component of the Basic Structure as held by the Supreme Court?\n1. Supremacy of the Constitution.\n2. Parliamentary System.\n3. Right to Property.",
+                o: ["1 and 2 only", "3 only", "2 and 3 only", "1, 2 and 3"],
+                a: 1,
+                e: "The correct answer is **3 only**. The **Right to Property** was removed as a Fundamental Right by the 44th Amendment and is now only a Constitutional Right (Article 300A). It is **not** part of the Basic Structure. Supremacy of the Constitution and Parliamentary System are core components."
+            },
+            // 64. IR (MEDIUM)
+            {
+                q: "Which organization launched the **'Belt and Road Initiative' (BRI)**?",
+                o: ["Japan", "China", "South Korea", "Russia"],
+                a: 1,
+                e: "The correct answer is **China**. The BRI is a global infrastructure development strategy adopted by the Chinese government in 2013 to invest in nearly 150 countries and international organizations."
+            },
+            // 65. ECONOMY (HARD)
+            {
+                q: "The term **'Fungibility'** is often used in the context of:",
+                o: ["Stock Market volatility.", "Interchangeability of goods or assets.", "The process of demonetization.", "The ability of a country to attract Foreign Direct Investment."],
+                a: 1,
+                e: "The correct answer is **Interchangeability of goods or assets**. Fungibility means that one unit of a commodity or asset is perfectly interchangeable with another unit of the same type (e.g., one ounce of pure gold is fungible with another, or one Bitcoin with another)."
+            },
+            // 66. MODERN HISTORY (MEDIUM)
+            {
+                q: "The **'Subsidiary Alliance'** system was introduced by:",
+                o: ["Lord Cornwallis", "Lord Wellesley", "Lord Dalhousie", "Lord Hastings"],
+                a: 1,
+                e: "The correct answer is **Lord Wellesley**. The Subsidiary Alliance system was used by Lord Wellesley to bring Indian states under British control without annexing them directly. The Nizam of Hyderabad was the first to accept it."
+            },
+            // 67. ANCIENT HISTORY (HARD)
+            {
+                q: "The famous **'Four Noble Truths'** are the foundational tenets of:",
+                o: ["Jainism", "Buddhism", "Shaivism", "Ajivika"],
+                a: 1,
+                e: "The correct answer is **Buddhism**. The Four Noble Truths (Dukkha, Samudaya, Nirodha, Magga) are the central doctrine of Buddhism as taught by the Buddha."
+            },
+            // 68. GEOGRAPHY (MEDIUM)
+            {
+                q: "The deepest trench in the world, the **Mariana Trench**, is located in the:",
+                o: ["Atlantic Ocean", "Indian Ocean", "Southern Ocean", "Pacific Ocean"],
+                a: 3,
+                e: "The correct answer is the **Pacific Ocean**. The Mariana Trench, including the deepest point, Challenger Deep, is located in the western Pacific Ocean near the Mariana Islands."
+            },
+            // 69. S&T (MEDIUM)
+            {
+                q: "What is the primary function of the **'Global Positioning System' (GPS)**?",
+                o: ["Weather forecasting.", "Providing ground-level mapping.", "Providing location and time information.", "Securing internet traffic."],
+                a: 2,
+                e: "The correct answer is **Providing location and time information**. GPS is a space-based navigation system that provides users with position, velocity, and time (PVT) services."
+            },
+            // 70. ENVIRONMENT (HARD/CURRENT)
+            {
+                q: "The **'Minamata Convention'** is a global treaty aimed at protecting human health and the environment from the adverse effects of:",
+                o: ["Persistent Organic Pollutants (POPs)", "Mercury", "Ozone Depleting Substances (ODS)", "Transboundary movement of hazardous waste"],
+                a: 1,
+                e: "The correct answer is **Mercury**. The Minamata Convention on Mercury is a treaty designed to reduce anthropogenic emissions and releases of mercury and its compounds throughout the product lifecycle."
+            },
+            // 71. POLITY (HARD)
+            {
+                q: "A Constitutional Amendment Bill (CAB) must be passed by:\n1. Simple majority in both Houses.\n2. Special majority in both Houses.\n3. Ratification by at least half of the State Legislatures.",
+                o: ["1 and 3 only", "2 only", "2 and 3 only", "1, 2 and 3"],
+                a: 2,
+                e: "The correct answer is **2 and 3 only**. A CAB requires a **Special Majority** (2) in both Houses. If the amendment seeks to change the federal provisions, it also requires **ratification by half of the States** (3). A simple majority (1) is never enough for a CAB."
+            },
+            // 72. ECONOMY (MEDIUM)
+            {
+                q: "The main objective of the **'Prompt Corrective Action' (PCA) framework** of the RBI is to:",
+                o: ["Ensure speedy resolution of corporate insolvency cases.", "Regulate the Non-Banking Financial Companies (NBFCs).", "Monitor and stabilize financially weak banks.", "Provide liquidity support to State Governments."],
+                a: 2,
+                e: "The correct answer is **Monitor and stabilize financially weak banks**. The PCA framework is a supervisory tool to monitor banks that breach certain thresholds (net NPAs, capital adequacy, RoA) and impose restrictions on them to prevent collapse."
+            },
+            // 73. MODERN HISTORY (HARD)
+            {
+                q: "The **'Hunter Commission'** of 1882 was appointed to review which major aspect of British administration in India?",
+                o: ["The Famine situation.", "The status of primary and secondary education.", "The working of the Indian Civil Service.", "The circumstances surrounding the Jallianwala Bagh Massacre."],
+                a: 1,
+                e: "The correct answer is **The status of primary and secondary education**. The Hunter Commission (Indian Education Commission), led by W.W. Hunter, reviewed the progress of education in India since the Wood’s Despatch of 1854. (The other Hunter Commission was for Jallianwala Bagh, 1919)."
+            },
+            // 74. GEOGRAPHY (MEDIUM)
+            {
+                q: "The **'Alluvial Soils'** found in the Northern Plains of India are predominantly rich in:",
+                o: ["Nitrogen and Phosphorus.", "Potash and Lime.", "Iron and Aluminium.", "Organic matter."],
+                a: 1,
+                e: "The correct answer is **Potash and Lime**. Alluvial soils are generally rich in potash, lime, and organic matter, but poor in nitrogen and phosphorus. The richness in potash and lime makes them highly fertile."
+            },
+            // 75. S&T (HARD/CURRENT)
+            {
+                q: "In the context of space technology, the term **'Perihelion'** refers to:",
+                o: ["The point in a satellite's orbit farthest from the Earth.", "The point in an orbit closest to the Sun.", "The highest point in a geosynchronous orbit.", "The angle of inclination of a polar satellite's orbit."],
+                a: 1,
+                e: "The correct answer is **The point in an orbit closest to the Sun**. 'Peri-' means near, and '-helion' means sun. The point farthest from the sun is **Aphelion**. The equivalent terms for Earth orbit are Perigee (closest) and Apogee (farthest)."
+            },
+            // 76. ENVIRONMENT (MEDIUM)
+            {
+                q: "The **'Red Data Book'** published by the IUCN contains lists of:",
+                o: ["Endemic plant species in biodiversity hotspots.", "Threatened and endangered species of flora and fauna.", "Invasive alien species found worldwide.", "Commercially exploited marine species."],
+                a: 1,
+                e: "The correct answer is **Threatened and endangered species of flora and fauna**. The IUCN (International Union for Conservation of Nature) Red List of Threatened Species documents the global conservation status of species."
+            },
+            // 77. POLITY (HARD)
+            {
+                q: "Which of the following bodies is/are established by a Constitutional provision?\n1. Finance Commission\n2. National Commission for Scheduled Tribes\n3. NITI Aayog",
+                o: ["1 and 2 only", "3 only", "1 and 3 only", "1, 2 and 3"],
+                a: 0,
+                e: "The correct answer is **1 and 2 only**. The Finance Commission (Article 280) and NCSC/NCST (Articles 338/338A) are constitutional bodies. NITI Aayog is an extra-constitutional body established by an executive resolution."
+            },
+            // 78. ECONOMY (HARD)
+            {
+                q: "A situation where a country's **Current Account Deficit (CAD)** is high and the domestic currency is depreciating rapidly is generally referred to as a:",
+                o: ["Liquidity Trap.", "Twin Deficit Problem.", "Currency Crisis.", "Stagflation."],
+                a: 2,
+                e: "The correct answer is **Currency Crisis**. A rapidly deteriorating currency, often triggered by a high CAD and capital flight, leads to a severe loss of confidence and is termed a currency crisis."
+            },
+            // 79. IR/CURRENT AFFAIRS (MEDIUM)
+            {
+                q: "The **'Quadrilateral Security Dialogue' (Quad)** is a strategic forum primarily focused on cooperation in the:",
+                o: ["South Atlantic region.", "Indo-Pacific region.", "Arctic Circle.", "Central Asian region."],
+                a: 1,
+                e: "The correct answer is the **Indo-Pacific region**. The Quad, involving India, the US, Japan, and Australia, is centered on promoting a free, open, prosperous, and inclusive Indo-Pacific."
+            },
+            // 80. MODERN HISTORY (HARD)
+            {
+                q: "The **'Poona Pact'** (1932) primarily aimed at:",
+                o: ["Separating the functions of the Governor-General and the Commander-in-Chief.", "Granting separate electorates to Muslims.", "Providing for reserved seats for depressed classes in the general electorate.", "Ending the practice of appointing Statutory Commissions every ten years."],
+                a: 2,
+       e: "The correct answer is **Providing for reserved seats for depressed classes in the general electorate**. The Poona Pact, signed between Gandhi and Ambedkar, replaced separate electorates for the depressed classes with reserved seats in the Provincial and Central Legislatures."
+            },
+            // 81. ANCIENT HISTORY (MEDIUM)
+            {
+                q: "The **'Kalibangan'** archaeological site, known for evidence of pre-Harappan and Harappan cultures, is located in which modern state?",
+                o: ["Gujarat", "Punjab", "Rajasthan", "Haryana"],
+                a: 2,
+                e: "The correct answer is **Rajasthan**. Kalibangan, famous for evidence of ploughed fields and fire altars, is located on the southern bank of the Ghaggar (ancient Saraswati) in Rajasthan."
+            },
+            // 82. GEOGRAPHY (HARD)
+            {
+                q: "The **'Jet Streams'** are primarily found in the:",
+                o: ["Troposphere only.", "Stratosphere only.", "Upper Troposphere and Lower Stratosphere.", "Mesosphere."],
+                a: 2,
+                e: "The correct answer is the **Upper Troposphere and Lower Stratosphere**. Jet Streams are fast-flowing, narrow, meandering air currents typically located near the tropopause boundary between the Troposphere and Stratosphere."
+            },
+            // 83. S&T (MEDIUM)
+            {
+                q: "Which element is crucial for the process of **'Nuclear Fusion'** in the Sun?",
+                o: ["Uranium", "Plutonium", "Hydrogen", "Carbon"],
+                a: 2,
+                e: "The correct answer is **Hydrogen**. Nuclear fusion in the Sun involves the combination of two light nuclei (primarily Hydrogen isotopes) to form a heavier nucleus (Helium), releasing massive amounts of energy."
+            },
+            // 84. ENVIRONMENT (HARD)
+            {
+                q: "Which of the following is/are the potential consequence(s) of the thinning of the **'Ozone Layer'**?\n1. Increased incidence of skin cancer in humans.\n2. Damage to phytoplankton, affecting the marine food chain.\n3. Increased acid rain.",
+                o: ["1 only", "1 and 2 only", "2 and 3 only", "1, 2 and 3"],
+                a: 1,
+                e: "The correct answer is **1 and 2 only**. Ozone layer depletion increases the amount of harmful UV radiation reaching the Earth's surface, leading to skin cancer (1) and damaging microscopic aquatic organisms (2). Statement 3 is incorrect: Acid rain is caused by Sulphur and Nitrogen oxides, not UV radiation."
+            },
+            // 85. POLITY (HARD)
+            {
+                q: "The **'Doctrine of Pith and Substance'** relates to which aspect of the Indian Constitution?",
+                o: ["Parliament's power to amend the Constitution.", "Judicial review of the President's actions.", "Conflict resolution between the Union and State legislative powers.", "The enforcement of Fundamental Rights."],
+                a: 2,
+                e: "The correct answer is **Conflict resolution between the Union and State legislative powers**. It is a judicial principle used by courts to determine the true nature and character ('pith and substance') of a law to decide which legislature (Union or State) has the power to enact it, especially when it encroaches on another's list."
+            },
+            // 86. ECONOMY (MEDIUM)
+            {
+                q: "Which of the following best defines **'Disguised Unemployment'**?",
+                o: ["Workers who are actively looking for jobs but unable to find any.", "Workers who are temporarily laid off from their jobs.", "Workers whose marginal productivity is zero or negligible.", "Workers who switch jobs frequently."],
+                a: 2,
+                e: "The correct answer is **Workers whose marginal productivity is zero or negligible**. Disguised unemployment occurs when more people are employed than are necessary to produce the current output, so removing some workers would not reduce the output."
+            },
+            // 87. MODERN HISTORY (HARD)
+            {
+                q: "Which of the following was the reason for the **'Bardoli Satyagraha'** (1928)?",
+                o: ["Demand for a separate state for farmers.", "Non-payment of land revenue due to crop failure.", "Increased land revenue demand by the Government.", "Opposition to the Salt Law."],
+                a: 2,
+                e: "The correct answer is **Increased land revenue demand by the Government**. The Satyagraha, led by Sardar Vallabhbhai Patel, was a movement against the 22% increase in the land revenue demand by the Bombay Presidency."
+            },
+            // 88. IR (MEDIUM)
+            {
+                q: "The **'Nuclear Suppliers Group' (NSG)** is a multilateral export control regime aimed at:",
+                o: ["Controlling the export of nuclear-related material and technology.", "Standardizing nuclear safety procedures globally.", "Promoting the peaceful use of atomic energy.", "Facilitating the dismantling of nuclear weapons."],
+                a: 0,
+                e: "The correct answer is **Controlling the export of nuclear-related material and technology**. The NSG was created in response to India's 1974 nuclear test to prevent the proliferation of nuclear weapons."
+            },
+            // 89. ANCIENT HISTORY (HARD)
+            {
+                q: "The earliest evidence of the use of **copper** in the Indian subcontinent is associated with the:",
+                o: ["Neolithic Culture", "Chalcolithic Culture", "Palaeolithic Culture", "Mesolithic Culture"],
+                a: 1,
+                e: "The correct answer is **Chalcolithic Culture**. Chalcolithic literally means 'copper-stone' age (around 2000-700 BC), signifying the period when the use of copper was first widely introduced alongside stone tools."
+            },
+            // 90. GEOGRAPHY (MEDIUM)
+            {
+                q: "The **'Laterite Soils'** are rich in Iron and Aluminium but deficient in which of the following?",
+                o: ["Nitrogen and Potash.", "Calcium and Magnesium.", "Iron and Aluminium.", "Organic matter and Nitrogen."],
+                a: 3,
+                e: "The correct answer is **Organic matter and Nitrogen**. Laterite soils are heavily leached and thus poor in organic matter, nitrogen, potash, and lime. They are rich in iron oxides, which gives them their reddish color."
+            },
+            // 91. S&T (HARD)
+            {
+                q: "The primary challenge in achieving sustained **'Nuclear Fusion'** on Earth is:",
+                o: ["Obtaining the necessary fissile material (Uranium).", "Developing a mechanism to sustain temperatures of millions of degrees Celsius.", "Containing the intense gamma radiation produced.", "Finding a sufficient water source for cooling."],
+                a: 1,
+                e: "The correct answer is **Developing a mechanism to sustain temperatures of millions of degrees Celsius**. Fusion requires plasma at extreme temperatures (over 100 million ${}^{\circ}\text{C}$) to overcome electrostatic repulsion, which must be magnetically confined (in devices like a Tokamak) and sustained."
+            },
+            // 92. ENVIRONMENT (MEDIUM)
+            {
+                q: "Which of the following is an example of a **'Warm Ocean Current'**?",
+                o: ["Labrador Current", "Canary Current", "Kuroshio Current", "Benguela Current"],
+                a: 2,
+                e: "The correct answer is the **Kuroshio Current**. It is the warm ocean current of the North Pacific. The other three (Labrador, Canary, Benguela) are cold currents."
+            },
+            // 93. POLITY (HARD)
+            {
+                q: "The **'Doctrine of Severability'** (or Separability) suggests that:",
+                o: ["If a law violates the Constitution, the entire law must be struck down.", "Only the part of the law that violates the Constitution can be struck down, while the rest remains valid.", "The judiciary cannot question the policy behind a law.", "Parliament has the authority to make any part of the Constitution unamendable."],
+                a: 1,
+                e: "The correct answer is **Only the part of the law that violates the Constitution can be struck down, while the rest remains valid**. This doctrine (Article 13) allows the courts to sever the offending part of the statute and uphold the rest, provided the valid part is severable from the invalid part."
+            },
+            // 94. ECONOMY (HARD)
+            {
+                q: "In the context of the Indian economy, which of the following indices is primarily used to measure **'Headline Inflation'**?",
+                o: ["Producer Price Index (PPI)", "Consumer Price Index (CPI)", "Wholesale Price Index (WPI)", "GDP Deflator"],
+                a: 1,
+                e: "The correct answer is **Consumer Price Index (CPI)**. The RBI adopted the CPI (Combined) as the key measure for its monetary policy and for measuring headline inflation, as it reflects the cost of living for consumers more accurately than WPI."
+            },
+            // 95. MODERN HISTORY (MEDIUM)
+            {
+                q: "The **'Young Bengal Movement'** was inspired by:",
+                o: ["Swami Vivekananda", "Raja Ram Mohan Roy", "Henry Vivian Derozio", "Ishwar Chandra Vidyasagar"],
+                a: 2,
+                e: "The correct answer is **Henry Vivian Derozio**. He was an Anglo-Indian teacher at Hindu College in Calcutta who inspired his students to question authority and tradition, leading to the radical 'Young Bengal Movement'."
+            },
+            // 96. IR (HARD)
+            {
+                q: "Which of the following is a key objective of the **'FATF (Financial Action Task Force)'**?",
+                o: ["Standardizing global currency exchange rates.", "Combating money laundering and terrorist financing.", "Regulating the global trade of arms.", "Providing financial aid for sustainable development."],
+                a: 1,
+                e: "The correct answer is **Combating money laundering and terrorist financing**. The FATF is an inter-governmental body established to set standards and promote effective implementation of legal, regulatory, and operational measures for these purposes."
+            },
+            // 97. ANCIENT HISTORY (MEDIUM)
+            {
+                q: "The term **'Prakrit'** primarily refers to the common language spoken by people during the period of:",
+                o: ["Vedic Age", "Mauryan Empire", "Gupta Empire", "Harappan Civilization"],
+                a: 1,
+                e: "The correct answer is **Mauryan Empire**. Prakrit refers to the group of Middle Indo-Aryan vernacular languages spoken by the common people, often contrasting with the more formalized Sanskrit used by the elite and for religious texts."
+            },
+            // 98. GEOGRAPHY (MEDIUM)
+            {
+                q: "The **'Doab'** region in North India is characterized by:",
+                o: ["Desert lands with inland drainage.", "The convergence of two major river systems.", "Fertile land between two confluent rivers.", "Hilly terrain with igneous rock formations."],
+                a: 2,
+                e: "The correct answer is **Fertile land between two confluent rivers**. 'Doab' literally means 'two rivers' ('do' = two, 'ab' = water/river). It refers to the fertile tract of land lying between two rivers, especially in the Ganga-Yamuna system."
+            },
+            // 99. S&T (MEDIUM)
+            {
+                q: "The main purpose of a **'Geostationary Satellite'** is:",
+                o: ["Weather forecasting and surveillance.", "Earth mapping and resource exploration.", "Global communication and broadcasting.", "Military reconnaissance."],
+                a: 2,
+                e: "The correct answer is **Global communication and broadcasting**. A geostationary satellite orbits the Earth directly over the equator at the same rate as the Earth's rotation, remaining fixed relative to a point on the ground, making it ideal for continuous communication and TV broadcasting."
+            },
+            // 100. ENVIRONMENT (HARD)
+            {
+                q: "Which of the following is the most suitable strategy for mitigating the effects of **'Desertification'**?",
+                o: ["Encouraging monoculture farming in affected areas.", "Promoting extensive grazing of livestock.", "Implementing afforestation and using windbreaks.", "Increasing irrigation intensity using groundwater.",],
+                a: 2,
+                e: "The correct answer is **Implementing afforestation and using windbreaks**. Trees and shrubs act as barriers against wind erosion and help stabilize the soil, which is a core strategy for combating desertification."
+            }
+        ];
+        
+        const TOTAL_QUESTIONS = questions.length;
+
+        // --- 2. STATE VARIABLES ---
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(TOTAL_QUESTIONS).fill(null);
+        let markedForReview = new Array(TOTAL_QUESTIONS).fill(false);
+        let timerInterval;
+        let timeLeft = 7200; // 120 minutes * 60 seconds = 7200 seconds
+        let popupTimerInterval;
+
+        // --- 3. DOM ELEMENTS ---
+        const instructionPopup = document.getElementById('instructionPopup');
+        const popupTimerDisplay = document.getElementById('popupTimer');
+        const skipButton = document.getElementById('skipButton');
+        const startScreen = document.getElementById('startScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const questionHeader = document.getElementById('questionHeader');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const questionNavPalette = document.getElementById('questionNavPalette');
+        const backButton = document.getElementById('backButton');
+        const nextButton = document.getElementById('nextButton');
+        const markButton = document.getElementById('markButton');
+        const confirmModal = document.getElementById('confirmModal');
+        
+        // Results Elements
+        const donutChart = document.getElementById('donutChart');
+        const scorePercent = document.getElementById('scorePercent');
+        const correctCount = document.getElementById('correctCount');
+        const incorrectCount = document.getElementById('incorrectCount');
+        const unattemptedCount = document.getElementById('unattemptedCount');
+        const solutionsList = document.getElementById('solutionsList');
+        const tabSummary = document.getElementById('tabSummary');
+        const tabSolutions = document.getElementById('tabSolutions');
+        const contentSummary = document.getElementById('contentSummary');
+        const contentSolutions = document.getElementById('contentSolutions');
+        
+        // Update total questions display on results screen
+        const totalQuestionsDisplays = document.querySelectorAll('#contentSummary .text-2xl.font-bold.text-blue-800');
+        if (totalQuestionsDisplays.length > 1) {
+            totalQuestionsDisplays[1].textContent = TOTAL_QUESTIONS;
+        }
+
+
+        // --- 4. FUNCTIONS ---
+
+        // Popup and Start
+        function startPopupTimer() {
+            let popupTime = 10;
+            popupTimerDisplay.textContent = `Auto-skipping in ${popupTime}s...`;
+
+            popupTimerInterval = setInterval(() => {
+                popupTime--;
+                popupTimerDisplay.textContent = `Auto-skipping in ${popupTime}s...`;
+if (popupTime <= 0) {
+                    skipPopup();
+                }
+            }, 1000);
+        }
+
+        function skipPopup() {
+            clearInterval(popupTimerInterval);
+            instructionPopup.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+            startScreen.classList.add('flex');
+        }
+
+        function startTest() {
+            startScreen.classList.add('hidden');
+            startScreen.classList.remove('flex');
+            quizScreen.classList.remove('hidden');
+            
+            // Initialize arrays based on TOTAL_QUESTIONS
+            userAnswers = new Array(TOTAL_QUESTIONS).fill(null);
+            markedForReview = new Array(TOTAL_QUESTIONS).fill(false);
+
+            buildQuestionPalette();
+            loadQuestion(0);
+            startMainTimer();
+        }
+
+        // Timer
+        function startMainTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                
+                timerDisplay.textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        // Quiz Navigation
+        function loadQuestion(index) {
+            if (index < 0 || index >= TOTAL_QUESTIONS) return;
+
+            saveAnswer(); // Save answer from the *previous* question before loading new one
+            
+            currentQuestionIndex = index;
+            const q = questions[index];
+
+            questionHeader.textContent = `Question ${index + 1}:`;
+            // Handle new line formatting for complex UPSC questions
+            questionText.innerHTML = q.q.replace(/\n/g, '<br>');
+            optionsContainer.innerHTML = '';
+
+            const optionLetters = ['A', 'B', 'C', 'D'];
+            q.o.forEach((option, i) => {
+                const isChecked = (userAnswers[index] === i);
+                optionsContainer.innerHTML += `
+                    <label for="option${i}" class="flex items-start p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 transition duration-200">
+                        <input type="radio" id="option${i}" name="answer" value="${i}" ${isChecked ? 'checked' : ''} class="mr-4 mt-1 flex-shrink-0">
+                        <span class="font-medium text-gray-800">${optionLetters[i]}. ${option}</span>
+                    </label>
+                `;
+            });
+
+            // Update button states
+            backButton.disabled = (index === 0);
+            backButton.classList.toggle('opacity-50', index === 0);
+            nextButton.disabled = (index === TOTAL_QUESTIONS - 1);
+            nextButton.classList.toggle('opacity-50', index === TOTAL_QUESTIONS - 1);
+            
+            // Update palette
+            updatePalette();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                loadQuestion(currentQuestionIndex - 1);
+            }
+        }
+
+        function goToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        function saveAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                userAnswers[currentQuestionIndex] = parseInt(selectedOption.value);
+            }
+        }
+
+        function clearAnswer() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                selectedOption.checked = false;
+            }
+            userAnswers[currentQuestionIndex] = null;
+            updatePalette();
+        }
+
+        function toggleMarkForReview() {
+            markedForReview[currentQuestionIndex] = !markedForReview[currentQuestionIndex];
+            updatePalette();
+        }
+
+        // Question Palette
+        function buildQuestionPalette() {
+            questionNavPalette.innerHTML = '';
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                questionNavPalette.innerHTML += `
+                    <button id="qnav${i}" onclick="goToQuestion(${i})" class="w-10 h-10 flex items-center justify-center font-bold rounded-md bg-gray-300 text-gray-700 transition duration-200">
+                        ${i + 1}
+                    </button>
+                `;
+            }
+        }
+
+        function updatePalette() {
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                const btn = document.getElementById(`qnav${i}`);
+                btn.className = "w-10 h-10 flex items-center justify-center font-bold rounded-md transition duration-200"; // Reset classes
+                
+                if (markedForReview[i] && userAnswers[i] !== null) {
+                    btn.classList.add('bg-purple-500', 'text-white'); // Answered and Marked
+                } else if (markedForReview[i]) {
+                    btn.classList.add('bg-purple-300', 'text-gray-800'); // Marked for Review only
+                } else if (userAnswers[i] !== null) {
+                    btn.classList.add('bg-green-500', 'text-white'); // Answered
+                } else if (i === currentQuestionIndex) {
+                    btn.classList.add('bg-red-500', 'text-white'); // Currently viewing (Not Answered)
+                } else {
+                    btn.classList.add('bg-gray-300', 'text-gray-700'); // Not visited
+                }
+
+                // Add border if it's the current question
+                if (i === currentQuestionIndex) {
+                    btn.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
+                }
+            }
+        }
+
+        // Submission
+        function confirmSubmit() {
+            saveAnswer(); // Save the very last answer
+            updatePalette(); // Update palette one last time
+            confirmModal.classList.remove('hidden');
+        }
+        
+        function closeConfirmModal() {
+            confirmModal.classList.add('hidden');
+        }
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            closeConfirmModal();
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+            
+            calculateAndShowResults();
+        }
+
+        // Results
+        function calculateAndShowResults() {
+            let correct = 0;
+            let incorrect = 0;
+            let unattempted = 0;
+
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                if (userAnswers[i] === null) {
+                    unattempted++;
+                } else if (userAnswers[i] === questions[i].a) {
+                    correct++;
+                } else {
+                    incorrect++;
+                }
+            }
+            
+            let total = TOTAL_QUESTIONS;
+            let score = (correct / total) * 100;
+
+            // 1. Populate Summary
+            scorePercent.textContent = `${score.toFixed(0)}%`;
+            correctCount.textContent = correct;
+            incorrectCount.textContent = incorrect;
+            unattemptedCount.textContent = unattempted;
+
+            // 2. Update Donut Chart
+            let correctPercent = (correct / total) * 100;
+            let incorrectPercent = correctPercent + (incorrect / total) * 100;
+            let unattemptedPercent = 100;
+
+            donutChart.style.setProperty('--correct-percent', `${correctPercent}%`);
+            donutChart.style.setProperty('--incorrect-percent', `${incorrectPercent}%`);
+            donutChart.style.setProperty('--unattempted-percent', `${unattemptedPercent}%`);
+
+            // 3. Populate Solutions
+            solutionsList.innerHTML = '';
+            const optionLetters = ['A', 'B', 'C', 'D'];
+            questions.forEach((q, i) => {
+                const userAnswerIndex = userAnswers[i];
+                const correctAnswerIndex = q.a;
+
+                let statusClass, statusText, userAnswerText;
+                const questionTextFormatted = q.q.replace(/\n/g, '<br>');
+
+                if (userAnswerIndex === null) {
+                    statusClass = 'bg-gray-100 text-gray-800 border-gray-300';
+                    statusText = 'Unattempted';
+                    userAnswerText = '---';
+                } else if (userAnswerIndex === correctAnswerIndex) {
+                    statusClass = 'bg-green-100 text-green-800 border-green-300';
+                    statusText = 'Correct';
+                    userAnswerText = `${optionLetters[userAnswerIndex]}. ${q.o[userAnswerIndex]}`;
+                } else {
+                    statusClass = 'bg-red-100 text-red-800 border-red-300';
+                    statusText = 'Incorrect';
+                    userAnswerText = `${optionLetters[userAnswerIndex]}. ${q.o[userAnswerIndex]}`;
+                }
+
+                const correctAnswerText = `${optionLetters[correctAnswerIndex]}. ${q.o[correctAnswerIndex]}`;
+
+                solutionsList.innerHTML += `
+                    <div class="border ${statusClass} rounded-lg p-5">
+                        <h3 class="font-bold text-lg mb-2">Q ${i + 1}: ${questionTextFormatted}</h3>
+                        <p class="mb-1"><span class="font-semibold">Your Answer: </span><span class="${statusText === 'Incorrect' ? 'text-red-700 font-bold' : ''}">${userAnswerText}</span></p>
+                        <p class="mb-3"><span class="font-semibold">Correct Answer: </span><span class="text-green-700 font-bold">${correctAnswerText}</span></p>
+                        <div class="bg-white border border-gray-200 p-3 rounded-md">
+                            <h4 class="font-semibold text-gray-800 mb-1">Explanation:</h4>
+                            <p class="text-gray-700">${q.e}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        function switchResultTab(tabName) {
+            if (tabName === 'Summary') {
+                contentSummary.classList.remove('hidden');
+                contentSolutions.classList.add('hidden');
+                tabSummary.classList.add('text-blue-600', 'border-blue-600');
+                tabSummary.classList.remove('text-gray-500', 'border-transparent');
+                tabSolutions.classList.add('text-gray-500', 'border-transparent');
+                tabSolutions.classList.remove('text-blue-600', 'border-blue-600');
+            } else {
+                contentSummary.classList.add('hidden');
+                contentSolutions.classList.remove('hidden');
+                tabSolutions.classList.add('text-blue-600', 'border-blue-600');
+                tabSolutions.classList.remove('text-gray-500', 'border-transparent');
+                tabSummary.classList.add('text-gray-500', 'border-transparent');
+                tabSummary.classList.remove('text-blue-600', 'border-blue-600');
+            }
+        }
+
+        // --- 5. INITIALIZATION ---
+        window.onload = () => {
+            startPopupTimer();
+        };
+
+    </script>
+</body>
+</html>
