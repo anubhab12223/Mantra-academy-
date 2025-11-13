@@ -1,0 +1,503 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mantra Academy - UPSC Full Mock Test Series (Password Protected)</title>
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        /* Header & Typography */
+        h1 {
+            color: #00796b;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+        h2 {
+            color: #004d40;
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 40px;
+        }
+        h3 {
+            color: #d32f2f;
+            border-bottom: 3px solid #ffcdd2;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            font-size: 1.5em;
+        }
+        /* Test Grid */
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Adjusted width for more content */
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .test-card {
+            background-color: #e0f7fa;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 5px solid #00796b;
+            display: flex;
+            flex-direction: column;
+        }
+        .test-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        .test-number {
+            font-size: 1.6em;
+            color: #d32f2f;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .test-card h4 {
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+            color: #004d40;
+            font-weight: 600;
+        }
+
+        /* Password and Link Tab Styling */
+        .link-tab {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .link-tab a, .link-tab .password-display {
+            flex-grow: 1;
+            text-align: center;
+            padding: 12px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.2s;
+            font-size: 0.85em;
+            cursor: pointer;
+            border: none;
+            position: relative;
+        }
+        
+        /* GS Paper 1 Link Tab Decoration */
+        .link-tab .gs-link {
+            background-color: #00796b;
+            color: #ffffff;
+            border: 1px solid #004d40;
+        }
+        .link-tab .gs-link:hover {
+            background-color: #004d40;
+        }
+
+        /* CSAT Paper 2 Link Tab Decoration */
+        .link-tab .csat-link {
+            background-color: #ffb300;
+            color: #333;
+            border: 1px solid #ffa000;
+        }
+        .link-tab .csat-link:hover {
+            background-color: #ff8f00;
+            color: #fff;
+        }
+        
+        /* Password Display Style */
+        .password-display {
+            background-color: #cfd8dc; /* Light Grey */
+            color: #546e7a;
+            pointer-events: none; /* Make it look like a button but not clickable */
+            margin-top: 10px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        
+        /* Note */
+        .note {
+            margin-top: 40px;
+            padding: 15px;
+            background-color: #fce4ec;
+            border-left: 5px solid #d81b60;
+            color: #333;
+            border-radius: 4px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Mantra Academy</h1>
+    <h2>UPSC CSE Prelims Full-Length Mock Test Series (30 Tests | 60 Tabs)</h2>
+    
+    <div class="note">
+        <strong>🔐 IMPORTANT:</strong> Each mock test (tab) has a unique password for entry. The formula is: 
+        `OGK2025` + [Test Number].
+    </div>
+
+    <h3>Phase I: Foundational Mocks (Tests 1-10)</h3>
+    <div class="test-grid">
+        
+        <div class="test-card">
+            <div>
+                <span class="test-number">#01</span>
+                <h4>Comprehensive Basic Syllabus Test</h4>
+            </div>
+            <div class="link-tab">
+                <a href="upsc0.html" class="gs-link">GS Paper I</a>
+                <a href="test-01-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#02</span>
+                <h4>Polity & Modern History Emphasis</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-02-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-02-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#03</span>
+                <h4>Economy & Environment Emphasis</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-03-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-03-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <div>
+                <span class="test-number">#04</span>
+                <h4>Geography & Science Tech Emphasis</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-04-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-04-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#05</span>
+                <h4>Current Affairs (Past 6 Months) Focus</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-05-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-05-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#06</span>
+                <h4>Integrated Revision Test I</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-06-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-06-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#07</span>
+                <h4>Current Affairs & Mapping Focus</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-07-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-07-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#08</span>
+                <h4>Ancient & Medieval History Focus</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-08-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-08-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <div>
+                <span class="test-number">#09</span>
+                <h4>Governance & Social Issues Focus</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-09-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-09-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <div>
+                <span class="test-number">#10</span>
+                <h4>Revision Grand Test (Basic Level)</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-10-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-10-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+    </div>
+    
+    <h3>Phase II: Intermediate Mocks (Tests 11-20)</h3>
+    <div class="test-grid">
+        <div class="test-card">
+            <div>
+                <span class="test-number">#11</span>
+                <h4>Full Syllabus Mock Test (Moderate)</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-11-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-11-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#12</span>
+                <h4>Polity & Economy Integrated Test</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-12-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-12-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#13</span>
+                <h4>Art & Culture and S&T Focus</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-13-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-13-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#14</span>
+                <h4>Environment, Ecology & Geography</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-14-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-14-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#15</span>
+                <h4>Current Affairs (Past 9 Months) Focus</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-15-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-15-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#16</span>
+                <h4>Full Syllabus Mock Test (UPSC Pattern)</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-16-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-16-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <div>
+                <span class="test-number">#17</span>
+                <h4>Mixed Subject Drill (Difficult Q's)</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-17-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-17-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <div>
+                <span class="test-number">#18</span>
+                <h4>Comprehensive Full Syllabus Test</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-18-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-18-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <div>
+                <span class="test-number">#19</span>
+                <h4>Intermediate Revision Grand Test</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-19-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-19-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <div>
+                <span class="test-number">#20</span>
+                <h4>Previous Year Trend Analysis Mock</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-20-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-20-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+    </div>
+    
+    <h3>Phase III: Final Grand Simulations (Tests 21-30)</h3>
+    <div class="test-grid">
+        <div class="test-card">
+            <div>
+                <span class="test-number">#21</span>
+                <h4>High Difficulty Full Syllabus Mock</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-21-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-21-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#22</span>
+                <h4>Current Affairs (Annual) Grand Test</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-22-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-22-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#23</span>
+                <h4>**GRAND SIMULATION MOCK I**</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-23-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-23-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#24</span>
+                <h4>Polity, Economy & Schemes Focus</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-24-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-24-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#25</span>
+                <h4>**GRAND SIMULATION MOCK II**</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-25-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-25-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+
+        <div class="test-card">
+            <div>
+                <span class="test-number">#26</span>
+                <h4>Environment & Geography Current Focus</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-26-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-26-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <div>
+                <span class="test-number">#27</span>
+                <h4>**GRAND SIMULATION MOCK III**</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-27-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-27-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <div>
+                <span class="test-number">#28</span>
+                <h4>Last-Minute High-Yield Topics Test</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-28-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-28-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <div>
+                <span class="test-number">#29</span>
+                <h4>**FINAL GRAND MOCK (PRE-EXAM)**</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-29-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-29-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <div>
+                <span class="test-number">#30</span>
+                <h4>The Ultimate Predictor Mock Test</h4>
+            </div>
+            <div class="link-tab">
+                <a href="test-30-gs.html" class="gs-link">GS Paper I</a>
+                <a href="test-30-csat.html" class="csat-link">CSAT Paper II</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+
