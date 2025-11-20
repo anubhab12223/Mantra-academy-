@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPSC Mock Test: Preamble & Basic Structure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        /* Custom scrollbar for Question Index */
+        .question-index-container {
+            max-height: 80vh;
+            overflow-y: auto;
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .question-index-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+        /* Style for question status buttons */
+        .q-status-btn {
+            width: 38px;
+            height: 38px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .q-unvisited { background-color: #f3f4f6; color: #4b5563; border: 1px solid #d1d5db; }
+        .q-answered { background-color: #10b981; color: white; }
+        .q-unanswered { background-color: #ef4444; color: white; }
+        .q-marked { background-color: #3b82f6; color: white; }
+        .q-ans-marked { background-color: #f59e0b; color: white; }
+
+        /* Custom style for the popup backdrop */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 50;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Styling for option buttons */
+        .option-label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            transition: background-color 0.2s, border-color 0.2s;
+            margin-bottom: 0.5rem;
+        }
+        .option-label:hover {
+            background-color: #f3f4f6;
+        }
+        input[type="radio"]:checked + .option-label {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+        
+        /* Mobile compatibility for results table */
+        @media (max-width: 640px) {
+            .results-table th, .results-table td {
+                padding: 0.5rem;
+                display: block;
+                width: 100%;
+                text-align: left;
+            }
+            .results-table th {
+                background-color: #e5e7eb;
+            }
+            .results-table tr {
+                margin-bottom: 1rem;
+                display: block;
+                border: 1px solid #d1d5db;
+                border-radius: 0.5rem;
+                padding: 1rem 0;
+            }
+            .results-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                margin-right: 0.5rem;
+                display: inline-block;
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div id="instructionsModal" class="modal-backdrop">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-11/12 mx-4 p-6 sm:p-8">
+            <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <h2 class="text-xl sm:text-2xl font-bold text-indigo-700">Exam Instructions (UPSC Format)</h2>
+                <span id="skipTimer" class="text-sm font-medium text-gray-500">Skip in 10s</span>
+            </div>
+            <div class="space-y-4 text-gray-700 text-sm sm:text-base max-h-80 overflow-y-auto pr-2">
+                <div class="p-3 bg-blue-50 rounded-lg">
+                    <h3 class="font-semibold text-blue-700 mb-1"><i class="fas fa-clock mr-2"></i>Time Management</h3>
+                    <p>The total duration for this test is **60 minutes** (1 hour). The countdown is visible at the top right of the screen.</p>
+                </div>
+                <div class="p-3 bg-green-50 rounded-lg">
+                    <h3 class="font-semibold text-green-700 mb-1"><i class="fas fa-check-circle mr-2"></i>Answering Questions</h3>
+                    <ul class="list-disc list-inside space-y-1 ml-4">
+                        <li>Click on an option to select your answer.</li>
+                        <li>Use **SAVE & NEXT** to confirm your answer and move forward.</li>
+                        <li>Use **CLEAR** to deselect a chosen answer.</li>
+                        <li>**SKIP** moves you to the next question without saving the current answer.</li>
+                    </ul>
+                </div>
+                <div class="p-3 bg-yellow-50 rounded-lg">
+                    <h3 class="font-semibold text-yellow-700 mb-1"><i class="fas fa-flag mr-2"></i>Navigation & Review</h3>
+                    <ul class="list-disc list-inside space-y-1 ml-4">
+                        <li>The question index on the right side allows direct navigation.</li>
+                        <li>Use **MARK FOR REVIEW** to flag a question you want to revisit later.</li>
+                        <li>Clicking **SAVE & NEXT** on a marked question will save the answer and keep it marked.</li>
+                    </ul>
+                </div>
+                <div class="p-3 bg-red-50 rounded-lg">
+                    <h3 class="font-semibold text-red-700 mb-1"><i class="fas fa-exclamation-triangle mr-2"></i>Important Warning</h3>
+                    <p>Do not click on the **SUBMIT TEST NOW** button unless you have completed the exam and are ready to view your results. Submission is final.</p>
+                </div>
+            </div>
+            <button id="closeModal" class="w-full mt-6 py-2 px-4 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">Start Test</button>
+        </div>
+    </div>
+    
+    <div id="appContainer" class="hidden">
+        <header class="bg-white shadow fixed top-0 left-0 right-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+                <div class="text-lg font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-graduation-cap text-indigo-600 mr-2"></i> UPSC MOCK: Preamble & Basic Structure
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm font-semibold text-gray-600">Time Left:</span>
+                    <span id="timerDisplay" class="text-xl font-extrabold text-red-600 bg-red-50 px-3 py-1 rounded-lg">01:00:00</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <div class="lg:col-span-2 space-y-6">
+                    <div id="quizArea" class="bg-white p-6 rounded-xl shadow-lg min-h-[60vh]">
+                        </div>
+
+                    <div class="flex flex-wrap justify-between p-4 bg-white rounded-xl shadow-lg sticky bottom-0 z-30">
+                        <div class="flex flex-wrap gap-2 sm:gap-4 mb-2 sm:mb-0">
+                            <button id="btnBack" class="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition duration-150"><i class="fas fa-chevron-left mr-1"></i> Back</button>
+                            <button id="btnClear" class="px-4 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition duration-150"><i class="fas fa-eraser mr-1"></i> Clear</button>
+                            <button id="btnMarkForReview" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150"><i class="fas fa-flag mr-1"></i> Mark for Review</button>
+                        </div>
+                        <div class="flex flex-wrap gap-2 sm:gap-4">
+                            <button id="btnSaveAndNext" class="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition duration-150"><i class="fas fa-save mr-1"></i> Save & Next</button>
+                            <button id="btnSkip" class="px-4 py-2 bg-indigo-500 text-white font-semibold rounded-lg hover:bg-indigo-600 transition duration-150"><i class="fas fa-forward mr-1"></i> Skip</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="bg-white p-4 rounded-xl shadow-lg sticky top-20">
+                        <h3 class="text-lg font-semibold mb-3 text-gray-800 border-b pb-2">Question Palette (Total: <span id="totalQDisplay">50</span>)</h3>
+                        
+                        <div id="questionIndex" class="question-index-container flex flex-wrap gap-3 p-1">
+                            </div>
+
+                        <div class="mt-4 pt-4 border-t space-y-2">
+                            <button id="btnSubmitTest" class="w-full py-3 bg-red-600 text-white font-extrabold rounded-lg shadow-md hover:bg-red-700 transition duration-150 text-lg">
+                                <i class="fas fa-paper-plane mr-2"></i> SUBMIT TEST NOW
+                            </button>
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t space-y-2 text-sm">
+                            <h4 class="font-semibold text-gray-700">Legend:</h4>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="flex items-center"><span class="q-status-btn bg-green-500 mr-2"></span>Answered</div>
+                                <div class="flex items-center"><span class="q-status-btn bg-red-500 mr-2"></span>Unanswered</div>
+                                <div class="flex items-center"><span class="q-status-btn bg-blue-500 mr-2"></span>Marked for Review</div>
+                                <div class="flex items-center"><span class="q-status-btn bg-yellow-500 mr-2"></span>Answered & Marked</div>
+                                <div class="flex items-center"><span class="q-status-btn bg-gray-200 mr-2"></span>Unvisited</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="resultsScreen" class="hidden min-h-screen pt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 class="text-3xl font-extrabold text-indigo-700 text-center mb-6 border-b pb-3">Mock Test Results</h1>
+            
+            <div class="flex border-b border-gray-200 mb-6 sticky top-20 bg-white z-20">
+                <button id="tabSummary" class="py-3 px-6 text-center font-semibold text-indigo-600 border-b-2 border-indigo-600 transition duration-150">Overall Performance</button>
+                <button id="tabSolutions" class="py-3 px-6 text-center font-semibold text-gray-500 hover:text-indigo-600 hover:border-indigo-600 border-b-2 border-transparent transition duration-150">View All Solutions</button>
+            </div>
+
+            <div id="contentSummary" class="tab-content space-y-6">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
+                        <p class="text-sm text-gray-500">Correct Answers</p>
+                        <p id="resultCorrect" class="text-3xl font-bold text-green-600 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-500">
+                        <p class="text-sm text-gray-500">Incorrect Answers</p>
+                        <p id="resultIncorrect" class="text-3xl font-bold text-red-600 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500">
+                        <p class="text-sm text-gray-500">Unattempted</p>
+                        <p id="resultUnattempted" class="text-3xl font-bold text-yellow-600 mt-1">50</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-indigo-500">
+                        <p class="text-sm text-gray-500">Your Score</p>
+                        <p id="resultScore" class="text-3xl font-bold text-indigo-600 mt-1">0.00 / 100.00</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg space-y-4">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Detailed Breakdown</h2>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-blue-100 border border-blue-300 p-4 rounded-lg flex justify-between items-center">
+                                <span class="text-lg font-semibold text-blue-800">Total Questions</span>
+                                <span class="text-2xl font-bold text-blue-800">50</span> 
+                            </div>
+                            <div class="bg-purple-100 border border-purple-300 p-4 rounded-lg flex justify-between items-center">
+                                <span class="text-lg font-semibold text-purple-800">Total Marks</span>
+                                <span class="text-2xl font-bold text-purple-800">100.00</span>
+                            </div>
+                            <div class="bg-gray-100 border border-gray-300 p-4 rounded-lg flex justify-between items-center">
+                                <span class="text-lg font-semibold text-gray-800">Time Spent</span>
+                                <span id="resultTime" class="text-2xl font-bold text-gray-800">00:00</span>
+                            </div>
+                            <div class="bg-pink-100 border border-pink-300 p-4 rounded-lg flex justify-between items-center">
+                                <span class="text-lg font-semibold text-pink-800">Net Percentage</span>
+                                <span id="resultPercentage" class="text-2xl font-bold text-pink-800">0.00%</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 border-t pt-4">
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">UPSC Cutoff Estimate</h3>
+                            <p id="cutoffMessage" class="text-gray-600 italic">Your performance suggests areas for improvement. Focus on strengthening fundamental concepts in Citizenship.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Performance Distribution</h2>
+                        <canvas id="performanceChart" width="400" height="400"></canvas>
+                        <p class="text-xs text-gray-500 mt-2">*Based on Correct, Incorrect, and Unattempted.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contentSolutions" class="tab-content hidden space-y-8 mb-10">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Detailed Question Review</h2>
+                <div id="solutionsList" class="space-y-6">
+                    </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    
+    <script>
+        const quizData = {
+            title: "UPSC Mock Test: Preamble & Basic Structure (50 MCQs)",
+            // 50 questions on Preamble and Basic Structure
+            questions: [
+                {
+                    q: "The Preamble of the Indian Constitution, which embodies the fundamental values and philosophy, is based on which one of the following?",
+                    options: ["The Government of India Act, 1935", "The Instrument of Instructions", "The Objectives Resolution adopted by the Constituent Assembly", "The Cabinet Mission Plan"],
+                    answer: "The Objectives Resolution adopted by the Constituent Assembly",
+                    explanation: "The Preamble is an adoption of the Objectives Resolution, drafted and moved by Jawaharlal Nehru, which was adopted by the Constituent Assembly on January 22, 1947. It laid down the fundamentals and philosophy of the constitutional structure."
+                },
+                {
+                    q: "In which one of the following landmark judgements did the Supreme Court explicitly hold that the Preamble is a part of the Constitution?",
+                    options: ["A. K. Gopalan Case (1950)", "Berubari Union Case (1960)", "Kesavananda Bharati Case (1973)", "Minerva Mills Case (1980)"],
+                    answer: "Kesavananda Bharati Case (1973)",
+                    explanation: "In the Kesavananda Bharati case, the Supreme Court overturned its earlier view in the Berubari Union case and held that the Preamble is a part of the Constitution and can be amended, subject to the 'Basic Structure' doctrine."
+                },
+                {
+                    q: "The four ideals of the Preamble—Justice, Liberty, Equality, and Fraternity—are mentioned in which specific order in the text?",
+                    options: ["Justice, Liberty, Equality, Fraternity", "Liberty, Equality, Justice, Fraternity", "Justice, Equality, Liberty, Fraternity", "Liberty, Justice, Equality, Fraternity"],
+                    answer: "Justice, Liberty, Equality, Fraternity",
+                    explanation: "The Preamble assures to all citizens: **JUSTICE** (Social, Economic, and Political); **LIBERTY** (of thought, expression, belief, faith, and worship); **EQUALITY** (of status and opportunity); and promotes **FRATERNITY** (assuring the dignity of the individual and the unity and integrity of the Nation)."
+                },
+                {
+                    q: "Consider the terms in the Preamble: 'Sovereign, Socialist, Secular, Democratic, Republic.' The correct sequence as per the Constitution's adoption is:",
+                    options: ["Sovereign, Democratic, Republic, Socialist, Secular", "Sovereign, Socialist, Secular, Democratic, Republic", "Sovereign, Secular, Socialist, Democratic, Republic", "Sovereign, Socialist, Democratic, Secular, Republic"],
+                    answer: "Sovereign, Socialist, Secular, Democratic, Republic",
+                    explanation: "The original order was **Sovereign, Democratic, Republic**. The words **Socialist** and **Secular** were added by the 42nd Constitutional Amendment Act of 1976, placing them between Sovereign and Democratic."
+                },
+                {
+                    q: "Which of the following elements, though not explicitly stated in the Preamble, is considered a facet of the 'Basic Structure' by the Supreme Court?",
+                    options: ["Parliamentary system of government", "A welfare state", "Independence of the Judiciary", "Electoral democracy"],
+                    answer: "Independence of the Judiciary",
+                    explanation: "The Independence of the Judiciary was explicitly declared as a Basic Structure feature in the post-Kesavananda judgements (like the Minerva Mills case). While other options are structural elements, the independence of the judiciary is a cornerstone explicitly protected under the doctrine."
+                },
+                {
+                    q: "The word 'Secular' in the Preamble signifies:",
+                    options: ["A state which is hostile to all religions.", "A state which has its own religion but treats all others equally.", "A state that does not uphold any particular religion as the state religion.", "A state that promotes all religions equally."],
+                    answer: "A state that does not uphold any particular religion as the state religion.",
+                    explanation: "Indian secularism means the state treats all religions equally (Sarva Dharma Sambhava) and does not itself have an official religion. It is a 'positive' concept of secularism."
+                },
+                {
+                    q: "Which Constitutional Amendment added the words 'Socialist' and 'Secular' to the Preamble?",
+                    options: ["38th Amendment Act, 1975", "42nd Amendment Act, 1976", "44th Amendment Act, 1978", "52nd Amendment Act, 1985"],
+                    answer: "42nd Amendment Act, 1976",
+                    explanation: "The 42nd Amendment Act, 1976, also known as the 'Mini-Constitution,' added three new words: **Socialist, Secular, and Integrity** to the Preamble."
+                },
+                {
+                    q: "In which of the following cases did the Supreme Court first refuse to accept the argument that the Preamble is a part of the Constitution?",
+                    options: ["A. K. Gopalan Case (1950)", "Berubari Union Case (1960)", "Golaknath Case (1967)", "Sajjan Singh Case (1965)"],
+                    answer: "Berubari Union Case (1960)",
+                    explanation: "In the Berubari Union case, the Supreme Court held that the Preamble is not a part of the Constitution and, therefore, cannot be amended. This was reversed in the Kesavananda Bharati case."
+                },
+                {
+                    q: "The concept of 'Fraternity' in the Preamble is inspired by the ideal of which one of the following revolutions?",
+                    options: ["American Revolution", "Russian Revolution", "French Revolution", "Glorious Revolution"],
+                    answer: "French Revolution",
+                    explanation: "The ideals of 'Liberty, Equality, and Fraternity' were adopted from the French Revolution (1789-1799)."
+                },
+                {
+                    q: "Which one of the following is NOT an objective of the Indian Constitution, as stated in the Preamble?",
+                    options: ["To secure Justice (Social, Economic and Political)", "To secure Liberty (of thought, expression, belief, faith and worship)", "To establish Economic Freedom and self-reliance", "To promote Fraternity (assuring the dignity of the individual)"],
+                    answer: "To establish Economic Freedom and self-reliance",
+                    explanation: "Economic freedom and self-reliance are related to the Directive Principles but are not explicitly stated as objectives in the Preamble. **Justice, Liberty, Equality, and Fraternity** are the core objectives."
+                },
+                {
+                    q: "The 'Basic Structure' doctrine primarily limits the power of:",
+                    options: ["The Executive", "The Judiciary", "The Parliament to amend the Constitution", "The Fundamental Rights of the citizens"],
+                    answer: "The Parliament to amend the Constitution",
+                    explanation: "The Basic Structure doctrine, established in Kesavananda Bharati case, restricts the Parliament's power under Article 368 from altering the fundamental features of the Constitution."
+                },
+                {
+                    q: "Which of the following is correct regarding the Preamble of the Indian Constitution?",
+                    options: ["It is a source of power to the legislature and a source of prohibition upon the powers of the legislature.", "It is a non-justiciable part of the Constitution.", "It is not a part of the Constitution, but an integral guide to interpretation.", "It is justiciable and enforceable by the High Courts."],
+                    answer: "It is a non-justiciable part of the Constitution.",
+                    explanation: "The Preamble is a non-justiciable part of the Constitution, meaning its provisions cannot be enforced in a court of law. It serves as an aid for interpreting the Constitution."
+                },
+                {
+                    q: "Consider the following statements regarding the word 'Sovereign' in the Preamble: I. India is independent of any foreign control. II. India can acquire a foreign territory or cede a part of its territory to a foreign state. Which of the statements given above is/are correct?",
+                    options: ["I only", "II only", "Both I and II", "Neither I nor II"],
+                    answer: "Both I and II",
+                    explanation: "The term 'Sovereign' implies that India is neither a dependency nor a dominion of any other nation. It is free to conduct its own affairs (internal and external), which includes the power to acquire or cede territory."
+                },
+                {
+                    q: "Which one of the following is not a specific type of 'Justice' as mentioned in the Preamble?",
+                    options: ["Social", "Economic", "Political", "Moral"],
+                    answer: "Moral",
+                    explanation: "The Preamble mentions three types of Justice: Social, Economic, and Political. Moral justice is not explicitly mentioned."
+                },
+                {
+                    q: "Which concept implies that the head of the state is elected and not a hereditary monarch?",
+                    options: ["Democratic", "Republic", "Sovereign", "Secular"],
+                    answer: "Republic",
+                    explanation: "A 'Republic' means that the head of the state (the President) is elected directly or indirectly for a fixed term, in contrast to a monarchy."
+                },
+                {
+                    q: "The term 'Democratic' in the Preamble suggests that:",
+                    options: ["The Constitution is the supreme authority.", "The people of India are the source of all power.", "The government is a limited one.", "Fundamental Rights are guaranteed."],
+                    answer: "The people of India are the source of all power.",
+                    explanation: "Democracy, as a political element, implies that the source of the authority of the Constitution and the government is the people. The Constitution starts with 'We, the people of India...'"
+                },
+                {
+                    q: "The inclusion of which word in the Preamble signifies the emotional and psychological unity of all people of India?",
+                    options: ["Integrity", "Fraternity", "Unity", "Socialist"],
+                    answer: "Fraternity",
+                    explanation: "Fraternity assures the dignity of the individual and the unity and integrity of the Nation. The spirit of common brotherhood is essential for emotional and psychological unity."
+                },
+                {
+                    q: "Which aspect of the Preamble serves as an 'opening statement of the Constitution', outlining the objectives of the entire document?",
+                    options: ["Preamble as a source of power", "Preamble as a key to the minds of the makers", "Preamble as a part of the Basic Structure", "Preamble as a non-justiciable provision"],
+                    answer: "Preamble as a key to the minds of the makers",
+                    explanation: "The Preamble is often referred to as the key to unlock the minds of the Constitution makers, helping in the interpretation of ambiguous provisions by setting out the underlying philosophy."
+                },
+                {
+                    q: "Which feature of the Constitution was first declared as an element of the Basic Structure in the Kesavananda Bharati case itself?",
+                    options: ["Parliamentary System", "Federal Character", "Supremacy of the Constitution", "Welfare State"],
+                    answer: "Supremacy of the Constitution",
+                    explanation: "The Kesavananda Bharati judgment (1973) outlined several features as Basic Structure, including the **Supremacy of the Constitution**, the Republican and Democratic form of Government, Secular character, and Separation of Powers."
+                },
+                {
+                    q: "Which of the following cases explicitly affirmed the amendability of the Preamble, provided the Basic Structure is not violated?",
+                    options: ["Maneka Gandhi Case", "Waman Rao Case", "Indira Sawhney Case", "Kesavananda Bharati Case"],
+                    answer: "Kesavananda Bharati Case",
+                    explanation: "The Kesavananda Bharati judgment held that the Preamble is part of the Constitution and can be amended under Article 368, but the amendment must not destroy the 'Basic Structure'."
+                },
+                {
+                    q: "In the Berubari Union Case, the Supreme Court reasoned that the Preamble was NOT a part of the Constitution because:",
+                    options: ["It was adopted before the rest of the Constitution.", "It was merely an introductory note.", "It was non-justiciable.", "It was not subject to amendment under Article 368."],
+                    answer: "It was not subject to amendment under Article 368.",
+                    explanation: "The core reasoning was that the Preamble was not a substantive part of the constitution like other provisions and was not subject to the amending procedure of Article 368."
+                },
+                {
+                    q: "The phrase 'of status and of opportunity' is associated with which ideal in the Preamble?",
+                    options: ["Liberty", "Equality", "Justice", "Fraternity"],
+                    answer: "Equality",
+                    explanation: "The Preamble ensures **Equality** of **status and of opportunity** to all citizens."
+                },
+                {
+                    q: "Consider the following statements: I. The Preamble is a part of the Constitution. II. The Preamble can be amended only once. Which of the statements given above is/are correct?",
+                    options: ["I only", "II only", "Both I and II", "Neither I nor II"],
+                    answer: "I only",
+                    explanation: "Statement I is correct (Kesavananda Bharati Case). Statement II is incorrect; while the Preamble has been amended only once (42nd Amendment), there is no constitutional bar on amending it again, provided the Basic Structure is maintained."
+                },
+                {
+                    q: "Which one of the following words/phrases was NOT a part of the Preamble in its original form (1950)?",
+                    options: ["Sovereign", "Democratic", "Integrity", "Republic"],
+                    answer: "Integrity",
+                    explanation: "The word 'Integrity' was added, along with 'Socialist' and 'Secular,' by the 42nd Constitutional Amendment Act of 1976."
+                },
+                {
+                    q: "The term 'Socialist' was added to the Preamble to reflect the goal of:",
+                    options: ["A centralized, state-controlled economy.", "A mixed economy, where the private sector also operates.", "Democratic Socialism, aiming to end poverty, ignorance, disease, and inequality of opportunity.", "Welfare state principles based on communist ideology."],
+                    answer: "Democratic Socialism, aiming to end poverty, ignorance, disease, and inequality of opportunity.",
+                    explanation: "Indian socialism is 'Democratic Socialism,' which holds faith in a mixed economy and aims to end poverty, inequality, and promote the welfare state, unlike the state socialism of the erstwhile Soviet Union."
+                },
+                {
+                    q: "Which of the following is considered the 'soul' or 'spirit' of the Constitution by legal experts, including former Chief Justice M. Hidayatullah?",
+                    options: ["Part III (Fundamental Rights)", "Part IV (DPSP)", "The Preamble", "Article 368 (Amendment Power)"],
+                    answer: "The Preamble",
+                    explanation: "The Preamble is widely regarded as the 'Soul of the Constitution.' K.M. Munshi called it the 'horoscope of our sovereign democratic republic,' and Pandit Thakur Das Bhargava called it the 'most precious part of the Constitution.'"
+                },
+                {
+                    q: "The date 'twenty-sixth day of November, 1949' mentioned in the Preamble is the date on which:",
+                    options: ["The Constitution was signed by the members of the Constituent Assembly.", "The Constitution was finally adopted and enacted.", "The Constitution came into full operation (Commencement).", "The Objectives Resolution was adopted."],
+                    answer: "The Constitution was finally adopted and enacted.",
+                    explanation: "November 26, 1949, is the date of the adoption, enactment, and giving of the Constitution to themselves by the people. The full commencement (Republic Day) was January 26, 1950."
+                },
+                {
+                    q: "The 'Basic Structure' doctrine is a judicial innovation that evolved from the need to protect which of the following?",
+                    options: ["The sanctity of Fundamental Rights from ordinary legislation.", "The sovereignty of the Parliament from judicial review.", "The Fundamental Rights from being curtailed by constitutional amendments.", "The Executive from the excessive interference of the Judiciary."],
+                    answer: "The Fundamental Rights from being curtailed by constitutional amendments.",
+                    explanation: "The doctrine arose because the Supreme Court feared that the Parliament's unlimited amending power (especially after the 24th Amendment) could be used to destroy the core features of the Constitution, including the Fundamental Rights."
+                },
+                {
+                    q: "Which Constitutional Amendment's validity was the subject matter of the Kesavananda Bharati case?",
+                    options: ["21st Amendment Act", "24th Amendment Act", "25th Amendment Act", "26th Amendment Act"],
+                    answer: "24th Amendment Act",
+                    explanation: "The Kesavananda Bharati case challenged the validity of the 24th, 25th, and 29th Constitutional Amendment Acts. The 24th Amendment Act of 1971 made it compulsory for the President to assent to a constitutional amendment bill and gave Parliament the power to amend any part of the Constitution, including Fundamental Rights."
+                },
+                {
+                    q: "Which one of the following is NOT an element of the 'Basic Structure' as declared by the Supreme Court in various judgements?",
+                    options: ["Secular character of the Constitution", "Limited power of Parliament to amend the Constitution", "Right to property", "Rule of law"],
+                    answer: "Right to property",
+                    explanation: "The Right to Property was removed as a Fundamental Right by the 44th Amendment Act and is generally not considered a part of the Basic Structure. The other options are recognized elements."
+                },
+                {
+                    q: "The term 'Liberty' in the Preamble covers all the following EXCEPT:",
+                    options: ["Liberty of thought", "Liberty of expression", "Liberty of Contract", "Liberty of faith"],
+                    answer: "Liberty of Contract",
+                    explanation: "The Preamble mentions Liberty of **thought, expression, belief, faith, and worship**. Liberty of contract is not explicitly stated."
+                },
+                {
+                    q: "Which case led to the judicial review of the 39th Constitutional Amendment Act, leading to the addition of the 'Free and Fair Elections' feature to the Basic Structure?",
+                    options: ["S.P. Sampath Kumar Case", "Waman Rao Case", "Indira Gandhi v. Raj Narain Case", "Minerva Mills Case"],
+                    answer: "Indira Gandhi v. Raj Narain Case",
+                    explanation: "The 39th Amendment placed the election dispute of the Prime Minister beyond the scope of judicial review. The Supreme Court, in Indira Gandhi v. Raj Narain Case (1975), invalidated this, holding that Free and Fair Elections is a Basic Structure feature."
+                },
+                {
+                    q: "Consider the following features: 1. Republican and Democratic form of Government. 2. Judicial Review. 3. Principle of Equality. Which of the above are recognized features of the Basic Structure?",
+                    options: ["1 and 2 only", "3 only", "2 and 3 only", "1, 2 and 3"],
+                    answer: "1, 2 and 3",
+                    explanation: "All three features—Republican and Democratic form of Government, Judicial Review, and the Principle of Equality—have been declared as part of the Basic Structure in various Supreme Court judgments."
+                },
+                {
+                    q: "The Preamble, while being a key to the minds of the makers, is also considered a 'Declaration' of:",
+                    options: ["The Fundamental Duties of the people.", "The source of the Constitution's authority.", "The economic goals of the state.", "The absolute powers of the Parliament."],
+                    answer: "The source of the Constitution's authority.",
+                    explanation: "The Preamble begins with the phrase 'WE, THE PEOPLE OF INDIA...' which clearly declares the people of India as the ultimate source of all authority under the Constitution."
+                },
+                {
+                    q: "In which case did the Supreme Court first hint at the doctrine of 'Basic Structure', though not fully articulating it?",
+                    options: ["Shankari Prasad Case (1951)", "Sajjan Singh Case (1965)", "Golaknath Case (1967)", "Berubari Union Case (1960)"],
+                    answer: "Golaknath Case (1967)",
+                    explanation: "In the Golaknath Case, the Supreme Court stated that Fundamental Rights are 'sacrosanct' and 'immutable,' implying a limitation on Parliament's amending power, thus planting the seed for the Basic Structure doctrine."
+                },
+                {
+                    q: "The 'Dignity of the Individual' as mentioned in the Preamble is assured by promoting:",
+                    options: ["Liberty and Equality", "Fraternity", "Justice (Social and Economic)", "Secularism and Socialism"],
+                    answer: "Fraternity",
+                    explanation: "Fraternity (brotherhood) in the Preamble assures two things: **the dignity of the individual** and the **unity and integrity of the Nation**."
+                },
+                {
+                    q: "The term 'Economic Justice' in the Preamble is a combination of which two fundamental principles?",
+                    options: ["Liberty and Equality", "Equality and Fraternity", "Social Justice and Political Justice", "Social Justice and DPSP"],
+                    answer: "Social Justice and DPSP",
+                 explanation: "Economic Justice is essentially the objective of providing social justice through the implementation of certain Directive Principles of State Policy (DPSP), thus aiming at a blend of social welfare and economic equity."
+                },
+                {
+                    q: "The Preamble describes the nature of the Indian State as:",
+                    options: ["Sovereign, Secular, Federal, Republic", "Sovereign, Socialist, Secular, Democratic, Republic", "Federal, Democratic, Republic, Socialist, Secular", "Unitary, Secular, Socialist, Democratic, Republic"],
+                    answer: "Sovereign, Socialist, Secular, Democratic, Republic",
+                    explanation: "This is the current, fully amended description of the nature of the Indian State in the Preamble."
+                },
+                {
+                    q: "The 'Basic Structure' doctrine provides that the Parliament cannot amend a constitutional provision if such an amendment:",
+                    options: ["Is passed by less than a two-thirds majority.", "Affects the Fundamental Rights of the people.", "Destroys or alters the basic framework of the Constitution.", "Is rejected by the State Legislatures."],
+                    answer: "Destroys or alters the basic framework of the Constitution.",
+                    explanation: "The doctrine is solely focused on protecting the fundamental, essential features (basic framework) of the Constitution from being nullified by Parliament's amending power under Article 368."
+                },
+                {
+                    q: "Which one of the following is considered an **aid** for interpretation but is NOT a source of substantive power to the Parliament?",
+                    options: ["Article 368", "Part III (Fundamental Rights)", "The Seventh Schedule", "The Preamble"],
+                    answer: "The Preamble",
+                    explanation: "The Preamble is neither a source of power nor a limitation on the powers of the legislature. It is a key for interpretation of the Constitution."
+                },
+                {
+                    q: "The concept of 'Social Justice' in the Preamble implies:",
+                    options: ["Treating all citizens equally in a court of law.", "Equal treatment of all sections of society without any social distinction based on caste, colour, race, religion, sex, and so on.", "Eliminating economic disparities among people.", "Equal political rights for all citizens."],
+                    answer: "Equal treatment of all sections of society without any social distinction based on caste, colour, race, religion, sex, and so on.",
+                    explanation: "Social Justice means the absence of privileges and the creation of a level playing field for all citizens irrespective of social markers. Economic Justice deals with disparities in wealth and income, and Political Justice deals with equal access to political office."
+                },
+                {
+                    q: "The principle of 'Judicial Review' was read into the Basic Structure doctrine in which of the following cases?",
+                    options: ["Sankari Prasad Case", "Golaknath Case", "Kesavananda Bharati Case", "Minerva Mills Case"],
+                    answer: "Minerva Mills Case",
+                    explanation: "While the doctrine was established in Kesavananda Bharati, the judicial review feature was emphatically restated and strengthened as a Basic Structure element in the Minerva Mills Case (1980)."
+                },
+                {
+                    q: "The Preamble reflects which one of the following in its structure and objectives?",
+                    options: ["A loose federation with weak center.", "The political philosophy underlying the Constitution.", "A detailed list of Fundamental Duties.", "The complete framework for the distribution of powers."],
+                    answer: "The political philosophy underlying the Constitution.",
+                    explanation: "The Preamble essentially sets out the core ideals, objectives, and the political/moral philosophy upon which the entire constitutional structure is built."
+                },
+                {
+                    q: "The Preamble can be amended only if the amendment is compatible with:",
+                    options: ["Article 21 (Right to Life)", "The Directive Principles of State Policy", "The fundamental framework of the Constitution", "The Fundamental Duties of citizens"],
+                    answer: "The fundamental framework of the Constitution",
+                    explanation: "This is the essence of the Basic Structure doctrine. The Preamble can be amended, but the core/fundamental framework (Basic Structure) cannot be altered or destroyed."
+                },
+                {
+                    q: "Which of the following phrases is crucial to establishing the Constitution's popular sovereignty?",
+                    options: ["In our Constituent Assembly", "DO HEREBY ADOPT, ENACT AND GIVE TO OURSELVES THIS CONSTITUTION", "Justice, Liberty, Equality, Fraternity", "WE, THE PEOPLE OF INDIA"],
+                    answer: "WE, THE PEOPLE OF INDIA",
+                    explanation: "This opening phrase explicitly declares that the Constitution derives its authority from the people of India, establishing the principle of popular sovereignty."
+                },
+                {
+                    q: "The principle of 'Welfare State' in the Preamble is most closely related to the ideal of:",
+                    options: ["Political Justice", "Economic Justice", "Liberty", "Fraternity"],
+                    answer: "Economic Justice",
+                    explanation: "The ideal of Economic Justice (coupled with Social Justice) is the foundational requirement for establishing a Welfare State, aiming at the equitable distribution of wealth and resources."
+                },
+                {
+                    q: "In the case of S.R. Bommai v. Union of India (1994), which feature of the Constitution was emphatically reaffirmed as a part of the Basic Structure?",
+                    options: ["Separation of Powers", "Secularism", "Federal Character", "Judicial Review"],
+                    answer: "Secularism",
+                    explanation: "The Supreme Court held in the S.R. Bommai case that Secularism is a Basic Feature of the Constitution and any state government pursuing non-secular policies can be dismissed by the Union government under Article 356."
+                },
+                {
+                    q: "The Basic Structure doctrine provides a limitation on the power of the Parliament under:",
+                    options: ["Article 13", "Article 368", "Article 32", "Article 245"],
+                    answer: "Article 368",
+                    explanation: "Article 368 contains the procedure for the Amendment of the Constitution. The Basic Structure doctrine acts as a substantive restriction on this amending power."
+                },
+                {
+                    q: "The Preamble is also referred to as the 'identity card of the Constitution' by which eminent personality?",
+                    options: ["Jawaharlal Nehru", "B.R. Ambedkar", "N.A. Palkhivala", "K.M. Munshi"],
+                    answer: "N.A. Palkhivala",
+                    explanation: "The famous constitutional expert N.A. Palkhivala called the Preamble the 'identity card of the Constitution'."
+                },
+                {
+                    q: "Which element in the Preamble promotes a sense of 'common brotherhood' among all the people of India?",
+                    options: ["Sovereign", "Secular", "Fraternity", "Integrity"],
+                    answer: "Fraternity",
+                    explanation: "Fraternity means a sense of brotherhood. The Preamble emphasizes Fraternity to assure the dignity of the individual and the unity and integrity of the Nation."
+                }
+            ],
+            correctAnswersCount: 0,
+            incorrectAnswersCount: 0,
+            unattemptedCount: 50,
+            timeSpent: 0,
+            attemptedAnswers: {},
+            questionStatus: {} // 0: Unvisited, 1: Answered, 2: Unanswered, 3: Marked, 4: Answered and Marked
+        };
+
+        const TOTAL_QUESTIONS = quizData.questions.length;
+        let currentQuestionIndex = 0;
+        let timerInterval;
+        let instructionTimer;
+        let timeLeft = 3600; // 60 minutes * 60 seconds = 3600 seconds
+
+        const elements = {
+            modal: document.getElementById('instructionsModal'),
+            skipTimer: document.getElementById('skipTimer'),
+            closeModal: document.getElementById('closeModal'),
+            appContainer: document.getElementById('appContainer'),
+            timerDisplay: document.getElementById('timerDisplay'),
+            quizArea: document.getElementById('quizArea'),
+            questionIndex: document.getElementById('questionIndex'),
+            btnBack: document.getElementById('btnBack'),
+            btnSkip: document.getElementById('btnSkip'),
+            btnClear: document.getElementById('btnClear'),
+            btnSaveAndNext: document.getElementById('btnSaveAndNext'),
+            btnMarkForReview: document.getElementById('btnMarkForReview'),
+            btnSubmitTest: document.getElementById('btnSubmitTest'),
+            resultsScreen: document.getElementById('resultsScreen'),
+            tabSummary: document.getElementById('tabSummary'),
+            tabSolutions: document.getElementById('tabSolutions'),
+            contentSummary: document.getElementById('contentSummary'),
+            contentSolutions: document.getElementById('contentSolutions'),
+            solutionsList: document.getElementById('solutionsList'),
+        };
+
+        // --- Utility Functions ---
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            return [h, m, s].map(v => v < 10 ? "0" + v : v).join(':');
+        }
+
+        function getStatusClass(status) {
+            switch (status) {
+                case 1: return 'q-answered bg-green-500';
+                case 2: return 'q-unanswered bg-red-500';
+                case 3: return 'q-marked bg-blue-500';
+                case 4: return 'q-ans-marked bg-yellow-500';
+                default: return 'q-unvisited bg-gray-100';
+            }
+        }
+
+        // --- Core Quiz Logic ---
+
+        function updateQuestionStatus(index, newStatus) {
+            const oldStatus = quizData.questionStatus[index] || 0;
+
+            // Save the current answer state before status manipulation
+            const form = document.getElementById(`qForm${index}`);
+            let selectedAnswer = form ? form.querySelector('input[name="q"]:checked')?.value : undefined;
+
+            if (newStatus === 'clear') {
+                delete quizData.attemptedAnswers[index];
+                selectedAnswer = undefined;
+            } else if (newStatus === 'save' || newStatus === 'savemark') {
+                if (selectedAnswer) {
+                    quizData.attemptedAnswers[index] = selectedAnswer;
+                }
+            } else if (newStatus === 'skip') {
+                // No change to saved answer, just move on
+            }
+            
+            // Re-evaluate current state for status determination
+            const hasAnswer = quizData.attemptedAnswers[index] !== undefined;
+            const isMarked = oldStatus === 3 || oldStatus === 4;
+            
+            let finalStatus = oldStatus;
+
+if (newStatus === 'clear') {
+                finalStatus = isMarked ? 3 : 2; // Marked stays marked, Answered/Unanswered goes to Unanswered
+            } else if (newStatus === 'save') {
+                finalStatus = isMarked ? 4 : 1; // Answered
+            } else if (newStatus === 'mark') {
+                if (isMarked) { // Unmark
+                    finalStatus = hasAnswer ? 1 : 2; 
+                } else { // Mark
+                    finalStatus = hasAnswer ? 4 : 3;
+                }
+            } else if (newStatus === 'skip' && oldStatus === 0) {
+                finalStatus = 2; // Unvisited goes to Unanswered
+            } else if (newStatus === 'view' && oldStatus === 0) {
+                finalStatus = 2; // Unvisited goes to Unanswered on first view
+            }
+            
+            // Final consistency check
+            if (hasAnswer) {
+                finalStatus = [3, 4].includes(finalStatus) ? 4 : 1; // 4: Ans & Marked, 1: Answered
+            } else {
+                finalStatus = [3, 4].includes(finalStatus) ? 3 : 2; // 3: Marked, 2: Unanswered
+            }
+            
+            if(oldStatus === 0 && finalStatus === 2) {
+                // Keep the change from 0->2
+            } else if (oldStatus === 0 && finalStatus === 3) {
+                // Keep the change from 0->3
+            } else if (oldStatus === 0 && finalStatus === 0) {
+                 finalStatus = 2; // On first visit, force to Unanswered
+            }
+
+            quizData.questionStatus[index] = finalStatus;
+
+            updateIndexDisplay(index);
+        }
+        
+        function getSelectedOption(index) {
+            const form = document.getElementById(`qForm${index}`);
+            return form ? form.querySelector('input[name="q"]:checked')?.value : undefined;
+        }
+
+        function updateIndexDisplay(index) {
+            const button = document.getElementById(`qBtn${index + 1}`);
+            if (button) {
+                // Clear old classes
+                button.classList.remove('q-unvisited', 'q-answered', 'q-unanswered', 'q-marked', 'q-ans-marked', 'bg-green-500', 'bg-red-500', 'bg-blue-500', 'bg-yellow-500', 'bg-gray-100', 'text-white', 'text-gray-700');
+                
+                const status = quizData.questionStatus[index] || 0;
+                let statusClass = getStatusClass(status);
+                let textColor = (statusClass.includes('bg-gray-100') || statusClass.includes('bg-gray-200')) ? 'text-gray-700' : 'text-white';
+
+                button.classList.add(...statusClass.split(' '), textColor);
+
+                // Update Mark for Review button text
+                const isMarked = status === 3 || status === 4;
+                elements.btnMarkForReview.textContent = isMarked ? 'Unmark Review' : 'Mark for Review';
+                
+            }
+        }
+
+        function renderQuestion(index) {
+            if (index < 0 || index >= TOTAL_QUESTIONS) return;
+            
+            // Update the status of the question we are leaving
+            if (currentQuestionIndex !== index) {
+                updateQuestionStatus(currentQuestionIndex, 'skip'); 
+            }
+
+            currentQuestionIndex = index;
+            const qData = quizData.questions[index];
+            const currentAnswer = quizData.attemptedAnswers[index];
+            const qNumber = index + 1;
+
+            const html = `
+                <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Question ${qNumber} / ${TOTAL_QUESTIONS}</h2>
+                <p class="text-lg font-medium text-gray-700 mb-6">${qData.q}</p>
+                <form id="qForm${index}" class="space-y-3">
+                    ${qData.options.map((option, i) => `
+                        <div>
+                            <input type="radio" id="q${index}opt${i}" name="q" value="${option}" class="hidden" ${currentAnswer === option ? 'checked' : ''}>
+                            <label for="q${index}opt${i}" class="option-label">
+                                <span class="w-6 h-6 text-center font-bold text-indigo-600 border border-indigo-600 rounded-full mr-3 text-sm">${String.fromCharCode(65 + i)}</span>
+                                <span class="text-base text-gray-800">${option}</span>
+                            </label>
+                        </div>
+                    `).join('')}
+                </form>
+            `;
+            elements.quizArea.innerHTML = html;
+            
+            // Handle first visit to this question (view)
+            updateQuestionStatus(index, 'view');
+            
+            // Update current button style and Mark for Review button
+            updateIndexDisplay(index);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < TOTAL_QUESTIONS - 1) {
+                renderQuestion(currentQuestionIndex + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                renderQuestion(currentQuestionIndex - 1);
+            }
+        }
+        
+        function navigateToQuestion(index) {
+             renderQuestion(index);
+        }
+
+
+        // --- Event Handlers ---
+
+        function handleSaveAndNext() {
+            const selectedAnswer = getSelectedOption(currentQuestionIndex);
+            
+            // Update the saved answer data based on current selection
+            if (selectedAnswer) {
+                quizData.attemptedAnswers[currentQuestionIndex] = selectedAnswer;
+                updateQuestionStatus(currentQuestionIndex, 'save');
+            } else {
+                 delete quizData.attemptedAnswers[currentQuestionIndex];
+                 updateQuestionStatus(currentQuestionIndex, 'skip'); // Acts as unanswered if no selection but moves next
+            }
+            nextQuestion();
+        }
+
+        function handleSkip() {
+            // Do not touch attemptedAnswers, simply mark as Unanswered if Unvisited, then move on
+            updateQuestionStatus(currentQuestionIndex, 'skip');
+            nextQuestion();
+        }
+        
+        function handleClear() {
+            const form = document.getElementById(`qForm${currentQuestionIndex}`);
+            if (form) {
+                form.reset();
+                // Deleting the answer triggers the correct status change in updateQuestionStatus
+                updateQuestionStatus(currentQuestionIndex, 'clear'); 
+            }
+        }
+        
+        function handleMarkForReview() {
+            updateQuestionStatus(currentQuestionIndex, 'mark');
+            updateIndexDisplay(currentQuestionIndex);
+        }
+
+        // --- Submission and Results ---
+function submitTest() {
+            // Save current question's state before submitting
+            const selectedAnswer = getSelectedOption(currentQuestionIndex);
+            if (selectedAnswer) {
+                quizData.attemptedAnswers[currentQuestionIndex] = selectedAnswer;
+                updateQuestionStatus(currentQuestionIndex, 'save');
+            } else {
+                updateQuestionStatus(currentQuestionIndex, 'skip');
+            }
+            
+            if (!confirm("Are you sure you want to SUBMIT the test? You will not be able to change your answers afterward.")) {
+                return;
+            }
+
+            clearInterval(timerInterval);
+            calculateResults();
+            showResultsScreen();
+        }
+
+        function calculateResults() {
+            quizData.correctAnswersCount = 0;
+            quizData.incorrectAnswersCount = 0;
+            
+            const totalAttempted = Object.keys(quizData.attemptedAnswers).length;
+            
+            // 1. Calculate Score
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                const attempted = quizData.attemptedAnswers[i];
+                const actual = quizData.questions[i].answer;
+
+                if (attempted !== undefined) {
+                    if (attempted === actual) {
+                        quizData.correctAnswersCount++;
+                    } else {
+                        quizData.incorrectAnswersCount++;
+                    }
+                }
+            }
+
+            // 2. Calculate Unattempted
+            quizData.unattemptedCount = TOTAL_QUESTIONS - totalAttempted;
+
+            // 3. Calculate Marks (UPSC 2 marks per correct, 1/3 negative marking)
+            const correctMarks = quizData.correctAnswersCount * 2;
+            const negativeMarks = quizData.incorrectAnswersCount * (2 / 3);
+            const netScore = correctMarks - negativeMarks;
+            const totalMarks = TOTAL_QUESTIONS * 2;
+            const percentage = (netScore / totalMarks) * 100;
+            
+            // 4. Calculate Time Spent
+            const timeTaken = 3600 - timeLeft;
+            quizData.timeSpent = formatTime(timeTaken);
+
+            // 5. Update Results HTML
+            document.getElementById('resultCorrect').textContent = quizData.correctAnswersCount;
+            document.getElementById('resultIncorrect').textContent = quizData.incorrectAnswersCount;
+            document.getElementById('resultUnattempted').textContent = quizData.unattemptedCount;
+            document.getElementById('resultScore').textContent = `${netScore.toFixed(2)} / ${totalMarks.toFixed(2)}`;
+            document.getElementById('resultPercentage').textContent = `${percentage.toFixed(2)}%`;
+            document.getElementById('resultTime').textContent = quizData.timeSpent;
+
+            // 6. Update Cutoff Message
+            let cutoffMessage = 'Your performance is below the estimated success threshold. Focus on strengthening fundamental concepts.';
+            if (percentage >= 40 && percentage < 50) {
+                cutoffMessage = 'Your score is moderate. Consistent practice and conceptual clarity on weaker topics will secure a better rank.';
+            } else if (percentage >= 50) {
+                cutoffMessage = 'Excellent Performance! Your knowledge base is strong. Focus on maximizing accuracy.';
+            }
+            document.getElementById('cutoffMessage').textContent = cutoffMessage;
+        }
+
+        function showResultsScreen() {
+            elements.appContainer.classList.add('hidden');
+            elements.resultsScreen.classList.remove('hidden');
+            
+            renderSolutions();
+            renderChart();
+        }
+
+        function renderSolutions() {
+            let html = '';
+            quizData.questions.forEach((qData, index) => {
+                const qNumber = index + 1;
+                const userAnswer = quizData.attemptedAnswers[index];
+                const correctAnswer = qData.answer;
+                const isCorrect = userAnswer === correctAnswer;
+                const attempted = userAnswer !== undefined;
+                
+                let resultText;
+                let resultClass;
+                
+                if (!attempted) {
+                    resultText = 'Status: Unattempted';
+                    resultClass = 'bg-yellow-100 text-yellow-800';
+                } else if (isCorrect) {
+                    resultText = 'Status: Correct';
+                    resultClass = 'bg-green-100 text-green-800';
+                } else {
+                    resultText = 'Status: Incorrect';
+                    resultClass = 'bg-red-100 text-red-800';
+                }
+
+                html += `
+                    <div class="bg-white p-5 rounded-xl shadow-md border-t-4 ${isCorrect ? 'border-green-500' : (attempted ? 'border-red-500' : 'border-yellow-500')}">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-indigo-700">Question ${qNumber}</h3>
+                            <span class="py-1 px-3 rounded-full text-sm font-semibold ${resultClass}">${resultText}</span>
+                        </div>
+                        <p class="text-md font-medium text-gray-800 mb-4">${qData.q}</p>
+                        
+                        <div class="space-y-2 text-sm sm:text-base">
+                            <p class="font-semibold">Your Answer: 
+                                <span class="${attempted && !isCorrect ? 'text-red-600' : (isCorrect ? 'text-green-600' : 'text-gray-600')} font-normal ml-2">${attempted ? userAnswer : 'N/A (Unattempted)'}</span>
+                            </p>
+                            <p class="font-semibold">Correct Answer: 
+                                <span class="text-green-600 font-normal ml-2">${correctAnswer}</span>
+                            </p>
+                            <div class="mt-4 pt-3 border-t">
+                                <p class="font-semibold text-gray-800 mb-1">Explanation:</p>
+                                <p class="text-gray-700 leading-relaxed">${qData.explanation}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            elements.solutionsList.innerHTML = html;
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Correct', 'Incorrect', 'Unattempted'],
+                    datasets: [{
+                        data: [quizData.correctAnswersCount, quizData.incorrectAnswersCount, quizData.unattemptedCount],
+                        backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+                        hoverBackgroundColor: ['#059669', '#dc2626', '#d97706']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // --- Initialization and Events ---
+
+        function init() {
+            // 1. Initialize Question Statuses
+            for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+                quizData.questionStatus[i] = 0; // 0: Unvisited
+            }
+
+            // 2. Render Question Index
+            for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+                const btn = document.createElement('button');
+                btn.id = `qBtn${i}`;
+                btn.textContent = i;
+                btn.classList.add('q-status-btn', 'q-unvisited', 'bg-gray-100', 'text-gray-700');
+                btn.onclick = () => navigateToQuestion(i - 1);
+                elements.questionIndex.appendChild(btn);
+            }
+            
+            // 3. Set up Timer
+            elements.timerDisplay.textContent = formatTime(timeLeft);
+            timerInterval = setInterval(updateTimer, 1000);
+
+            // 4. Set up Question Rendering
+            renderQuestion(currentQuestionIndex);
+            
+            // 5. Event Listeners
+            elements.btnBack.addEventListener('click', prevQuestion);
+            elements.btnSkip.addEventListener('click', handleSkip);
+            elements.btnClear.addEventListener('click', handleClear);
+            elements.btnSaveAndNext.addEventListener('click', handleSaveAndNext);
+            elements.btnMarkForReview.addEventListener('click', handleMarkForReview);
+            elements.btnSubmitTest.addEventListener('click', submitTest);
+
+            // Tab functionality
+            elements.tabSummary.addEventListener('click', () => switchTab('contentSummary', 'tabSummary'));
+            elements.tabSolutions.addEventListener('click', () => switchTab('contentSolutions', 'tabSolutions'));
+        }
+
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                elements.timerDisplay.textContent = formatTime(timeLeft);
+            } else {
+                clearInterval(timerInterval);
+                alert("Time's up! The test will now be submitted automatically.");
+                submitTest();
+            }
+        }
+
+        function switchTab(contentId, tabId) {
+            // Hide all content and reset all tabs
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            document.querySelectorAll('#resultsScreen button').forEach(tab => {
+                tab.classList.remove('border-indigo-600', 'text-indigo-600');
+                tab.classList.add('border-transparent', 'text-gray-500');
+            });
+
+            // Show selected content and activate selected tab
+            document.getElementById(contentId).classList.remove('hidden');
+            document.getElementById(tabId).classList.add('border-indigo-600', 'text-indigo-600');
+            document.getElementById(tabId).classList.remove('border-transparent', 'text-gray-500');
+        }
+
+        // --- Instructions Modal Logic ---
+        let skipTime = 10;
+
+        function startInstructionTimer() {
+            elements.modal.style.display = 'flex';
+            instructionTimer = setInterval(() => {
+                skipTime--;
+                elements.skipTimer.textContent = `Skip in ${skipTime}s`;
+                if (skipTime <= 0) {
+                    clearInterval(instructionTimer);
+                    elements.skipTimer.textContent = 'Starting Now';
+                    startQuiz();
+                }
+            }, 1000);
+        }
+        
+        function startQuiz() {
+            clearInterval(instructionTimer);
+            elements.modal.style.display = 'none';
+            elements.appContainer.classList.remove('hidden');
+            init(); // Start the quiz application
+        }
+
+        elements.closeModal.addEventListener('click', startQuiz);
+
+        // --- Start everything by showing the instruction popup ---
+        document.addEventListener('DOMContentLoaded', startInstructionTimer);
+
+    </script>
+</body>
+</html>
